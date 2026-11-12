@@ -115,7 +115,10 @@ export default function ProductsPage() {
                     <p className="text-[11px] font-medium tabular-nums text-[#E2DACF]">
                       {cartCount} {cartCount === 1 ? 'item' : 'items'} in cart
                     </p>
-                    <p className="text-sm font-bold tabular-nums text-[#FAF8F5]">
+                    <p
+                      suppressHydrationWarning
+                      className="text-sm font-bold tabular-nums text-[#FAF8F5]"
+                    >
                       {formatRupiah(cartTotal)}
                     </p>
                   </div>
@@ -259,7 +262,10 @@ export default function ProductsPage() {
 
                         <div className="mt-6 border-t border-[#F0EAE0] pt-4">
                           <div className="flex items-baseline justify-between gap-2">
-                            <span className="text-xl font-bold tabular-nums text-[#2C1E18]">
+                            <span
+                              suppressHydrationWarning
+                              className="text-xl font-bold tabular-nums text-[#2C1E18]"
+                            >
                               {formatRupiah(product.price)}
                             </span>
                             <span

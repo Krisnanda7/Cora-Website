@@ -4,14 +4,14 @@ import { CoraProvider } from "@/context/CoraContext";
 import "./globals.css";
 
 const fraunces = Fraunces({
-  variable: "--font-serif",
+  variable: "--font-fraunces",
   subsets: ["latin"],
   weight: ["500", "600", "700"],
   display: "swap",
 });
 
 const plusJakartaSans = Plus_Jakarta_Sans({
-  variable: "--font-sans",
+  variable: "--font-plus-jakarta",
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
   display: "swap",
