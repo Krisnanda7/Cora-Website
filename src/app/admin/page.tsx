@@ -618,7 +618,7 @@ export default function AdminDashboardPage() {
           {/* TAB 1: VERIFIKASI PESANAN & PENGIRIMAN                         */}
           {/* ============================================================== */}
           {activeTab === 'orders' && (
-            <section className="space-y-6">
+            <section className="animate-cora-fade-in space-y-6">
               {/* Status Filter Pills */}
               <div className="flex flex-wrap items-center gap-2">
                 {(
@@ -842,7 +842,7 @@ export default function AdminDashboardPage() {
           {/* TAB 2: LAPORAN KEUANGAN (FINANCIAL REPORT)                     */}
           {/* ============================================================== */}
           {activeTab === 'finance' && (
-            <section className="space-y-8">
+            <section className="animate-cora-fade-in space-y-8">
               {/* 4 Summary KPI Cards */}
               <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-4">
                 <div className="rounded-3xl border border-[#E5DEC9] bg-white p-5 shadow-xs">
@@ -1169,7 +1169,7 @@ export default function AdminDashboardPage() {
           {/* TAB 3: CMS PRODUK & NOMOR REKENING                             */}
           {/* ============================================================== */}
           {activeTab === 'cms' && (
-            <section className="space-y-8">
+            <section className="animate-cora-fade-in space-y-8">
               {/* Product Management */}
               <div className="space-y-4">
                 <div className="flex flex-wrap items-center justify-between gap-3">
@@ -1673,7 +1673,7 @@ export default function AdminDashboardPage() {
           {/* TAB 4: JADWAL COCONUT PICKUP                                   */}
           {/* ============================================================== */}
           {activeTab === 'pickup' && (
-            <section className="space-y-6">
+            <section className="animate-cora-fade-in space-y-6">
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
                 <div className="rounded-3xl border border-[#E5DEC9] bg-white p-5 shadow-xs">
                   <p className="text-xs font-semibold text-[#6E5C52]">
@@ -1798,12 +1798,12 @@ export default function AdminDashboardPage() {
       {/* MODAL: CEK BUKTI TRANSFER */}
       {proofModalOrder && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-[#2C1E18]/60 p-4 backdrop-blur-xs"
+          className="animate-cora-fade-in fixed inset-0 z-50 flex items-center justify-center bg-[#2C1E18]/60 p-4 backdrop-blur-xs"
           role="dialog"
           aria-modal="true"
           aria-label="Modal Cek Bukti Transfer"
         >
-          <div className="w-full max-w-lg overflow-hidden rounded-3xl bg-white shadow-2xl">
+          <div className="animate-cora-modal w-full max-w-lg overflow-hidden rounded-2xl border border-[#E5DEC9] bg-white shadow-2xl">
             <div className="flex items-center justify-between border-b border-[#F0EAE0] px-6 py-4">
               <div>
                 <h3 className="font-serif text-lg font-bold text-[#2C1E18]">

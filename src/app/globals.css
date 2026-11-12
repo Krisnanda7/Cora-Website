@@ -10,8 +10,83 @@
   --color-foreground: var(--foreground);
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 body {
   background-color: var(--background);
   color: var(--foreground);
   font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+  text-rendering: optimizeLegibility;
+}
+
+@keyframes coraFadeUp {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 14px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes coraFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes coraSlideInRight {
+  from {
+    opacity: 0.7;
+    transform: translate3d(100%, 0, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes coraModalIn {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 8px, 0) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
+.animate-cora-fade-up {
+  animation: coraFadeUp 0.65s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.animate-cora-fade-in {
+  animation: coraFadeIn 0.3s ease-out both;
+}
+
+.animate-cora-drawer {
+  animation: coraSlideInRight 0.32s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.animate-cora-modal {
+  animation: coraModalIn 0.25s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .animate-cora-fade-up,
+  .animate-cora-fade-in,
+  .animate-cora-drawer,
+  .animate-cora-modal {
+    animation: none !important;
+  }
 }

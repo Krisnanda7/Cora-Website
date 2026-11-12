@@ -4,13 +4,13 @@ import React, { useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import {
+  ArrowRight,
   Leaf,
   Minus,
   Plus,
   ShoppingBag,
   Trash2,
   X,
-  ArrowRight,
 } from 'lucide-react';
 import { useCora } from '@/context/CoraContext';
 
@@ -67,22 +67,22 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
         type="button"
         aria-label="Tutup keranjang"
         onClick={onClose}
-        className="fixed inset-0 bg-[#2C1E18]/40 backdrop-blur-[2px] transition-opacity"
+        className="animate-cora-fade-in fixed inset-0 bg-[#2C1E18]/35 backdrop-blur-[2px]"
       />
 
       {/* Drawer Panel */}
-      <aside className="relative z-10 flex h-full w-full max-w-md flex-col bg-[#FAF8F5] text-[#2C1E18] shadow-2xl border-l border-[#E5DEC9]">
+      <aside className="animate-cora-drawer relative z-10 flex h-full w-full max-w-md flex-col border-l border-[#E5DEC9] bg-[#FAF8F5] text-[#2C1E18] shadow-2xl">
         {/* Header */}
         <div className="flex items-center justify-between border-b border-[#E5DEC9] bg-white px-6 py-4">
           <div className="flex items-center gap-3">
-            <span className="flex h-9 w-9 items-center justify-center rounded-full bg-[#3B5B3D]/10 text-[#3B5B3D]">
+            <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#3B5B3D]/10 text-[#3B5B3D]">
               <ShoppingBag className="h-4 w-4" />
             </span>
             <div>
-              <h2 className="font-serif text-lg font-bold text-[#2C1E18]">
+              <h2 className="font-serif text-lg font-semibold text-[#2C1E18]">
                 Keranjang Belanja
               </h2>
-              <p className="text-xs text-[#6E5C52]">
+              <p className="text-xs text-[#6E5C52] tabular-nums">
                 {cartCount} item dipilih
               </p>
             </div>
@@ -93,35 +93,35 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
             className="rounded-full p-2 text-[#6E5C52] transition hover:bg-[#E6E3D8]/60 hover:text-[#2C1E18]"
             aria-label="Tutup panel keranjang"
           >
-            <X className="h-5 w-5" />
+            <X className="h-4 w-4" />
           </button>
         </div>
 
         {/* Cart Items */}
         <div className="flex-1 overflow-y-auto px-6 py-5">
           {cart.length === 0 ? (
-            <div className="flex h-full flex-col items-center justify-center text-center py-12">
-              <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-[#E6E3D8] text-[#3B5B3D]">
-                <ShoppingBag className="h-7 w-7" />
+            <div className="flex h-full flex-col items-center justify-center py-12 text-center">
+              <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-[#E6E3D8] text-[#3B5B3D]">
+                <ShoppingBag className="h-6 w-6" />
               </div>
-              <p className="text-base font-semibold text-[#2C1E18]">
+              <p className="font-serif text-lg font-semibold text-[#2C1E18]">
                 Keranjang masih kosong
               </p>
-              <p className="mt-1.5 max-w-xs text-sm text-[#6E5C52]">
-                Mulai jelajahi olahan kelapa sirkular CORA untuk menyelamatkan
-                lebih banyak ampas kelapa.
+              <p className="mt-1.5 max-w-xs text-xs leading-relaxed text-[#6E5C52]">
+                Jelajahi olahan kelapa sirkular CORA untuk menikmati rasa
+                artisan sambil menyelamatkan ampas kelapa.
               </p>
               <Link
                 href="/products"
                 onClick={onClose}
-                className="mt-6 inline-flex items-center gap-2 rounded-full bg-[#3B5B3D] px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-[#2F4A31]"
+                className="mt-6 inline-flex items-center gap-2 rounded-full bg-[#3B5B3D] px-5 py-2.5 text-xs font-semibold text-white transition hover:bg-[#2F4A31]"
               >
                 Lihat Katalog Produk
-                <ArrowRight className="h-4 w-4" />
+                <ArrowRight className="h-3.5 w-3.5" />
               </Link>
             </div>
           ) : (
-            <div className="space-y-4">
+            <div className="space-y-3.5">
               {cart.map((item) => {
                 const liveProduct = products.find(
                   (p) => p.id === item.productId
@@ -135,15 +135,15 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
                 return (
                   <div
                     key={item.productId}
-                    className="flex gap-4 rounded-2xl border border-[#E5DEC9] bg-white p-3.5 shadow-xs"
+                    className="flex gap-3.5 rounded-2xl border border-[#E5DEC9] bg-white p-3.5 transition hover:border-[#CFC5B1]"
                   >
-                    <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-xl border border-[#E5DEC9] bg-[#FAF8F5]">
+                    <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-xl border border-[#E5DEC9]/80 bg-[#FAF8F5]">
                       <Image
                         src={item.image}
                         alt={item.productName}
                         fill
                         unoptimized
-                        className="object-cover"
+                        className="object-contain p-1.5"
                       />
                     </div>
                     <div className="flex flex-1 flex-col justify-between">
@@ -152,7 +152,7 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
                           <h3 className="text-sm font-semibold text-[#2C1E18] leading-snug">
                             {item.productName}
                           </h3>
-                          <p className="mt-0.5 text-xs font-medium text-[#3B5B3D]">
+                          <p className="mt-0.5 text-xs font-medium tabular-nums text-[#3B5B3D]">
                             {formatRupiah(item.price)}
                           </p>
                         </div>
@@ -162,12 +162,12 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
                           className="rounded-lg p-1.5 text-[#8A776C] transition hover:bg-red-50 hover:text-red-600"
                           aria-label={`Hapus ${item.productName}`}
                         >
-                          <Trash2 className="h-4 w-4" />
+                          <Trash2 className="h-3.5 w-3.5" />
                         </button>
                       </div>
 
                       <div className="mt-3 flex items-center justify-between gap-2">
-                        <span className="inline-flex items-center gap-1 rounded-full bg-[#3B5B3D]/10 px-2.5 py-0.5 text-[11px] font-medium text-[#3B5B3D]">
+                        <span className="inline-flex items-center gap-1 text-[11px] font-medium tabular-nums text-[#3B5B3D]">
                           <Leaf className="h-3 w-3" />
                           {itemResidueKg} kg residu
                         </span>
@@ -181,9 +181,9 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
                             className="flex h-7 w-7 items-center justify-center rounded-l-full text-[#2C1E18] transition hover:bg-[#E6E3D8]"
                             aria-label="Kurangi jumlah"
                           >
-                            <Minus className="h-3.5 w-3.5" />
+                            <Minus className="h-3 w-3" />
                           </button>
-                          <span className="min-w-[26px] text-center text-xs font-semibold text-[#2C1E18]">
+                          <span className="min-w-[26px] text-center text-xs font-semibold tabular-nums text-[#2C1E18]">
                             {item.qty}
                           </span>
                           <button
@@ -195,7 +195,7 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
                             className="flex h-7 w-7 items-center justify-center rounded-r-full text-[#2C1E18] transition hover:bg-[#E6E3D8] disabled:opacity-40"
                             aria-label="Tambah jumlah"
                           >
-                            <Plus className="h-3.5 w-3.5" />
+                            <Plus className="h-3 w-3" />
                           </button>
                         </div>
                       </div>
@@ -222,10 +222,10 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
           <div className="border-t border-[#E5DEC9] bg-white px-6 py-5 space-y-4">
             <div className="flex items-center justify-between rounded-xl bg-[#3B5B3D]/8 px-3.5 py-2.5 text-xs text-[#3B5B3D]">
               <span className="flex items-center gap-1.5 font-medium">
-                <Leaf className="h-4 w-4" />
+                <Leaf className="h-3.5 w-3.5" />
                 Estimasi Residu Terselamatkan
               </span>
-              <span className="font-bold">
+              <span className="font-bold tabular-nums">
                 {(totalResidueSavedGram / 1000).toFixed(2)} kg
               </span>
             </div>
@@ -234,7 +234,7 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
               <span className="text-sm font-medium text-[#6E5C52]">
                 Subtotal Pembayaran
               </span>
-              <span className="text-lg font-bold text-[#2C1E18]">
+              <span className="text-lg font-bold tabular-nums text-[#2C1E18]">
                 {formatRupiah(cartTotal)}
               </span>
             </div>
@@ -242,7 +242,7 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
             <Link
               href="/checkout"
               onClick={onClose}
-              className="flex w-full items-center justify-center gap-2 rounded-full bg-[#3B5B3D] px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-[#2F4A31]"
+              className="flex w-full items-center justify-center gap-2 rounded-full bg-[#3B5B3D] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#2F4A31]"
             >
               Lanjut ke Checkout
               <ArrowRight className="h-4 w-4" />
@@ -253,4 +253,3 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
     </div>
   );
 }
-

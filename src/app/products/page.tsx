@@ -14,6 +14,7 @@ import {
 } from 'lucide-react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
+import Reveal from '@/components/Reveal';
 import { useCora } from '@/context/CoraContext';
 import type { Product, ProductCategory } from '@/types/cora';
 
@@ -73,15 +74,15 @@ export default function ProductsPage() {
 
       <main className="flex-1">
         {/* Top Minimalist Store Header */}
-        <section className="border-b border-[#E5DEC9]/70 bg-[#EFECE3]/60">
+        <section className="border-b border-[#E5DEC9]/80 bg-[#EFECE3]/60">
           <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-14 lg:px-8">
-            <div className="flex flex-col justify-between gap-6 md:flex-row md:items-end">
+            <div className="animate-cora-fade-up flex flex-col justify-between gap-6 md:flex-row md:items-end">
               <div className="max-w-2xl space-y-2.5">
-                <span className="inline-flex items-center gap-1.5 rounded-full bg-[#3B5B3D]/10 px-3.5 py-1 text-xs font-semibold text-[#3B5B3D]">
+                <span className="inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.16em] text-[#3B5B3D]">
                   <Leaf className="h-3.5 w-3.5" />
                   Circular F&amp;B Collection
                 </span>
-                <h1 className="font-serif text-3xl font-bold tracking-tight text-[#2C1E18] sm:text-4xl lg:text-5xl">
+                <h1 className="font-serif text-3xl font-semibold tracking-[-0.015em] text-[#2C1E18] sm:text-4xl lg:text-5xl">
                   Katalog Produk CORA
                 </h1>
                 <p className="text-sm leading-relaxed text-[#6E5C52] sm:text-base">
@@ -190,26 +191,26 @@ export default function ProductsPage() {
               </button>
             </div>
           ) : (
-            <div className="grid grid-cols-1 gap-7 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-              {filteredProducts.map((product) => {
+            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+              {filteredProducts.map((product, idx) => {
                 const isAdded = addedId === product.id;
                 const isOutOfStock = product.stock <= 0;
 
                 return (
+                  <Reveal key={product.id} delayMs={idx * 60}>
                   <article
-                    key={product.id}
-                    className="group flex flex-col overflow-hidden rounded-3xl bg-white shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-md"
+                    className="group flex h-full flex-col overflow-hidden rounded-2xl border border-[#E5DEC9]/80 bg-white transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-1 hover:border-[#CFC5B1] hover:shadow-md"
                   >
                     {/* Packaging Image */}
-                    <div className="relative aspect-[4/3] overflow-hidden bg-[#F5F1EA] p-5">
+                    <div className="relative aspect-[4/3] overflow-hidden border-b border-[#F0EAE0] bg-[#F5F1EA] p-5">
                       <Image
                         src={product.image}
                         alt={product.name}
                         fill
                         unoptimized
-                        className="object-contain p-5 transition duration-500 group-hover:scale-105"
+                        className="object-contain p-5 transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.04]"
                       />
-                      <span className="absolute top-3.5 left-3.5 inline-flex items-center gap-1 rounded-full bg-[#3B5B3D] px-3 py-1 text-[11px] font-semibold text-white shadow-xs">
+                      <span className="absolute top-3.5 left-3.5 inline-flex items-center gap-1 rounded-full bg-[#3B5B3D] px-2.5 py-1 text-[10px] font-semibold tracking-wide text-white">
                         <Leaf className="h-3 w-3" />
                         Saves {product.residueSavedGram}g Coconut Residue
                       </span>
@@ -242,11 +243,11 @@ export default function ProductsPage() {
 
                       <div className="mt-6 pt-4 border-t border-[#F0EAE0]">
                         <div className="flex items-baseline justify-between gap-2">
-                          <span className="text-xl font-extrabold text-[#2C1E18]">
+                          <span className="text-xl font-bold tabular-nums text-[#2C1E18]">
                             {formatRupiah(product.price)}
                           </span>
                           <span
-                            className={`rounded-full px-2.5 py-0.5 text-[11px] font-semibold ${
+                            className={`rounded-full px-2.5 py-0.5 text-[11px] font-semibold tabular-nums ${
                               isOutOfStock
                                 ? 'bg-red-50 text-red-600'
                                 : product.stock <= 10
@@ -301,6 +302,7 @@ export default function ProductsPage() {
                       </div>
                     </div>
                   </article>
+                  </Reveal>
                 );
               })}
             </div>

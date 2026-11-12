@@ -23,6 +23,7 @@ import {
 } from 'lucide-react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
+import Reveal from '@/components/Reveal';
 import { useCora } from '@/context/CoraContext';
 import type { PickupRequestStatus } from '@/types/cora';
 
@@ -465,12 +466,12 @@ export default function EcosystemPage() {
         {/* Top Hero Banner */}
         <section className="border-b border-[#E5DEC9] bg-[#E6E3D8]">
           <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
-            <div className="max-w-3xl space-y-3">
-              <span className="inline-flex items-center gap-1.5 rounded-full bg-[#3B5B3D]/12 px-3.5 py-1 text-xs font-semibold text-[#3B5B3D]">
+            <div className="animate-cora-fade-up max-w-3xl space-y-3">
+              <span className="inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.16em] text-[#3B5B3D]">
                 <Sparkles className="h-3.5 w-3.5" />
                 CORA Digital Ecosystem
               </span>
-              <h1 className="font-serif text-3xl font-bold tracking-tight text-[#2C1E18] sm:text-4xl lg:text-5xl">
+              <h1 className="font-serif text-3xl font-semibold tracking-[-0.015em] text-[#2C1E18] sm:text-4xl lg:text-5xl">
                 Recipe Hub, CORABlend AI &amp; Coconut Pickup
               </h1>
               <p className="text-sm leading-relaxed text-[#5C4B42] sm:text-base">
@@ -484,7 +485,7 @@ export default function EcosystemPage() {
 
         {/* 1. CORABLEND AI - SMART COCONUT FLOUR RECIPE ASSISTANT */}
         <section className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
-          <div className="rounded-3xl border border-[#E5DEC9] bg-white p-6 shadow-sm sm:p-10">
+          <div className="animate-cora-fade-up rounded-2xl border border-[#E5DEC9] bg-white p-6 shadow-2xs sm:p-10">
             <div className="flex flex-col justify-between gap-4 border-b border-[#F0EAE0] pb-6 md:flex-row md:items-end">
               <div>
                 <span className="inline-flex items-center gap-1.5 rounded-full bg-[#3B5B3D]/10 px-3 py-1 text-xs font-semibold text-[#3B5B3D]">
@@ -603,7 +604,7 @@ export default function EcosystemPage() {
                     </p>
                   </div>
                 ) : aiRecipe ? (
-                  <div className="flex h-full flex-col justify-between rounded-3xl border border-[#3B5B3D]/25 bg-[#FAF8F5] p-6 sm:p-7">
+                  <div className="animate-cora-fade-up flex h-full flex-col justify-between rounded-2xl border border-[#3B5B3D]/25 bg-[#FAF8F5] p-6 sm:p-7">
                     <div>
                       <div className="flex flex-wrap items-center justify-between gap-2">
                         <span className="inline-flex items-center gap-1.5 rounded-full bg-[#4E9A34] px-3 py-1 text-[11px] font-bold text-white">
@@ -771,12 +772,12 @@ export default function EcosystemPage() {
             </div>
 
             <div className="mt-9 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-              {HUB_RECIPES.map((recipe) => (
+              {HUB_RECIPES.map((recipe, idx) => (
+                <Reveal key={recipe.id} delayMs={idx * 65}>
                 <button
-                  key={recipe.id}
                   type="button"
                   onClick={() => setActiveHubRecipe(recipe)}
-                  className="group flex flex-col justify-between rounded-3xl border border-[#E5DEC9] bg-white p-6 text-left shadow-xs transition hover:-translate-y-1 hover:shadow-md"
+                  className="group flex h-full w-full flex-col justify-between rounded-2xl border border-[#E5DEC9] bg-white p-6 text-left transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-1 hover:border-[#CFC5B1] hover:shadow-md"
                 >
                   <div>
                     <div className="flex items-center justify-between gap-2">
@@ -808,6 +809,7 @@ export default function EcosystemPage() {
                     </div>
                   </div>
                 </button>
+                </Reveal>
               ))}
             </div>
           </div>
@@ -1027,12 +1029,12 @@ export default function EcosystemPage() {
       {/* Recipe Hub Detail Modal */}
       {activeHubRecipe && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-[#2C1E18]/55 p-4 backdrop-blur-xs"
+          className="animate-cora-fade-in fixed inset-0 z-50 flex items-center justify-center bg-[#2C1E18]/55 p-4 backdrop-blur-xs"
           role="dialog"
           aria-modal="true"
           aria-label={`Resep ${activeHubRecipe.title}`}
         >
-          <div className="max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-3xl bg-white shadow-2xl">
+          <div className="animate-cora-modal max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-2xl border border-[#E5DEC9] bg-white shadow-2xl">
             <div className="sticky top-0 flex items-start justify-between gap-4 border-b border-[#F0EAE0] bg-white px-6 py-5">
               <div>
                 <div className="flex flex-wrap items-center gap-2">

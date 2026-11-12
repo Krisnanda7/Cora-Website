@@ -205,7 +205,7 @@ export default function CheckoutPage() {
       <main className="flex-1">
         <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-12 lg:px-8">
           {/* Header */}
-          <div className="mb-8 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <div className="animate-cora-fade-up mb-8 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div>
               <Link
                 href="/products"
@@ -214,7 +214,7 @@ export default function CheckoutPage() {
                 <ArrowLeft className="h-3.5 w-3.5" />
                 Kembali ke Katalog Produk
               </Link>
-              <h1 className="mt-2 font-serif text-3xl font-bold tracking-tight text-[#2C1E18] sm:text-4xl">
+              <h1 className="mt-2 font-serif text-3xl font-semibold tracking-[-0.015em] text-[#2C1E18] sm:text-4xl">
                 Checkout &amp; Pembayaran
               </h1>
               <p className="mt-1 text-sm text-[#6E5C52]">
@@ -222,7 +222,7 @@ export default function CheckoutPage() {
                 resmi CORA.
               </p>
             </div>
-            <div className="inline-flex items-center gap-2 self-start rounded-full bg-[#3B5B3D]/10 px-3.5 py-1.5 text-xs font-semibold text-[#3B5B3D]">
+            <div className="inline-flex items-center gap-2 self-start rounded-full border border-[#3B5B3D]/20 bg-white px-3.5 py-1.5 text-xs font-semibold text-[#3B5B3D]">
               <Lock className="h-3.5 w-3.5" />
               Verifikasi Manual Resmi CORA
             </div>
@@ -254,8 +254,8 @@ export default function CheckoutPage() {
               className="grid grid-cols-1 gap-8 lg:grid-cols-12 lg:items-start"
             >
               {/* LEFT COLUMN: Shipping Form */}
-              <div className="space-y-6 lg:col-span-7">
-                <section className="rounded-3xl bg-white p-6 shadow-sm sm:p-8">
+              <div className="animate-cora-fade-up space-y-6 lg:col-span-7" style={{ animationDelay: '60ms' }}>
+                <section className="rounded-2xl border border-[#E5DEC9] bg-white p-6 shadow-2xs sm:p-8">
                   <div className="flex items-center gap-3 border-b border-[#F0EAE0] pb-4">
                     <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[#3B5B3D] text-xs font-bold text-white">
                       1
@@ -411,9 +411,9 @@ export default function CheckoutPage() {
               </div>
 
               {/* RIGHT COLUMN: Order Summary & Manual Bank Transfer */}
-              <div className="space-y-6 lg:col-span-5">
+              <div className="animate-cora-fade-up space-y-6 lg:col-span-5" style={{ animationDelay: '130ms' }}>
                 {/* a) Order Summary */}
-                <section className="rounded-3xl bg-white p-6 shadow-sm">
+                <section className="rounded-2xl border border-[#E5DEC9] bg-white p-6 shadow-2xs">
                   <h2 className="text-base font-bold text-[#2C1E18]">
                     Rincian Produk Dibeli
                   </h2>
@@ -474,7 +474,7 @@ export default function CheckoutPage() {
                 </section>
 
                 {/* b) Official CORA Bank Accounts */}
-                <section className="rounded-3xl bg-white p-6 shadow-sm">
+                <section className="rounded-2xl border border-[#E5DEC9] bg-white p-6 shadow-2xs">
                   <div className="flex items-center gap-2.5">
                     <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[#3B5B3D]/12 text-[#3B5B3D]">
                       <Building2 className="h-4 w-4" />
@@ -557,7 +557,7 @@ export default function CheckoutPage() {
                 </section>
 
                 {/* c) Upload Transfer Proof */}
-                <section className="rounded-3xl bg-white p-6 shadow-sm space-y-4">
+                <section className="rounded-2xl border border-[#E5DEC9] bg-white p-6 shadow-2xs space-y-4">
                   <h2 className="text-base font-bold text-[#2C1E18]">
                     Upload Bukti Transfer
                   </h2>

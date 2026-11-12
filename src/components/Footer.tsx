@@ -5,37 +5,36 @@ import { Leaf, Mail, MapPin, Phone } from 'lucide-react';
 export default function Footer() {
   return (
     <footer className="relative overflow-hidden border-t border-[#E5DEC9] bg-[#EFECE3] text-[#2C1E18]">
-      <div className="mx-auto max-w-7xl px-4 pt-12 pb-20 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-7xl px-4 pt-14 pb-20 sm:px-6 lg:px-8">
         <div className="grid gap-10 md:grid-cols-4">
           {/* Brand */}
           <div className="md:col-span-2 space-y-4">
             <div className="flex items-center gap-2.5">
-              <span className="flex h-9 w-9 items-center justify-center rounded-full bg-[#3B5B3D] text-white">
+              <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#3B5B3D] text-white">
                 <Leaf className="h-4 w-4" />
               </span>
               <div>
-                <p className="font-serif text-xl font-bold tracking-tight text-[#2C1E18]">
+                <p className="font-serif text-xl font-semibold tracking-tight text-[#2C1E18]">
                   CORA
                 </p>
-                <p className="text-xs font-medium text-[#6E5C52]">
+                <p className="text-[10px] font-medium uppercase tracking-[0.14em] text-[#6E5C52]">
                   Circular Food Innovation
                 </p>
               </div>
             </div>
             <p className="max-w-md text-sm leading-relaxed text-[#5C4B42]">
-              Mengubah residu ampas kelapa dari industri santan menjadi tepung
-              kelapa bernutrisi tinggi, camilan sehat berbahan kelapa, serta
+              Mengolah residu ampas kelapa dari industri santan menjadi tepung
+              kelapa bernutrisi tinggi, camilan sehat berbahan kelapa, dan
               ekosistem digital berkelanjutan bagi pemasok lokal.
             </p>
-            <div className="inline-flex items-center gap-2 rounded-full border border-[#3B5B3D]/25 bg-white/80 px-3.5 py-1.5 text-xs font-semibold text-[#3B5B3D]">
-              <Leaf className="h-3.5 w-3.5" />
+            <p className="text-xs font-semibold uppercase tracking-[0.12em] text-[#3B5B3D]">
               Zero Coconut Residue Wasted
-            </div>
+            </p>
           </div>
 
           {/* Navigation */}
           <div>
-            <h3 className="text-xs font-bold uppercase tracking-wider text-[#3B5B3D]">
+            <h3 className="text-[11px] font-bold uppercase tracking-[0.14em] text-[#3B5B3D]">
               Navigasi
             </h3>
             <ul className="mt-4 space-y-2.5 text-sm text-[#5C4B42]">
@@ -89,7 +88,7 @@ export default function Footer() {
 
           {/* Contact */}
           <div>
-            <h3 className="text-xs font-bold uppercase tracking-wider text-[#3B5B3D]">
+            <h3 className="text-[11px] font-bold uppercase tracking-[0.14em] text-[#3B5B3D]">
               Hubungi Kami
             </h3>
             <ul className="mt-4 space-y-3 text-sm text-[#5C4B42]">
@@ -109,7 +108,7 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="mt-10 flex flex-col items-start justify-between gap-3 border-t border-[#E5DEC9] pt-6 text-xs text-[#6E5C52] sm:flex-row sm:items-center">
+        <div className="mt-12 flex flex-col items-start justify-between gap-3 border-t border-[#E5DEC9] pt-6 text-xs text-[#6E5C52] sm:flex-row sm:items-center">
           <p>&copy; 2026 PT CORA Circular Innovation. All rights reserved.</p>
           <Link
             href="/admin"
@@ -120,9 +119,9 @@ export default function Footer() {
         </div>
       </div>
 
-      {/* Organic Green Leaf SVG Accent at Bottom */}
+      {/* Delicate Organic Green Leaf SVG Accent at Bottom */}
       <div
-        className="pointer-events-none absolute inset-x-0 bottom-0 h-14 overflow-hidden"
+        className="pointer-events-none absolute inset-x-0 bottom-0 h-12 overflow-hidden"
         aria-hidden="true"
       >
         <svg
@@ -131,63 +130,43 @@ export default function Footer() {
           className="h-full w-full"
           fill="none"
         >
-          {/* Soft sage foliage wave */}
           <path
-            d="M0 100 L0 68 Q180 42 360 68 T720 62 T1080 68 T1440 58 L1440 100 Z"
+            d="M0 100 L0 72 Q220 50 440 72 T880 68 T1320 72 L1440 66 L1440 100 Z"
             fill="#3B5B3D"
-            fillOpacity="0.14"
-          />
-          {/* Left organic leaf cluster */}
-          <path
-            d="M40 100 C55 62 95 45 125 60 C105 84 72 96 40 100 Z"
-            fill="#3B5B3D"
-            fillOpacity="0.45"
+            fillOpacity="0.1"
           />
           <path
-            d="M110 100 C135 72 175 64 200 78 C178 92 145 100 110 100 Z"
-            fill="#4E9A34"
-            fillOpacity="0.35"
-          />
-          <path
-            d="M235 100 C252 68 288 58 312 72 C292 90 264 98 235 100 Z"
+            d="M48 100 C64 68 102 52 132 66 C112 86 78 96 48 100 Z"
             fill="#3B5B3D"
             fillOpacity="0.32"
           />
-          {/* Center organic leaf cluster */}
           <path
-            d="M580 100 C602 64 645 50 676 66 C650 88 616 98 580 100 Z"
-            fill="#3B5B3D"
-            fillOpacity="0.4"
-          />
-          <path
-            d="M665 100 C680 70 715 58 742 70 C724 88 696 98 665 100 Z"
+            d="M122 100 C145 76 182 68 206 80 C184 93 152 100 122 100 Z"
             fill="#4E9A34"
-            fillOpacity="0.32"
+            fillOpacity="0.24"
           />
           <path
-            d="M785 100 C808 66 848 56 878 72 C852 90 818 98 785 100 Z"
+            d="M590 100 C612 68 652 56 682 70 C658 90 624 98 590 100 Z"
             fill="#3B5B3D"
-            fillOpacity="0.35"
+            fillOpacity="0.28"
           />
-          {/* Right organic leaf cluster */}
           <path
-            d="M1120 100 C1145 64 1188 52 1218 68 C1192 88 1156 98 1120 100 Z"
+            d="M675 100 C692 74 724 64 748 74 C730 90 704 98 675 100 Z"
             fill="#4E9A34"
+            fillOpacity="0.22"
+          />
+          <path
+            d="M1230 100 C1256 64 1300 48 1332 65 C1304 88 1266 98 1230 100 Z"
+            fill="#3B5B3D"
             fillOpacity="0.34"
           />
           <path
-            d="M1230 100 C1255 60 1300 44 1334 62 C1306 86 1268 98 1230 100 Z"
-            fill="#3B5B3D"
-            fillOpacity="0.46"
-          />
-          <path
-            d="M1345 100 C1368 70 1408 58 1435 72 C1412 90 1378 98 1345 100 Z"
-            fill="#3B5B3D"
-            fillOpacity="0.38"
+            d="M1346 100 C1368 74 1406 62 1432 75 C1410 92 1378 98 1346 100 Z"
+            fill="#4E9A34"
+            fillOpacity="0.24"
           />
         </svg>
       </div>
     </footer>
   );
 }
-

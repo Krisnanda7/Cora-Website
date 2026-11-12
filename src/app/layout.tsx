@@ -1,15 +1,15 @@
 import type { Metadata } from "next";
-import { Playfair_Display, Plus_Jakarta_Sans } from "next/font/google";
+import { DM_Sans, Fraunces } from "next/font/google";
 import { CoraProvider } from "@/context/CoraContext";
 import "./globals.css";
 
-const playfairDisplay = Playfair_Display({
+const fraunces = Fraunces({
   variable: "--font-serif",
   subsets: ["latin"],
   display: "swap",
 });
 
-const plusJakartaSans = Plus_Jakarta_Sans({
+const dmSans = DM_Sans({
   variable: "--font-sans",
   subsets: ["latin"],
   display: "swap",
@@ -25,9 +25,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="id"
-      className={`${playfairDisplay.variable} ${plusJakartaSans.variable} h-full antialiased`}
+      className={`${fraunces.variable} ${dmSans.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col bg-[#FAF8F5] text-[#2C1E18] font-sans">
+      <body className="min-h-full flex flex-col bg-[#FAF8F5] text-[#2C1E18] font-sans selection:bg-[#3B5B3D]/15 selection:text-[#2C1E18]">
         <CoraProvider>{children}</CoraProvider>
       </body>
     </html>

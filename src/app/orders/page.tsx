@@ -301,13 +301,13 @@ function OrdersContent() {
   return (
     <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-12 lg:px-8">
       {/* Header */}
-      <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
+      <div className="animate-cora-fade-up flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
         <div>
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-[#3B5B3D]/10 px-3.5 py-1 text-xs font-semibold text-[#3B5B3D]">
+          <span className="inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.16em] text-[#3B5B3D]">
             <Truck className="h-3.5 w-3.5" />
             Order Tracking
           </span>
-          <h1 className="mt-2.5 font-serif text-3xl font-bold tracking-tight text-[#2C1E18] sm:text-4xl">
+          <h1 className="mt-2 font-serif text-3xl font-semibold tracking-[-0.015em] text-[#2C1E18] sm:text-4xl">
             Pelacakan Pesanan
           </h1>
           <p className="mt-1 text-sm text-[#6E5C52]">
@@ -419,7 +419,8 @@ function OrdersContent() {
             return (
               <article
                 key={order.id}
-                className={`overflow-hidden rounded-3xl bg-white p-6 shadow-sm transition sm:p-7 ${
+                style={{ animationDelay: `${Math.min(filteredOrders.indexOf(order), 6) * 55}ms` }}
+                className={`animate-cora-fade-up overflow-hidden rounded-2xl border border-[#E5DEC9] bg-white p-6 shadow-2xs transition hover:border-[#CFC5B1] sm:p-7 ${
                   isHighlighted ? 'ring-2 ring-[#3B5B3D]' : ''
                 }`}
               >
@@ -582,12 +583,12 @@ function OrdersContent() {
       {/* Proof Image Modal */}
       {previewProofOrder && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-[#2C1E18]/60 p-4 backdrop-blur-xs"
+          className="animate-cora-fade-in fixed inset-0 z-50 flex items-center justify-center bg-[#2C1E18]/55 p-4 backdrop-blur-xs"
           role="dialog"
           aria-modal="true"
           aria-label="Preview Bukti Transfer"
         >
-          <div className="w-full max-w-md overflow-hidden rounded-3xl bg-white shadow-2xl">
+          <div className="animate-cora-modal w-full max-w-md overflow-hidden rounded-2xl border border-[#E5DEC9] bg-white shadow-2xl">
             <div className="flex items-center justify-between border-b border-[#F0EAE0] px-5 py-4">
               <div>
                 <h3 className="font-serif text-lg font-bold text-[#2C1E18]">
