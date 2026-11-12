@@ -11,9 +11,9 @@ const fraunces = Fraunces({
 });
 
 const plusJakartaSans = Plus_Jakarta_Sans({
-  variable: "--font-plus-jakarta",
+  variable: "--font-plus-jakarta-sans",
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
+  weight: ["400", "500", "600", "700", "800"],
   display: "swap",
 });
 
@@ -34,7 +34,9 @@ export default function RootLayout({
       data-scroll-behavior="smooth"
       className={`${fraunces.variable} ${plusJakartaSans.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col bg-[#FAF8F5] text-[#2C1E18] font-sans selection:bg-[#3B5B3D]/15 selection:text-[#2C1E18]">
+      <body
+        className={`${fraunces.variable} ${plusJakartaSans.variable} min-h-full flex flex-col bg-[#FAF8F5] text-[#2C1E18] font-sans selection:bg-[#3B5B3D]/15 selection:text-[#2C1E18]`}
+      >
         <CoraProvider>{children}</CoraProvider>
       </body>
     </html>

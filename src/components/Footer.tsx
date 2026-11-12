@@ -94,15 +94,15 @@ export default function Footer() {
             <ul className="mt-4 space-y-3 text-sm text-[#5C4B42]">
               <li className="flex items-start gap-2.5">
                 <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-[#3B5B3D]" />
-                <span>Jl. Inovasi Sirkular No. 18, Jakarta Selatan</span>
+                <span>Denpasar</span>
               </li>
               <li className="flex items-center gap-2.5">
                 <Mail className="h-4 w-4 shrink-0 text-[#3B5B3D]" />
-                <span>hello@coracircular.id</span>
+                <span>cora@gmail.com</span>
               </li>
               <li className="flex items-center gap-2.5">
                 <Phone className="h-4 w-4 shrink-0 text-[#3B5B3D]" />
-                <span>+62 812-8800-2026</span>
+                <span>+6285858687329</span>
               </li>
             </ul>
           </div>

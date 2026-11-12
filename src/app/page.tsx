@@ -84,49 +84,49 @@ function HeroProductShowcase() {
   return (
     <div className="group relative overflow-hidden rounded-3xl border border-white/20 bg-neutral-900/50 shadow-[0_20px_50px_rgba(0,0,0,0.45)] ring-1 ring-white/10 backdrop-blur-md transition-all duration-500 hover:border-white/35 hover:shadow-[0_25px_65px_rgba(0,0,0,0.6)]">
       {/* Real product photograph */}
-      <div className="relative aspect-[16/10] w-full overflow-hidden sm:aspect-[16/9]">
+      <div className="relative aspect-[16/10] w-full overflow-hidden">
         <Image
           src="/images/hero/hero.jpg"
           alt="CORA Circular Food Product Showcase - Coconut Flour, Brownies, and Cookies"
           fill
           priority
-          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 600px"
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 700px"
           className="object-cover object-center transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.03]"
         />
         <div className="pointer-events-none absolute inset-0 bg-black/20" />
 
         {/* Floating Product Badges */}
-        <div className="absolute top-4 left-4 flex flex-wrap items-center gap-2">
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-white/95 px-3 py-1 text-[11px] font-bold text-[#3B5B3D] shadow-sm backdrop-blur-xs">
-            <Sparkles className="h-3 w-3" />
+        <div className="absolute top-4 left-4 sm:top-5 sm:left-5 flex flex-wrap items-center gap-2">
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-white/95 px-3 py-1 sm:px-3.5 sm:py-1.5 text-[11px] sm:text-xs font-bold text-[#3B5B3D] shadow-sm backdrop-blur-xs">
+            <Sparkles className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
             100% Upcycled Flour
           </span>
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-[#3B5B3D]/95 px-3 py-1 text-[11px] font-bold text-white shadow-sm backdrop-blur-xs">
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-[#3B5B3D]/95 px-3 py-1 sm:px-3.5 sm:py-1.5 text-[11px] sm:text-xs font-bold text-white shadow-sm backdrop-blur-xs">
             Residue to Value
           </span>
         </div>
 
         {/* Bottom Bar on photo */}
-        <div className="absolute right-4 bottom-4 left-4 flex items-center justify-between rounded-2xl bg-white/95 px-4 py-2.5 shadow-md backdrop-blur-md">
+        <div className="absolute right-4 bottom-4 left-4 sm:right-5 sm:bottom-5 sm:left-5 flex items-center justify-between rounded-2xl bg-white/95 px-4 py-2.5 sm:px-5 sm:py-3 shadow-md backdrop-blur-md">
           <div className="flex items-center gap-3">
-            <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-[#3B5B3D] text-white">
-              <Leaf className="h-4 w-4" />
+            <span className="flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-xl bg-[#3B5B3D] text-white">
+              <Leaf className="h-4 w-4 sm:h-5 sm:w-5" />
             </span>
             <div>
-              <p className="text-xs font-bold text-[#2C1E18]">
+              <p className="text-xs sm:text-sm font-bold text-[#2C1E18]">
                 CORA Signature Collection
               </p>
-              <p className="text-[10px] font-medium text-[#6E5C52]">
+              <p className="text-[10px] sm:text-xs font-medium text-[#6E5C52]">
                 Flour • Brownies • Cookies
               </p>
             </div>
           </div>
           <Link
             href="/products"
-            className="inline-flex items-center gap-1 rounded-full bg-[#3B5B3D] px-3.5 py-1.5 text-[11px] font-semibold text-white transition hover:bg-[#2F4A31]"
+            className="inline-flex items-center gap-1 rounded-full bg-[#3B5B3D] px-3.5 py-1.5 sm:px-4 sm:py-2 text-[11px] sm:text-xs font-semibold text-white transition hover:bg-[#2F4A31]"
           >
             Explore
-            <ArrowRight className="h-3 w-3" />
+            <ArrowRight className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
           </Link>
         </div>
       </div>
@@ -279,10 +279,10 @@ export default function HomePage() {
           />
 
           {/* z-20: Content with generous responsive padding */}
-          <div className="relative z-20 mx-auto max-w-7xl px-6 md:px-16 lg:px-24 pt-16 pb-24 sm:pt-20 sm:pb-28 lg:pt-28 lg:pb-36">
-            <div className="grid items-center gap-12 lg:grid-cols-12 lg:gap-14">
-              {/* Left Grid: 50%+ on desktop (lg:col-span-7), 100% on mobile */}
-              <div className="w-full lg:col-span-7 space-y-6">
+          <div className="relative z-20 mx-auto max-w-7xl px-6 md:px-12 lg:px-16 xl:px-20 pt-16 pb-24 sm:pt-20 sm:pb-28 lg:pt-24 lg:pb-32">
+            <div className="grid items-start gap-10 lg:grid-cols-12 lg:gap-12 xl:gap-14">
+              {/* Left Grid: 50% on desktop (lg:col-span-6), 100% on mobile */}
+              <div className="w-full lg:col-span-6 space-y-6">
                 <div
                   className="animate-cora-fade-up flex items-center gap-3 text-xs font-semibold uppercase tracking-[0.18em] text-[#86C975]"
                   style={{ animationDelay: '0ms' }}
@@ -292,7 +292,7 @@ export default function HomePage() {
                 </div>
 
                 <h1
-                  className="animate-cora-fade-up font-serif text-4xl font-semibold leading-[1.08] tracking-tight text-[#FAF8F5] sm:text-5xl lg:text-[56px] drop-shadow-sm"
+                  className="animate-cora-fade-up font-serif text-4xl font-semibold leading-[1.08] tracking-tight text-[#FAF8F5] sm:text-5xl lg:text-[52px] xl:text-[56px] drop-shadow-sm"
                   style={{ animationDelay: '90ms' }}
                 >
                   Turning Coconut Residues into New Possibilities
@@ -327,9 +327,9 @@ export default function HomePage() {
                 </div>
               </div>
 
-              {/* Right Grid: Transparent Card "CORA Signature Collection" */}
+              {/* Right Grid: Enlarged Transparent Card aligned with Title */}
               <div
-                className="animate-cora-fade-up w-full lg:col-span-5"
+                className="animate-cora-fade-up w-full lg:col-span-6 lg:pt-10"
                 style={{ animationDelay: '140ms' }}
               >
                 <HeroProductShowcase />

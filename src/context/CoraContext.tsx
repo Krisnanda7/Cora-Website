@@ -330,18 +330,18 @@ export const INITIAL_FINANCIAL_RECORDS: FinancialRecord[] = [
 export const INITIAL_PICKUP_REQUESTS: PickupRequest[] = [
   {
     id: 'pick-001',
-    supplierName: 'Koperasi Kelapa Makmur Jaya',
+    supplierName: 'Kelapa Makmur Jaya',
     phone: '081288990011',
-    location: 'Pasar Induk Kramat Jati, Jakarta Timur',
+    location: 'Pasar Badung',
     estimatedKg: 120,
     preferredDate: '2026-11-15',
     status: 'SCHEDULED',
   },
   {
     id: 'pick-002',
-    supplierName: 'Santan Segar Ibu Sari',
+    supplierName: 'Santan Segar Sari',
     phone: '085777889900',
-    location: 'Jl. Margonda Raya No. 210, Depok',
+    location: 'Denpasar',
     estimatedKg: 65,
     preferredDate: '2026-11-16',
     status: 'PENDING',
