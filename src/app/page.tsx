@@ -10,6 +10,7 @@ import {
   Leaf,
   Recycle,
   ShoppingBag,
+  Sparkles,
   Sprout,
   Users,
 } from 'lucide-react';
@@ -20,12 +21,7 @@ import { useCora } from '@/context/CoraContext';
 import type { Product } from '@/types/cora';
 
 function formatRupiah(amount: number): string {
-  return new Intl.NumberFormat('id-ID', {
-    style: 'currency',
-    currency: 'IDR',
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0,
-  }).format(amount);
+  return `Rp ${amount.toLocaleString('id-ID')}`;
 }
 
 const PILLARS = [
@@ -86,119 +82,53 @@ const JOURNEY_STEPS = [
 
 function HeroProductShowcase() {
   return (
-    <div className="relative overflow-hidden rounded-2xl border border-[#3B5B3D]/20 bg-[#4A5F3D] shadow-xl">
-      {/* Studio light vignette */}
-      <div
-        className="pointer-events-none absolute inset-0 bg-gradient-to-br from-[#5C744D]/75 via-transparent to-[#2D3E25]/75"
-        aria-hidden="true"
-      />
-
-      {/* Subtle corner botanical silhouette */}
-      <svg
-        viewBox="0 0 180 180"
-        className="pointer-events-none absolute -top-4 -right-4 h-36 w-36 text-[#FAF8F5]/12"
-        fill="currentColor"
-        aria-hidden="true"
-      >
-        <path d="M160 15C118 25 90 52 80 92C118 82 148 56 160 15Z" />
-        <path d="M135 65C95 75 68 100 58 138C96 128 124 102 135 65Z" />
-        <path d="M98 18C72 34 56 58 54 88C78 72 94 48 98 18Z" />
-      </svg>
-
-      {/* Studio Products Stage */}
-      <div className="relative px-4 pt-10 pb-2 sm:px-8 sm:pt-12">
-        <div className="mx-auto flex max-w-lg items-end justify-center gap-2.5 sm:gap-4">
-          {/* 1. CORA Cookies Pouch */}
-          <div className="relative z-10 w-[108px] shrink-0 -rotate-2 transform transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-1.5 hover:rotate-0 sm:w-[132px]">
-            <div className="overflow-hidden rounded-t-xl rounded-b-lg border border-[#D8CBB8] bg-gradient-to-b from-[#FBF7F0] to-[#EDE3D4] p-2.5 shadow-lg">
-              <div className="mx-auto mb-1.5 h-1.5 w-10 rounded-full bg-[#C9B9A4]/60" />
-              <div className="rounded-lg border border-[#E5DEC9] bg-white/90 px-2 py-2.5 text-center">
-                <p className="font-serif text-[11px] font-semibold tracking-wider text-[#2C1E18] sm:text-xs">
-                  CORA
-                </p>
-                <p className="text-[10px] font-bold tracking-[0.08em] text-[#3B5B3D] sm:text-[11px]">
-                  COOKIES
-                </p>
-                <p className="mt-0.5 text-[7px] font-medium text-[#6E5C52]">
-                  Coconut Based Cookies
-                </p>
-                <div className="mt-2 flex items-center justify-center">
-                  <div className="relative h-9 w-9 rounded-full bg-[#B97B48] shadow-inner sm:h-11 sm:w-11">
-                    <span className="absolute top-2 left-2.5 h-1.5 w-1.5 rounded-full bg-[#3A2218]" />
-                    <span className="absolute top-4 right-2.5 h-1.5 w-1.5 rounded-full bg-[#3A2218]" />
-                    <span className="absolute bottom-2 left-4 h-1.5 w-1.5 rounded-full bg-[#3A2218]" />
-                  </div>
-                </div>
-              </div>
-              <div className="mt-2 h-2 rounded-b bg-[#6E4730]/80" />
-            </div>
-          </div>
-
-          {/* 2. CORA Brownies Box - Cream Motif Choco-Dots */}
-          <div className="relative z-20 w-[138px] shrink-0 transform transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-2 sm:w-[168px]">
-            <div
-              className="relative overflow-hidden rounded-xl border border-[#DFD4C3] bg-[#FAF5EC] p-3 shadow-2xl sm:p-3.5"
-              style={{
-                backgroundImage:
-                  'radial-gradient(#5C3826 1.8px, transparent 1.8px), radial-gradient(#84563E 1.4px, transparent 1.4px)',
-                backgroundSize: '18px 18px',
-                backgroundPosition: '0 0, 9px 9px',
-              }}
-            >
-              <div className="rounded-lg border border-[#E5DEC9] bg-[#FAF8F5]/95 px-2.5 py-4 text-center shadow-2xs sm:py-5">
-                <span className="inline-block text-[8px] font-bold uppercase tracking-[0.14em] text-[#3B5B3D]">
-                  Upcycled Craft
-                </span>
-                <p className="mt-1.5 font-serif text-base font-semibold tracking-tight text-[#2C1E18] sm:text-lg">
-                  CORA
-                </p>
-                <p className="text-xs font-bold tracking-[0.08em] text-[#3B5B3D] sm:text-sm">
-                  BROWNIES
-                </p>
-                <p className="mt-1 text-[8px] font-medium text-[#6E5C52] sm:text-[9px]">
-                  Coconut Based Brownies
-                </p>
-                <div className="mt-2.5 flex justify-center gap-1">
-                  <span className="h-5 w-5 rounded bg-[#4A2C1D]" />
-                  <span className="h-5 w-5 rounded bg-[#3A2116]" />
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* 3. CORA Upcycled Coconut Flour - Kemasan Biru Langit */}
-          <div className="relative z-10 w-[106px] shrink-0 rotate-2 transform transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-1.5 hover:rotate-0 sm:w-[128px]">
-            <div className="overflow-hidden rounded-t-xl rounded-b-lg border border-[#9CCBE8] bg-gradient-to-b from-[#6CC4F0] via-[#A9DDF7] to-[#EDE2CE] p-2.5 shadow-lg">
-              <div className="mx-auto mb-1.5 h-1.5 w-10 rounded-full bg-white/70" />
-              <div className="rounded-lg bg-white/45 px-1.5 py-2 text-center backdrop-blur-[2px]">
-                <p className="font-serif text-xs font-semibold tracking-wide text-[#184B6E] sm:text-sm">
-                  CORA
-                </p>
-                <p className="mt-0.5 text-[8px] font-bold leading-tight text-[#1E3B4D] sm:text-[9px]">
-                  Upcycled Coconut Flour
-                </p>
-              </div>
-              <div className="mt-2 flex items-end justify-center gap-1.5 pb-1">
-                <div className="relative h-8 w-8 rounded-full border-2 border-[#4B2D1E] bg-[#FAF8F5] shadow-sm sm:h-9 sm:w-9">
-                  <div className="absolute inset-1.5 rounded-full bg-[#E6E3D8]" />
-                </div>
-                <div className="h-6 w-7 rounded-t-md bg-[#D6BC9B] shadow-inner" />
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Wooden Shelf / Rak Kayu */}
-      <div className="relative z-30">
-        <div
-          className="h-5 w-full border-t border-[#E0C7A4]/60 bg-gradient-to-b from-[#D7BC95] via-[#C3A378] to-[#9E7D54]"
-          style={{
-            backgroundImage:
-              'repeating-linear-gradient(90deg, rgba(120,82,45,0.08) 0px, rgba(120,82,45,0.08) 28px, transparent 28px, transparent 56px)',
-          }}
+    <div className="group relative overflow-hidden rounded-3xl border border-[#E5DEC9] bg-[#EDE9E0] shadow-2xl transition-all duration-500 hover:shadow-[0_25px_60px_-15px_rgba(44,30,24,0.18)]">
+      {/* Real product photograph */}
+      <div className="relative aspect-[16/10] w-full overflow-hidden sm:aspect-[16/9]">
+        <Image
+          src="/images/hero/hero.jpg"
+          alt="CORA Circular Food Product Showcase - Coconut Flour, Brownies, and Cookies"
+          fill
+          priority
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 600px"
+          className="object-cover object-center transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.03]"
         />
-        <div className="h-3 w-full bg-[#7A5B3A] shadow-inner" />
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#2C1E18]/55 via-transparent to-black/10" />
+
+        {/* Floating Product Badges */}
+        <div className="absolute top-4 left-4 flex flex-wrap items-center gap-2">
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-white/95 px-3 py-1 text-[11px] font-bold text-[#3B5B3D] shadow-sm backdrop-blur-xs">
+            <Sparkles className="h-3 w-3" />
+            100% Upcycled Flour
+          </span>
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-[#3B5B3D]/90 px-3 py-1 text-[11px] font-bold text-white shadow-sm backdrop-blur-xs">
+            Residue to Value
+          </span>
+        </div>
+
+        {/* Bottom Bar on photo */}
+        <div className="absolute right-4 bottom-4 left-4 flex items-center justify-between rounded-2xl bg-white/95 px-4 py-2.5 shadow-md backdrop-blur-md">
+          <div className="flex items-center gap-3">
+            <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-[#3B5B3D] text-white">
+              <Leaf className="h-4 w-4" />
+            </span>
+            <div>
+              <p className="text-xs font-bold text-[#2C1E18]">
+                CORA Signature Collection
+              </p>
+              <p className="text-[10px] font-medium text-[#6E5C52]">
+                Flour • Brownies • Cookies
+              </p>
+            </div>
+          </div>
+          <Link
+            href="/products"
+            className="inline-flex items-center gap-1 rounded-full bg-[#3B5B3D] px-3.5 py-1.5 text-[11px] font-semibold text-white transition hover:bg-[#2F4A31]"
+          >
+            Explore
+            <ArrowRight className="h-3 w-3" />
+          </Link>
+        </div>
       </div>
     </div>
   );
@@ -207,84 +137,57 @@ function HeroProductShowcase() {
 function JourneyCircleVisual({ step }: { step: number }) {
   if (step === 1) {
     return (
-      <svg viewBox="0 0 120 120" className="h-full w-full" aria-hidden="true">
-        <circle cx="60" cy="60" r="56" fill="#EDE9DF" />
-        <circle cx="60" cy="60" r="46" fill="#C7BEB1" />
-        <circle cx="60" cy="60" r="41" fill="#FAF8F5" />
-        <g fill="#E8E3DA">
-          <circle cx="48" cy="50" r="7" />
-          <circle cx="66" cy="44" r="8" />
-          <circle cx="74" cy="60" r="7" />
-          <circle cx="58" cy="68" r="9" />
-          <circle cx="44" cy="66" r="6" />
-        </g>
-        <g fill="#FFFFFF">
-          <circle cx="54" cy="55" r="6" />
-          <circle cx="68" cy="53" r="5" />
-          <circle cx="60" cy="61" r="6" />
-          <circle cx="50" cy="62" r="4" />
-        </g>
-      </svg>
+      <div className="relative h-full w-full overflow-hidden rounded-full bg-[#EDE9DF] p-0.5 ring-2 ring-[#3B5B3D]/25 shadow-inner">
+        <Image
+          src="/images/ingredients/coconut.jpg"
+          alt="Fresh Coconut Residue"
+          fill
+          sizes="96px"
+          className="rounded-full object-cover transition-transform duration-500 hover:scale-110"
+        />
+      </div>
     );
   }
 
   if (step === 2) {
     return (
-      <svg viewBox="0 0 120 120" className="h-full w-full" aria-hidden="true">
-        <circle cx="60" cy="60" r="56" fill="#EDE9DF" />
-        <circle cx="60" cy="60" r="46" fill="#BFA98B" />
-        <circle cx="60" cy="60" r="41" fill="#F2E7D5" />
-        <g fill="#E3CEAE">
-          <circle cx="48" cy="48" r="6" />
-          <circle cx="66" cy="46" r="7" />
-          <circle cx="74" cy="62" r="6" />
-          <circle cx="57" cy="70" r="8" />
-          <circle cx="44" cy="64" r="6" />
-        </g>
-        <path
-          d="M42 32C44 26 40 22 43 17M60 30C62 24 58 20 61 15M78 32C80 26 76 22 79 17"
-          stroke="#4E9A34"
-          strokeWidth="2.2"
-          strokeLinecap="round"
-          fill="none"
+      <div className="relative h-full w-full overflow-hidden rounded-full bg-[#EDE9DF] p-0.5 ring-2 ring-[#3B5B3D]/25 shadow-inner">
+        <Image
+          src="/images/ingredients/coconut-flour.jpg"
+          alt="Drying Process"
+          fill
+          sizes="96px"
+          className="rounded-full object-cover transition-transform duration-500 hover:scale-110"
         />
-      </svg>
+      </div>
     );
   }
 
   if (step === 3) {
     return (
-      <svg viewBox="0 0 120 120" className="h-full w-full" aria-hidden="true">
-        <circle cx="60" cy="60" r="56" fill="#EDE9DF" />
-        <circle cx="60" cy="60" r="46" fill="#8C6B4F" />
-        <circle cx="60" cy="60" r="41" fill="#E5CBA4" />
-        <ellipse cx="60" cy="62" rx="28" ry="22" fill="#F0DAB7" />
-        <ellipse cx="60" cy="58" rx="18" ry="13" fill="#F6E5CA" />
-      </svg>
+      <div className="relative h-full w-full overflow-hidden rounded-full bg-[#EDE9DF] p-0.5 ring-2 ring-[#3B5B3D]/25 shadow-inner">
+        <Image
+          src="/images/products/coconut.jpg"
+          alt="CORA Coconut Flour"
+          fill
+          sizes="96px"
+          className="rounded-full object-cover transition-transform duration-500 hover:scale-110"
+        />
+      </div>
     );
   }
 
   if (step === 4) {
     return (
-      <svg viewBox="0 0 120 120" className="h-full w-full" aria-hidden="true">
-        <circle cx="60" cy="60" r="56" fill="#EDE9DF" />
-        <circle
-          cx="60"
-          cy="60"
-          r="46"
-          fill="#FFFFFF"
-          stroke="#D9D0C1"
-          strokeWidth="2"
+      <div className="relative h-full w-full overflow-hidden rounded-full bg-[#EDE9DF] p-0.5 ring-2 ring-[#3B5B3D]/25 shadow-inner">
+        <Image
+          src="/images/journey/brownies.jpg"
+          alt="CORA Food Products"
+          fill
+          sizes="96px"
+          className="rounded-full object-cover transition-transform duration-500 hover:scale-110"
         />
-        <rect x="33" y="34" width="32" height="28" rx="5" fill="#4A2C1D" />
-        <rect x="37" y="38" width="24" height="20" rx="3" fill="#5D3725" />
-        <circle cx="72" cy="56" r="16" fill="#B87744" />
-        <circle cx="52" cy="74" r="15" fill="#C6844F" />
-        <circle cx="68" cy="52" r="2.2" fill="#3A2116" />
-        <circle cx="77" cy="60" r="2.2" fill="#3A2116" />
-        <circle cx="48" cy="71" r="2.2" fill="#3A2116" />
-        <circle cx="56" cy="78" r="2.2" fill="#3A2116" />
-      </svg>
+      </div>
     );
   }
 

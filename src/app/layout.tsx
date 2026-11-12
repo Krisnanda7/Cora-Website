@@ -21,10 +21,15 @@ export const metadata: Metadata = {
     "Turning coconut residues into nutritious food products, AI-assisted recipes, and a circular community marketplace.",
 };
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
   return (
     <html
       lang="en"
+      data-scroll-behavior="smooth"
       className={`${fraunces.variable} ${dmSans.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-[#FAF8F5] text-[#2C1E18] font-sans selection:bg-[#3B5B3D]/15 selection:text-[#2C1E18]">

@@ -24,7 +24,7 @@ import type {
   SubmitPickupInput,
 } from '@/types/cora';
 
-const STORAGE_KEY = 'cora_circular_store_v2';
+const STORAGE_KEY = 'cora_circular_store_v3';
 
 interface CoraStoreState {
   products: Product[];
@@ -133,7 +133,7 @@ export const INITIAL_PRODUCTS: Product[] = [
     stock: 40,
     weightGram: 200,
     residueSavedGram: 250,
-    image: '/images/products/cora-brownies.svg',
+    image: '/images/products/brownies.jpg',
     description:
       'Rich fudgy dark-chocolate brownies crafted with upcycled coconut flour from rescued coconut milk residue. Naturally moist, fiber-rich, and guilt-free.',
   },
@@ -146,35 +146,35 @@ export const INITIAL_PRODUCTS: Product[] = [
     stock: 55,
     weightGram: 150,
     residueSavedGram: 180,
-    image: '/images/products/cora-cookies.svg',
+    image: '/images/products/cookies.jpg',
     description:
       'Crisp artisanal cookies baked with toasted upcycled coconut flour, coconut nectar, and dark chocolate chunks for a warm, nutty crunch.',
   },
   {
     id: 'prod-flour-500',
-    name: 'CORA Upcycled Coconut Flour (500g)',
-    subtitle: 'Fine Milled Nutrient-Rich Flour',
+    name: 'CORA Coconut Flour (500g)',
+    subtitle: '100% Natural Flour',
     category: 'Flour',
     price: 25000,
     stock: 80,
     weightGram: 500,
     residueSavedGram: 500,
-    image: '/images/products/cora-flour.svg',
+    image: '/images/products/coconut.jpg',
     description:
       'Hygienically dried and finely milled from fresh coconut residue. High in dietary fiber, naturally low-glycemic, and ideal for everyday circular baking.',
   },
   {
     id: 'prod-brownies-twin',
-    name: 'CORA Brownies Twin Pack',
-    subtitle: 'Double Box Coconut Brownies',
+    name: 'CORA Trio Bundle Pack',
+    subtitle: 'Flour + Brownies + Cookies',
     category: 'Brownies',
     price: 72000,
     stock: 25,
     weightGram: 400,
     residueSavedGram: 500,
-    image: '/images/products/cora-brownies-twin.svg',
+    image: '/images/hero/hero.jpg',
     description:
-      'Value bundle containing two full boxes of CORA Coconut Based Brownies. Perfect for gifting or sharing while doubling your circular food impact.',
+      'Value bundle containing the full CORA upcycled trio: Coconut Flour, Brownies, and Cookies. Perfect for gifting or sharing while maximizing your circular food impact.',
   },
 ];
 
@@ -235,14 +235,14 @@ export const INITIAL_ORDERS: Order[] = [
         productName: 'CORA Brownies',
         price: 38000,
         qty: 2,
-        image: '/images/products/cora-brownies.svg',
+        image: '/images/products/brownies.jpg',
       },
       {
         productId: 'prod-cookies',
         productName: 'CORA Cookies',
         price: 32000,
         qty: 1,
-        image: '/images/products/cora-cookies.svg',
+        image: '/images/products/cookies.jpg',
       },
     ],
     totalAmount: 108000,
@@ -261,10 +261,10 @@ export const INITIAL_ORDERS: Order[] = [
     items: [
       {
         productId: 'prod-flour-500',
-        productName: 'CORA Upcycled Coconut Flour (500g)',
+        productName: 'CORA Coconut Flour (500g)',
         price: 25000,
         qty: 3,
-        image: '/images/products/cora-flour.svg',
+        image: '/images/products/coconut.jpg',
       },
     ],
     totalAmount: 75000,
@@ -283,17 +283,17 @@ export const INITIAL_ORDERS: Order[] = [
     items: [
       {
         productId: 'prod-brownies-twin',
-        productName: 'CORA Brownies Twin Pack',
+        productName: 'CORA Trio Bundle Pack',
         price: 72000,
         qty: 1,
-        image: '/images/products/cora-brownies-twin.svg',
+        image: '/images/hero/hero.jpg',
       },
       {
         productId: 'prod-cookies',
         productName: 'CORA Cookies',
         price: 32000,
         qty: 2,
-        image: '/images/products/cora-cookies.svg',
+        image: '/images/products/cookies.jpg',
       },
     ],
     totalAmount: 136000,
@@ -362,6 +362,15 @@ function getInitialStoreState(): CoraStoreState {
   };
 }
 
+function migrateProductImage(img: string): string {
+  if (!img) return '/images/products/brownies.jpg';
+  if (img.includes('cora-brownies.svg')) return '/images/products/brownies.jpg';
+  if (img.includes('cora-cookies.svg')) return '/images/products/cookies.jpg';
+  if (img.includes('cora-flour.svg')) return '/images/products/coconut.jpg';
+  if (img.includes('cora-brownies-twin.svg')) return '/images/hero/hero.jpg';
+  return img;
+}
+
 function parseStoredState(raw: string | null): CoraStoreState | null {
   if (!raw) return null;
   try {
@@ -378,12 +387,24 @@ function parseStoredState(raw: string | null): CoraStoreState | null {
       return null;
     }
     return {
-      products: parsed.products,
+      products: parsed.products.map((p) => ({
+        ...p,
+        image: migrateProductImage(p.image),
+      })),
       bankAccounts: parsed.bankAccounts,
-      orders: parsed.orders,
+      orders: parsed.orders.map((o) => ({
+        ...o,
+        items: o.items.map((i) => ({
+          ...i,
+          image: migrateProductImage(i.image),
+        })),
+      })),
       financialRecords: parsed.financialRecords,
       pickupRequests: parsed.pickupRequests,
-      cart: parsed.cart,
+      cart: parsed.cart.map((c) => ({
+        ...c,
+        image: migrateProductImage(c.image),
+      })),
     };
   } catch {
     return null;

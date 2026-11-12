@@ -72,27 +72,27 @@ function getOrderBadge(status: OrderStatus): {
   switch (status) {
     case 'WAITING_VERIFICATION':
       return {
-        label: 'Menunggu Verifikasi',
+        label: 'Awaiting Verification',
         className: 'bg-amber-50 text-amber-800 ring-1 ring-amber-200',
       };
     case 'PROCESSING':
       return {
-        label: 'Diproses',
+        label: 'Processing',
         className: 'bg-sky-50 text-sky-800 ring-1 ring-sky-200',
       };
     case 'SHIPPED':
       return {
-        label: 'Dikirim',
+        label: 'Shipped',
         className: 'bg-indigo-50 text-indigo-800 ring-1 ring-indigo-200',
       };
     case 'COMPLETED':
       return {
-        label: 'Selesai',
+        label: 'Completed',
         className: 'bg-[#3B5B3D]/12 text-[#3B5B3D] ring-1 ring-[#3B5B3D]/25',
       };
     case 'REJECTED':
       return {
-        label: 'Ditolak',
+        label: 'Rejected',
         className: 'bg-red-50 text-red-700 ring-1 ring-red-200',
       };
   }
@@ -110,25 +110,26 @@ function getPickupBadge(status: PickupRequestStatus): {
       };
     case 'SCHEDULED':
       return {
-        label: 'Dijadwalkan',
+        label: 'Scheduled',
         className: 'bg-sky-50 text-sky-800 ring-1 ring-sky-200',
       };
     case 'COMPLETED':
       return {
-        label: 'Selesai Dijemput',
+        label: 'Completed',
         className: 'bg-[#3B5B3D]/12 text-[#3B5B3D] ring-1 ring-[#3B5B3D]/25',
       };
   }
 }
 
 const IMAGE_PRESETS: { label: string; value: string }[] = [
-  { label: 'CORA Brownies', value: '/images/products/cora-brownies.svg' },
-  { label: 'CORA Cookies', value: '/images/products/cora-cookies.svg' },
-  { label: 'CORA Coconut Flour', value: '/images/products/cora-flour.svg' },
-  {
-    label: 'CORA Brownies Twin',
-    value: '/images/products/cora-brownies-twin.svg',
-  },
+  { label: 'CORA Brownies Box', value: '/images/products/brownies.jpg' },
+  { label: 'CORA Cookies Pouch', value: '/images/products/cookies.jpg' },
+  { label: 'CORA Coconut Flour', value: '/images/products/coconut.jpg' },
+  { label: 'CORA Hero Trio', value: '/images/hero/hero.jpg' },
+  { label: 'Brownies Cubes', value: '/images/journey/brownies.jpg' },
+  { label: 'Cookies Stack', value: '/images/journey/cookies.jpg' },
+  { label: 'Raw Coconut', value: '/images/ingredients/coconut.jpg' },
+  { label: 'Flour Bowl', value: '/images/ingredients/coconut-flour.jpg' },
 ];
 
 async function productImageFileToDataUrl(file: File): Promise<string> {
@@ -138,10 +139,10 @@ async function productImageFileToDataUrl(file: File): Promise<string> {
       if (typeof reader.result === 'string') {
         resolve(reader.result);
       } else {
-        reject(new Error('Gagal membaca file gambar.'));
+        reject(new Error('Failed to read image file.'));
       }
     };
-    reader.onerror = () => reject(new Error('Gagal membaca file gambar.'));
+    reader.onerror = () => reject(new Error('Failed to read image file.'));
     reader.readAsDataURL(file);
   });
 
@@ -201,7 +202,7 @@ export default function AdminDashboardPage() {
 
   // Tab 2: Finance State
   const [expDescription, setExpDescription] = useState('');
-  const [expCategory, setExpCategory] = useState('Bahan Baku');
+  const [expCategory, setExpCategory] = useState('Raw Materials');
   const [expAmount, setExpAmount] = useState('');
 
   // Tab 3: CMS Products & Bank State
@@ -299,7 +300,7 @@ export default function AdminDashboardPage() {
     setTrackingDrafts({});
     setQuickEdits({});
     setProofModalOrder(null);
-    showToast('Seluruh data LocalStorage berhasil dikembalikan ke kondisi awal.');
+    showToast('All demo data in LocalStorage has been restored to default.');
   };
 
   // --- Tab 1 Handlers ---
@@ -308,14 +309,14 @@ export default function AdminDashboardPage() {
     verifyOrderPayment(order.id, 'APPROVE', draftResi || undefined);
     setProofModalOrder(null);
     showToast(
-      `Pembayaran #${order.orderNumber} disetujui. Stok dikurangi & pemasukan dicatat.`
+      `Payment for #${order.orderNumber} approved. Inventory deducted & revenue recorded.`
     );
   };
 
   const handleRejectOrder = (order: Order) => {
     verifyOrderPayment(order.id, 'REJECT');
     setProofModalOrder(null);
-    showToast(`Pesanan #${order.orderNumber} ditolak.`);
+    showToast(`Order #${order.orderNumber} rejected.`);
   };
 
   const handleUpdateShippingStatus = (
@@ -328,8 +329,8 @@ export default function AdminDashboardPage() {
         : order.trackingNumber ?? '';
     updateOrderStatus(order.id, nextStatus, resi);
     showToast(
-      `Status #${order.orderNumber} diperbarui menjadi ${
-        nextStatus === 'SHIPPED' ? 'SHIPPED (Dikirim)' : 'COMPLETED (Selesai)'
+      `Status for #${order.orderNumber} updated to ${
+        nextStatus === 'SHIPPED' ? 'SHIPPED' : 'COMPLETED'
       }.`
     );
   };
@@ -348,17 +349,17 @@ export default function AdminDashboardPage() {
     });
     setExpDescription('');
     setExpAmount('');
-    showToast('Pengeluaran operasional berhasil dicatat ke buku kas.');
+    showToast('Operational expense recorded in the cash book.');
   };
 
   const handleExportCsv = () => {
     const headers = [
-      'Tanggal',
-      'No. Order',
-      'Keterangan',
-      'Kategori',
-      'Tipe',
-      'Nominal (IDR)',
+      'Date',
+      'Order No.',
+      'Description',
+      'Category',
+      'Type',
+      'Amount (IDR)',
     ];
     const escapeCsv = (val: string | number) => {
       const str = String(val ?? '');
@@ -369,7 +370,7 @@ export default function AdminDashboardPage() {
       escapeCsv(rec.orderNumber || '-'),
       escapeCsv(rec.description),
       escapeCsv(rec.category),
-      escapeCsv(rec.type === 'INCOME' ? 'Pemasukan' : 'Pengeluaran'),
+      escapeCsv(rec.type === 'INCOME' ? 'Income' : 'Expense'),
       escapeCsv(rec.amount),
     ]);
     const csvContent =
@@ -384,7 +385,7 @@ export default function AdminDashboardPage() {
     link.click();
     document.body.removeChild(link);
     URL.revokeObjectURL(url);
-    showToast('Laporan keuangan berhasil diunduh dalam format CSV.');
+    showToast('Financial report downloaded successfully as CSV.');
   };
 
   // --- Tab 3 Handlers ---
@@ -431,13 +432,13 @@ export default function AdminDashboardPage() {
       image: prodImage.trim() || IMAGE_PRESETS[0].value,
       description:
         prodDescription.trim() ||
-        'Produk pangan sirkular bernutrisi tinggi dari residu kelapa CORA.',
+        'Nutritious circular food product handcrafted from CORA coconut residue.',
     });
     setShowProductForm(false);
     showToast(
       editingProductId
-        ? 'Produk berhasil diperbarui.'
-        : 'Produk baru berhasil ditambahkan ke katalog.'
+        ? 'Product updated successfully.'
+        : 'New product added to catalog.'
     );
   };
 
@@ -454,7 +455,7 @@ export default function AdminDashboardPage() {
       delete copy[product.id];
       return copy;
     });
-    showToast(`Harga & stok ${product.name} diperbarui.`);
+    showToast(`Price & inventory for ${product.name} updated.`);
   };
 
   const handleQuickPhotoUpload = async (
@@ -464,15 +465,15 @@ export default function AdminDashboardPage() {
     const file = e.target.files?.[0];
     e.target.value = '';
     if (!file || !file.type.startsWith('image/')) {
-      showToast('Mohon pilih file gambar yang valid (PNG, JPG, WebP, SVG).');
+      showToast('Please select a valid image file (PNG, JPG, WebP, SVG).');
       return;
     }
     try {
       const dataUrl = await productImageFileToDataUrl(file);
       saveProduct({ ...product, image: dataUrl });
-      showToast(`Foto produk ${product.name} berhasil diganti.`);
+      showToast(`Product photo for ${product.name} updated.`);
     } catch {
-      showToast('Gagal memproses foto produk.');
+      showToast('Failed to process product photo.');
     }
   };
 
@@ -482,14 +483,14 @@ export default function AdminDashboardPage() {
     const file = e.target.files?.[0];
     e.target.value = '';
     if (!file || !file.type.startsWith('image/')) {
-      showToast('Mohon pilih file gambar yang valid (PNG, JPG, WebP, SVG).');
+      showToast('Please select a valid image file (PNG, JPG, WebP, SVG).');
       return;
     }
     try {
       const dataUrl = await productImageFileToDataUrl(file);
       setProdImage(dataUrl);
     } catch {
-      showToast('Gagal memproses foto produk.');
+      showToast('Failed to process product photo.');
     }
   };
 
@@ -518,7 +519,7 @@ export default function AdminDashboardPage() {
     setAccountNumber('');
     setAccountHolder('PT CORA Circular Innovation');
     setBankIsActive(true);
-    showToast('Pengaturan rekening bank CORA berhasil disimpan.');
+    showToast('CORA bank account settings saved successfully.');
   };
 
   const NAV_TABS: {
@@ -529,23 +530,23 @@ export default function AdminDashboardPage() {
   }[] = [
     {
       id: 'orders',
-      label: 'Verifikasi Pesanan & Pengiriman',
+      label: 'Order Verification & Shipping',
       icon: ClipboardCheck,
       badge: pendingOrdersCount > 0 ? pendingOrdersCount : undefined,
     },
     {
       id: 'finance',
-      label: 'Laporan Keuangan',
+      label: 'Financial Reports',
       icon: Wallet,
     },
     {
       id: 'cms',
-      label: 'CMS Produk & Rekening',
+      label: 'Product CMS & Bank Accounts',
       icon: Package,
     },
     {
       id: 'pickup',
-      label: 'Jadwal Coconut Pickup',
+      label: 'Coconut Pickup Schedule',
       icon: Truck,
       badge: pendingPickupsCount > 0 ? pendingPickupsCount : undefined,
     },
@@ -582,7 +583,7 @@ export default function AdminDashboardPage() {
 
             {/* Sidebar Navigation */}
             <nav
-              aria-label="Menu Admin Dashboard"
+              aria-label="Admin Dashboard Menu"
               className="mt-5 grid grid-cols-1 gap-1.5 sm:grid-cols-2 lg:grid-cols-1"
             >
               {NAV_TABS.map((tab) => {
@@ -626,7 +627,7 @@ export default function AdminDashboardPage() {
               className="inline-flex items-center gap-2 text-xs font-semibold text-[#3B5B3D] hover:underline"
             >
               <ArrowLeft className="h-3.5 w-3.5" />
-              Kembali ke Storefront CORA
+              Return to CORA Storefront
             </Link>
           </div>
         </div>
@@ -646,8 +647,8 @@ export default function AdminDashboardPage() {
                   {activeTabTitle}
                 </h1>
                 <p className="text-xs text-[#6E5C52]">
-                  Kelola transaksi, laporan keuangan, produk, rekening, dan
-                  penjemputan ampas kelapa.
+                  Manage transactions, financial cash flow, product catalog,
+                  bank accounts, and coconut residue pickups.
                 </p>
               </div>
             </div>
@@ -666,7 +667,7 @@ export default function AdminDashboardPage() {
                 className="inline-flex items-center gap-1.5 rounded-full border border-[#3B5B3D]/30 bg-white px-4 py-2 text-xs font-semibold text-[#3B5B3D] shadow-2xs transition hover:bg-[#3B5B3D] hover:text-white"
               >
                 <RotateCcw className="h-3.5 w-3.5" />
-                Reset Data Demo
+                Reset Demo Data
               </button>
             </div>
           </div>
@@ -694,7 +695,7 @@ export default function AdminDashboardPage() {
         {/* Tab Content */}
         <main className="p-4 sm:p-8 space-y-8">
           {/* ============================================================== */}
-          {/* TAB 1: VERIFIKASI PESANAN & PENGIRIMAN                         */}
+          {/* TAB 1: ORDER VERIFICATION & SHIPPING                           */}
           {/* ============================================================== */}
           {activeTab === 'orders' && (
             <section className="animate-cora-fade-in space-y-6">
@@ -702,15 +703,15 @@ export default function AdminDashboardPage() {
               <div className="flex flex-wrap items-center gap-2">
                 {(
                   [
-                    { label: 'Semua', value: 'ALL' },
+                    { label: 'All', value: 'ALL' },
                     {
-                      label: 'Menunggu Verifikasi',
+                      label: 'Awaiting Verification',
                       value: 'WAITING_VERIFICATION',
                     },
-                    { label: 'Diproses', value: 'PROCESSING' },
-                    { label: 'Dikirim', value: 'SHIPPED' },
-                    { label: 'Selesai', value: 'COMPLETED' },
-                    { label: 'Ditolak', value: 'REJECTED' },
+                    { label: 'Processing', value: 'PROCESSING' },
+                    { label: 'Shipped', value: 'SHIPPED' },
+                    { label: 'Completed', value: 'COMPLETED' },
+                    { label: 'Rejected', value: 'REJECTED' },
                   ] as { label: string; value: OrderFilter }[]
                 ).map((tab) => {
                   const active = orderFilter === tab.value;
@@ -737,12 +738,12 @@ export default function AdminDashboardPage() {
                   <table className="w-full min-w-[920px] border-collapse text-left text-xs">
                     <thead>
                       <tr className="border-b border-[#E5DEC9] bg-[#FAF8F5] text-[11px] font-bold uppercase tracking-wider text-[#6E5C52]">
-                        <th className="px-5 py-4">No. Order &amp; Tanggal</th>
-                        <th className="px-5 py-4">Pelanggan</th>
-                        <th className="px-5 py-4">Produk &amp; Total</th>
-                        <th className="px-5 py-4">Bukti Transfer</th>
+                        <th className="px-5 py-4">Order No. &amp; Date</th>
+                        <th className="px-5 py-4">Customer</th>
+                        <th className="px-5 py-4">Items &amp; Total</th>
+                        <th className="px-5 py-4">Transfer Proof</th>
                         <th className="px-5 py-4">Status</th>
-                        <th className="px-5 py-4">Resi &amp; Aksi</th>
+                        <th className="px-5 py-4">Tracking &amp; Actions</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-[#F0EAE0]">
@@ -752,7 +753,7 @@ export default function AdminDashboardPage() {
                             colSpan={6}
                             className="px-6 py-12 text-center text-sm text-[#6E5C52]"
                           >
-                            Tidak ada pesanan pada filter status ini.
+                            No orders found for this status filter.
                           </td>
                         </tr>
                       ) : (
@@ -812,7 +813,7 @@ export default function AdminDashboardPage() {
                                   className="inline-flex items-center gap-1.5 rounded-full border border-[#3B5B3D]/30 bg-[#3B5B3D]/8 px-3 py-1.5 text-[11px] font-semibold text-[#3B5B3D] transition hover:bg-[#3B5B3D] hover:text-white"
                                 >
                                   <Eye className="h-3.5 w-3.5" />
-                                  Cek Bukti Transfer
+                                  View Transfer Proof
                                 </button>
                               </td>
 
@@ -824,7 +825,7 @@ export default function AdminDashboardPage() {
                                 </span>
                                 {order.trackingNumber && (
                                   <p className="mt-1.5 font-mono text-[11px] font-semibold text-[#3B5B3D]">
-                                    Resi: {order.trackingNumber}
+                                    Tracking: {order.trackingNumber}
                                   </p>
                                 )}
                               </td>
@@ -838,7 +839,7 @@ export default function AdminDashboardPage() {
                                       className="inline-flex items-center gap-1 rounded-full bg-[#3B5B3D] px-3 py-1.5 text-[11px] font-semibold text-white transition hover:bg-[#2F4A31]"
                                     >
                                       <Check className="h-3.5 w-3.5" />
-                                      Terima Pembayaran
+                                      Approve Payment
                                     </button>
                                     <button
                                       type="button"
@@ -846,7 +847,7 @@ export default function AdminDashboardPage() {
                                       className="inline-flex items-center gap-1 rounded-full border border-red-200 bg-red-50 px-3 py-1.5 text-[11px] font-semibold text-red-700 transition hover:bg-red-100"
                                     >
                                       <XCircle className="h-3.5 w-3.5" />
-                                      Tolak
+                                      Reject
                                     </button>
                                   </div>
                                 )}
@@ -863,7 +864,7 @@ export default function AdminDashboardPage() {
                                           [order.id]: e.target.value,
                                         }))
                                       }
-                                      placeholder="Input Nomor Resi (opsional)"
+                                      placeholder="Tracking / Waybill No. (optional)"
                                       className="w-full rounded-xl border border-[#E5DEC9] bg-[#FAF8F5] px-3 py-1.5 text-[11px] text-[#2C1E18] focus:bg-white focus:ring-2 focus:ring-[#3B5B3D] focus:outline-none"
                                     />
                                     <div className="flex flex-wrap gap-1.5">
@@ -879,7 +880,7 @@ export default function AdminDashboardPage() {
                                           className="inline-flex items-center gap-1 rounded-full bg-indigo-600 px-3 py-1.5 text-[11px] font-semibold text-white transition hover:bg-indigo-700"
                                         >
                                           <Truck className="h-3 w-3" />
-                                          SHIPPED (Dikirim)
+                                          SHIPPED
                                         </button>
                                       )}
                                       <button
@@ -893,7 +894,7 @@ export default function AdminDashboardPage() {
                                         className="inline-flex items-center gap-1 rounded-full bg-[#4E9A34] px-3 py-1.5 text-[11px] font-semibold text-white transition hover:bg-[#3F8129]"
                                       >
                                         <BadgeCheck className="h-3 w-3" />
-                                        COMPLETED (Selesai)
+                                        COMPLETED
                                       </button>
                                     </div>
                                   </div>
@@ -902,7 +903,7 @@ export default function AdminDashboardPage() {
                                 {(order.status === 'COMPLETED' ||
                                   order.status === 'REJECTED') && (
                                   <span className="text-[11px] text-[#8A776C]">
-                                    Transaksi final
+                                    Final transaction
                                   </span>
                                 )}
                               </td>
@@ -927,7 +928,7 @@ export default function AdminDashboardPage() {
                 <div className="rounded-3xl border border-[#E5DEC9] bg-white p-5 shadow-xs">
                   <div className="flex items-center justify-between">
                     <span className="text-xs font-semibold text-[#6E5C52]">
-                      Total Pendapatan Lunas
+                      Gross Revenue
                     </span>
                     <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#3B5B3D]/12 text-[#3B5B3D]">
                       <TrendingUp className="h-4 w-4" />
@@ -937,14 +938,14 @@ export default function AdminDashboardPage() {
                     {formatRupiah(financeStats.grossRevenue)}
                   </p>
                   <p className="mt-1 text-[11px] text-[#3B5B3D]">
-                    Gross Revenue terverifikasi
+                    Verified gross receipts
                   </p>
                 </div>
 
                 <div className="rounded-3xl border border-[#E5DEC9] bg-white p-5 shadow-xs">
                   <div className="flex items-center justify-between">
                     <span className="text-xs font-semibold text-[#6E5C52]">
-                      Total Pengeluaran
+                      Total Expenses
                     </span>
                     <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-rose-50 text-rose-600">
                       <TrendingDown className="h-4 w-4" />
@@ -954,14 +955,14 @@ export default function AdminDashboardPage() {
                     {formatRupiah(financeStats.totalExpense)}
                   </p>
                   <p className="mt-1 text-[11px] text-[#6E5C52]">
-                    Operasional &amp; bahan baku
+                    Operations &amp; raw materials
                   </p>
                 </div>
 
                 <div className="rounded-3xl border border-[#E5DEC9] bg-white p-5 shadow-xs">
                   <div className="flex items-center justify-between">
                     <span className="text-xs font-semibold text-[#6E5C52]">
-                      Estimasi Laba Bersih
+                      Estimated Net Profit
                     </span>
                     <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#4E9A34]/12 text-[#4E9A34]">
                       <Wallet className="h-4 w-4" />
@@ -977,14 +978,14 @@ export default function AdminDashboardPage() {
                     {formatRupiah(financeStats.netProfit)}
                   </p>
                   <p className="mt-1 text-[11px] text-[#6E5C52]">
-                    Net Profit berjalan
+                    Current net profit
                   </p>
                 </div>
 
                 <div className="rounded-3xl border border-[#E5DEC9] bg-white p-5 shadow-xs">
                   <div className="flex items-center justify-between">
                     <span className="text-xs font-semibold text-[#6E5C52]">
-                      Total Pesanan Terverifikasi
+                      Verified Orders
                     </span>
                     <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#3B5B3D]/12 text-[#3B5B3D]">
                       <BadgeCheck className="h-4 w-4" />
@@ -994,7 +995,7 @@ export default function AdminDashboardPage() {
                     {financeStats.verifiedOrders}
                   </p>
                   <p className="mt-1 text-[11px] text-[#6E5C52]">
-                    Order status Diproses / Dikirim / Selesai
+                    Processing / Shipped / Completed
                   </p>
                 </div>
               </div>
@@ -1006,10 +1007,10 @@ export default function AdminDashboardPage() {
                   <div className="flex flex-wrap items-center justify-between gap-3">
                     <div>
                       <h2 className="font-serif text-lg font-bold text-[#2C1E18]">
-                        Perbandingan Pemasukan &amp; Pengeluaran
+                        Cash Flow Comparison
                       </h2>
                       <p className="text-xs text-[#6E5C52]">
-                        Ringkasan arus kas aktual berdasarkan buku kas CORA.
+                        Actual income vs. expenses recorded in the CORA cash book.
                       </p>
                     </div>
                     <button
@@ -1018,7 +1019,7 @@ export default function AdminDashboardPage() {
                       className="inline-flex items-center gap-1.5 rounded-full bg-[#3B5B3D] px-4 py-2 text-xs font-semibold text-white transition hover:bg-[#2F4A31]"
                     >
                       <Download className="h-3.5 w-3.5" />
-                      Export Laporan (CSV)
+                      Export Report (CSV)
                     </button>
                   </div>
 
@@ -1027,7 +1028,7 @@ export default function AdminDashboardPage() {
                     <div>
                       <div className="flex items-center justify-between text-xs font-semibold">
                         <span className="text-[#3B5B3D]">
-                          Total Pemasukan (INCOME)
+                          Total Income (INCOME)
                         </span>
                         <span className="font-bold text-[#2C1E18]">
                           {formatRupiah(financeStats.grossRevenue)}
@@ -1044,7 +1045,7 @@ export default function AdminDashboardPage() {
                     <div>
                       <div className="flex items-center justify-between text-xs font-semibold">
                         <span className="text-rose-700">
-                          Total Pengeluaran (EXPENSE)
+                          Total Expense (EXPENSE)
                         </span>
                         <span className="font-bold text-[#2C1E18]">
                           {formatRupiah(financeStats.totalExpense)}
@@ -1062,7 +1063,7 @@ export default function AdminDashboardPage() {
                   {/* Category Breakdown */}
                   <div className="mt-7 border-t border-[#F0EAE0] pt-5">
                     <p className="text-xs font-bold uppercase tracking-wider text-[#6E5C52]">
-                      Ringkasan per Kategori
+                      Category Breakdown
                     </p>
                     <div className="mt-3 grid grid-cols-1 gap-2.5 sm:grid-cols-2">
                       {financeStats.categoryTotals.map(([cat, totals]) => (
@@ -1098,11 +1099,11 @@ export default function AdminDashboardPage() {
                 >
                   <div>
                     <h2 className="font-serif text-lg font-bold text-[#2C1E18]">
-                      Catat Pengeluaran Operasional
+                      Record Operational Expense
                     </h2>
                     <p className="text-xs text-[#6E5C52]">
-                      Tambahkan biaya bahan baku ampas kelapa, kemasan, atau
-                      logistik secara manual.
+                      Log coconut residue raw material purchases, packaging, or
+                      logistics expenses manually.
                     </p>
                   </div>
 
@@ -1111,7 +1112,7 @@ export default function AdminDashboardPage() {
                       htmlFor="expDesc"
                       className="block text-xs font-semibold text-[#2C1E18]"
                     >
-                      Keterangan Pengeluaran
+                      Expense Description
                     </label>
                     <input
                       id="expDesc"
@@ -1119,7 +1120,7 @@ export default function AdminDashboardPage() {
                       required
                       value={expDescription}
                       onChange={(e) => setExpDescription(e.target.value)}
-                      placeholder="Contoh: Beli Bahan Baku Ampas Kelapa"
+                      placeholder="e.g. Purchased 200kg Coconut Residue"
                       className="mt-1.5 w-full rounded-xl bg-[#FAF8F5] px-3.5 py-2.5 text-sm text-[#2C1E18] ring-1 ring-[#E5DEC9] focus:bg-white focus:ring-2 focus:ring-[#3B5B3D] focus:outline-none"
                     />
                   </div>
@@ -1130,7 +1131,7 @@ export default function AdminDashboardPage() {
                         htmlFor="expCat"
                         className="block text-xs font-semibold text-[#2C1E18]"
                       >
-                        Kategori
+                        Category
                       </label>
                       <select
                         id="expCat"
@@ -1138,10 +1139,10 @@ export default function AdminDashboardPage() {
                         onChange={(e) => setExpCategory(e.target.value)}
                         className="mt-1.5 w-full rounded-xl bg-[#FAF8F5] px-3 py-2.5 text-sm text-[#2C1E18] ring-1 ring-[#E5DEC9] focus:bg-white focus:ring-2 focus:ring-[#3B5B3D] focus:outline-none"
                       >
-                        <option value="Bahan Baku">Bahan Baku</option>
-                        <option value="Biaya Kemasan">Biaya Kemasan</option>
-                        <option value="Logistik Pickup">Logistik Pickup</option>
-                        <option value="Operasional">Operasional</option>
+                        <option value="Raw Materials">Raw Materials</option>
+                        <option value="Packaging">Packaging</option>
+                        <option value="Pickup Logistics">Pickup Logistics</option>
+                        <option value="Operations">Operations</option>
                       </select>
                     </div>
 
@@ -1150,7 +1151,7 @@ export default function AdminDashboardPage() {
                         htmlFor="expAmount"
                         className="block text-xs font-semibold text-[#2C1E18]"
                       >
-                        Nominal (Rp)
+                        Amount (IDR)
                       </label>
                       <input
                         id="expAmount"
@@ -1171,7 +1172,7 @@ export default function AdminDashboardPage() {
                     className="flex w-full items-center justify-center gap-2 rounded-full bg-[#3B5B3D] px-5 py-3 text-xs font-semibold text-white transition hover:bg-[#2F4A31]"
                   >
                     <Plus className="h-4 w-4" />
-                    Tambah Pengeluaran ke Buku Kas
+                    Add Expense to Cash Book
                   </button>
                 </form>
               </div>
@@ -1180,19 +1181,19 @@ export default function AdminDashboardPage() {
               <div className="overflow-hidden rounded-3xl border border-[#E5DEC9] bg-white shadow-xs">
                 <div className="border-b border-[#E5DEC9] px-6 py-4">
                   <h2 className="font-serif text-lg font-bold text-[#2C1E18]">
-                    Buku Kas (Financial Records)
+                    Cash Book (Financial Records)
                   </h2>
                 </div>
                 <div className="overflow-x-auto">
                   <table className="w-full min-w-[780px] border-collapse text-left text-xs">
                     <thead>
                       <tr className="border-b border-[#E5DEC9] bg-[#FAF8F5] text-[11px] font-bold uppercase tracking-wider text-[#6E5C52]">
-                        <th className="px-5 py-3.5">Tanggal</th>
-                        <th className="px-5 py-3.5">No. Order</th>
-                        <th className="px-5 py-3.5">Keterangan</th>
-                        <th className="px-5 py-3.5">Kategori</th>
-                        <th className="px-5 py-3.5">Tipe</th>
-                        <th className="px-5 py-3.5 text-right">Nominal</th>
+                        <th className="px-5 py-3.5">Date</th>
+                        <th className="px-5 py-3.5">Order No.</th>
+                        <th className="px-5 py-3.5">Description</th>
+                        <th className="px-5 py-3.5">Category</th>
+                        <th className="px-5 py-3.5">Type</th>
+                        <th className="px-5 py-3.5 text-right">Amount</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-[#F0EAE0]">
@@ -1223,7 +1224,7 @@ export default function AdminDashboardPage() {
                                     : 'bg-rose-50 text-rose-700'
                                 }`}
                               >
-                                {isIncome ? 'Pemasukan' : 'Pengeluaran'}
+                                {isIncome ? 'Income' : 'Expense'}
                               </span>
                             </td>
                             <td
@@ -1245,7 +1246,7 @@ export default function AdminDashboardPage() {
           )}
 
           {/* ============================================================== */}
-          {/* TAB 3: CMS PRODUK & NOMOR REKENING                             */}
+          {/* TAB 3: PRODUCT CMS & BANK ACCOUNTS                             */}
           {/* ============================================================== */}
           {activeTab === 'cms' && (
             <section className="animate-cora-fade-in space-y-8">
@@ -1254,11 +1255,11 @@ export default function AdminDashboardPage() {
                 <div className="flex flex-wrap items-center justify-between gap-3">
                   <div>
                     <h2 className="font-serif text-xl font-bold text-[#2C1E18]">
-                      Manajemen Produk CORA
+                      CORA Product Catalog Management
                     </h2>
                     <p className="text-xs text-[#6E5C52]">
-                      Tambah produk baru, edit detail &amp; ganti foto produk,
-                      ubah harga &amp; stok cepat, atau hapus produk.
+                      Add new products, edit details &amp; replace packaging photos,
+                      adjust quick pricing &amp; inventory, or delete items.
                     </p>
                   </div>
                   <button
@@ -1267,7 +1268,7 @@ export default function AdminDashboardPage() {
                     className="inline-flex items-center gap-1.5 rounded-full bg-[#3B5B3D] px-4 py-2.5 text-xs font-semibold text-white transition hover:bg-[#2F4A31]"
                   >
                     <Plus className="h-4 w-4" />
-                    Tambah Produk Baru
+                    Add New Product
                   </button>
                 </div>
 
@@ -1277,11 +1278,11 @@ export default function AdminDashboardPage() {
                     <table className="w-full min-w-[820px] border-collapse text-left text-xs">
                       <thead>
                         <tr className="border-b border-[#E5DEC9] bg-[#FAF8F5] text-[11px] font-bold uppercase tracking-wider text-[#6E5C52]">
-                          <th className="px-5 py-3.5">Produk</th>
-                          <th className="px-5 py-3.5">Kategori &amp; Impact</th>
-                          <th className="px-5 py-3.5">Edit Cepat Harga (Rp)</th>
-                          <th className="px-5 py-3.5">Edit Cepat Stok</th>
-                          <th className="px-5 py-3.5 text-right">Aksi</th>
+                          <th className="px-5 py-3.5">Product</th>
+                          <th className="px-5 py-3.5">Category &amp; Impact</th>
+                          <th className="px-5 py-3.5">Quick Price (IDR)</th>
+                          <th className="px-5 py-3.5">Quick Stock</th>
+                          <th className="px-5 py-3.5 text-right">Actions</th>
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-[#F0EAE0]">
@@ -1303,7 +1304,7 @@ export default function AdminDashboardPage() {
                               <td className="px-5 py-3.5">
                                 <div className="flex items-center gap-3">
                                   <label
-                                    title="Klik untuk ganti foto produk"
+                                    title="Click to replace product photo"
                                     className="group/img relative h-14 w-14 shrink-0 cursor-pointer overflow-hidden rounded-xl bg-[#FAF8F5] ring-1 ring-[#E5DEC9]"
                                   >
                                     <Image
@@ -1340,7 +1341,7 @@ export default function AdminDashboardPage() {
                                   {product.category}
                                 </span>
                                 <p className="mt-1 text-[11px] text-[#6E5C52]">
-                                  Hemat {product.residueSavedGram}g residu
+                                  Saves {product.residueSavedGram}g residue
                                 </p>
                               </td>
                               <td className="px-5 py-3.5">
@@ -1392,7 +1393,7 @@ export default function AdminDashboardPage() {
                                       className="inline-flex items-center gap-1 rounded-full bg-[#3B5B3D] px-3 py-1.5 text-[11px] font-semibold text-white hover:bg-[#2F4A31]"
                                     >
                                       <Save className="h-3 w-3" />
-                                      Simpan
+                                      Save
                                     </button>
                                   )}
                                   <button
@@ -1408,13 +1409,13 @@ export default function AdminDashboardPage() {
                                     onClick={() => {
                                       deleteProduct(product.id);
                                       showToast(
-                                        `Produk ${product.name} dihapus.`
+                                        `Product ${product.name} deleted.`
                                       );
                                     }}
                                     className="inline-flex items-center gap-1 rounded-full border border-red-200 bg-red-50 px-3 py-1.5 text-[11px] font-semibold text-red-700 hover:bg-red-100"
                                   >
                                     <Trash2 className="h-3 w-3" />
-                                    Hapus
+                                    Delete
                                   </button>
                                 </div>
                               </td>
@@ -1436,11 +1437,11 @@ export default function AdminDashboardPage() {
                     </span>
                     <div>
                       <h2 className="font-serif text-lg font-bold text-[#2C1E18]">
-                        Daftar Rekening Bank Resmi CORA
+                        Official CORA Bank Accounts
                       </h2>
                       <p className="text-xs text-[#6E5C52]">
-                        Rekening berstatus aktif otomatis tampil di halaman
-                        Checkout pembeli.
+                        Active bank accounts automatically appear on the customer
+                        checkout page.
                       </p>
                     </div>
                   </div>
@@ -1463,7 +1464,7 @@ export default function AdminDashboardPage() {
                                   : 'bg-zinc-200 text-zinc-600'
                               }`}
                             >
-                              {bank.isActive ? 'Aktif' : 'Nonaktif'}
+                              {bank.isActive ? 'Active' : 'Inactive'}
                             </span>
                           </div>
                           <p className="mt-1 font-mono text-sm font-bold text-[#3B5B3D]">
@@ -1483,12 +1484,12 @@ export default function AdminDashboardPage() {
                                 isActive: !bank.isActive,
                               });
                               showToast(
-                                `Status rekening ${bank.bankName} diperbarui.`
+                                `Account status for ${bank.bankName} updated.`
                               );
                             }}
                             className="rounded-full border border-[#E5DEC9] bg-white px-3 py-1.5 text-xs font-semibold text-[#2C1E18] hover:bg-[#F0ECE1]"
                           >
-                            {bank.isActive ? 'Nonaktifkan' : 'Aktifkan'}
+                            {bank.isActive ? 'Deactivate' : 'Activate'}
                           </button>
                           <button
                             type="button"
@@ -1511,8 +1512,8 @@ export default function AdminDashboardPage() {
                   <div className="flex items-center justify-between">
                     <h2 className="font-serif text-lg font-bold text-[#2C1E18]">
                       {editingBankId
-                        ? 'Ubah Rekening Bank'
-                        : 'Tambah Rekening Bank'}
+                        ? 'Edit Bank Account'
+                        : 'Add Bank Account'}
                     </h2>
                     {editingBankId && (
                       <button
@@ -1526,42 +1527,42 @@ export default function AdminDashboardPage() {
                         }}
                         className="text-xs font-semibold text-[#6E5C52] hover:underline"
                       >
-                        Batal Edit
+                        Cancel Edit
                       </button>
                     )}
                   </div>
 
                   <div>
                     <label className="block text-xs font-semibold text-[#2C1E18]">
-                      Nama Bank
+                      Bank Name
                     </label>
                     <input
                       type="text"
                       required
                       value={bankName}
                       onChange={(e) => setBankName(e.target.value)}
-                      placeholder="Contoh: Bank BRI / Bank BNI"
+                      placeholder="e.g. Bank Central Asia (BCA)"
                       className="mt-1.5 w-full rounded-xl bg-[#FAF8F5] px-3.5 py-2.5 text-sm ring-1 ring-[#E5DEC9] focus:bg-white focus:ring-2 focus:ring-[#3B5B3D] focus:outline-none"
                     />
                   </div>
 
                   <div>
                     <label className="block text-xs font-semibold text-[#2C1E18]">
-                      Nomor Rekening
+                      Account Number
                     </label>
                     <input
                       type="text"
                       required
                       value={accountNumber}
                       onChange={(e) => setAccountNumber(e.target.value)}
-                      placeholder="Contoh: 001239812391"
+                      placeholder="e.g. 8820192831"
                       className="mt-1.5 w-full rounded-xl bg-[#FAF8F5] px-3.5 py-2.5 font-mono text-sm ring-1 ring-[#E5DEC9] focus:bg-white focus:ring-2 focus:ring-[#3B5B3D] focus:outline-none"
                     />
                   </div>
 
                   <div>
                     <label className="block text-xs font-semibold text-[#2C1E18]">
-                      Nama Pemilik Rekening
+                      Account Holder Name
                     </label>
                     <input
                       type="text"
@@ -1579,7 +1580,7 @@ export default function AdminDashboardPage() {
                       onChange={(e) => setBankIsActive(e.target.checked)}
                       className="h-4 w-4 rounded accent-[#3B5B3D]"
                     />
-                    Tampilkan di halaman Checkout pembeli
+                    Display on customer Checkout page
                   </label>
 
                   <button
@@ -1588,8 +1589,8 @@ export default function AdminDashboardPage() {
                   >
                     <Save className="h-4 w-4" />
                     {editingBankId
-                      ? 'Simpan Perubahan Rekening'
-                      : 'Simpan Rekening Baru'}
+                      ? 'Save Account Changes'
+                      : 'Save New Bank Account'}
                   </button>
                 </form>
               </div>
@@ -1597,14 +1598,14 @@ export default function AdminDashboardPage() {
           )}
 
           {/* ============================================================== */}
-          {/* TAB 4: JADWAL COCONUT PICKUP                                   */}
+          {/* TAB 4: COCONUT PICKUP SCHEDULE                                 */}
           {/* ============================================================== */}
           {activeTab === 'pickup' && (
             <section className="animate-cora-fade-in space-y-6">
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
                 <div className="rounded-3xl border border-[#E5DEC9] bg-white p-5 shadow-xs">
                   <p className="text-xs font-semibold text-[#6E5C52]">
-                    Total Permintaan Mitra
+                    Total Partner Requests
                   </p>
                   <p className="mt-2 text-2xl font-extrabold text-[#2C1E18]">
                     {pickupRequests.length}
@@ -1612,7 +1613,7 @@ export default function AdminDashboardPage() {
                 </div>
                 <div className="rounded-3xl border border-[#E5DEC9] bg-white p-5 shadow-xs">
                   <p className="text-xs font-semibold text-[#6E5C52]">
-                    Menunggu Dijadwalkan (Pending)
+                    Awaiting Schedule (Pending)
                   </p>
                   <p className="mt-2 text-2xl font-extrabold text-amber-700">
                     {pendingPickupsCount}
@@ -1620,7 +1621,7 @@ export default function AdminDashboardPage() {
                 </div>
                 <div className="rounded-3xl border border-[#E5DEC9] bg-white p-5 shadow-xs">
                   <p className="text-xs font-semibold text-[#6E5C52]">
-                    Total Estimasi Ampas Kelapa
+                    Total Estimated Coconut Residue
                   </p>
                   <p className="mt-2 text-2xl font-extrabold text-[#3B5B3D]">
                     {pickupRequests.reduce((s, p) => s + p.estimatedKg, 0)} kg
@@ -1633,12 +1634,12 @@ export default function AdminDashboardPage() {
                   <table className="w-full min-w-[820px] border-collapse text-left text-xs">
                     <thead>
                       <tr className="border-b border-[#E5DEC9] bg-[#FAF8F5] text-[11px] font-bold uppercase tracking-wider text-[#6E5C52]">
-                        <th className="px-5 py-4">Mitra / Supplier</th>
-                        <th className="px-5 py-4">Lokasi Penjemputan</th>
-                        <th className="px-5 py-4">Estimasi Berat</th>
-                        <th className="px-5 py-4">Tanggal Jemput</th>
+                        <th className="px-5 py-4">Partner / Supplier</th>
+                        <th className="px-5 py-4">Pickup Location</th>
+                        <th className="px-5 py-4">Estimated Weight</th>
+                        <th className="px-5 py-4">Preferred Date</th>
                         <th className="px-5 py-4">Status</th>
-                        <th className="px-5 py-4 text-right">Ubah Status</th>
+                        <th className="px-5 py-4 text-right">Update Status</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-[#F0EAE0]">
@@ -1681,12 +1682,12 @@ export default function AdminDashboardPage() {
                                     onClick={() => {
                                       updatePickupStatus(req.id, 'SCHEDULED');
                                       showToast(
-                                        `Penjemputan ${req.supplierName} dijadwalkan.`
+                                        `Pickup for ${req.supplierName} scheduled.`
                                       );
                                     }}
                                     className="rounded-full bg-sky-600 px-3 py-1.5 text-[11px] font-semibold text-white hover:bg-sky-700"
                                   >
-                                    Jadwalkan
+                                    Schedule
                                   </button>
                                 )}
                                 {req.status !== 'COMPLETED' && (
@@ -1695,17 +1696,17 @@ export default function AdminDashboardPage() {
                                     onClick={() => {
                                       updatePickupStatus(req.id, 'COMPLETED');
                                       showToast(
-                                        `Penjemputan ${req.supplierName} ditandai Selesai Dijemput.`
+                                        `Pickup for ${req.supplierName} marked as completed.`
                                       );
                                     }}
                                     className="rounded-full bg-[#3B5B3D] px-3 py-1.5 text-[11px] font-semibold text-white hover:bg-[#2F4A31]"
                                   >
-                                    Selesai Dijemput
+                                    Mark as Picked Up
                                   </button>
                                 )}
                                 {req.status === 'COMPLETED' && (
                                   <span className="text-[11px] font-semibold text-[#3B5B3D]">
-                                    Tuntas ✓
+                                    Completed ✓
                                   </span>
                                 )}
                               </div>
@@ -1722,14 +1723,14 @@ export default function AdminDashboardPage() {
         </main>
       </div>
 
-      {/* MODAL: TAMBAH / EDIT PRODUK & FOTO */}
+      {/* MODAL: ADD / EDIT PRODUCT & PHOTO */}
       {showProductForm && (
         <div
           className="animate-cora-fade-in fixed inset-0 z-50 flex items-center justify-center bg-[#2C1E18]/60 p-4 backdrop-blur-xs"
           role="dialog"
           aria-modal="true"
           aria-label={
-            editingProductId ? 'Edit Detail Produk' : 'Tambah Produk Baru'
+            editingProductId ? 'Edit Product Details' : 'Add New Product'
           }
         >
           <form
@@ -1740,18 +1741,18 @@ export default function AdminDashboardPage() {
               <div>
                 <h3 className="font-serif text-lg font-bold text-[#2C1E18]">
                   {editingProductId
-                    ? 'Edit Produk & Foto Kemasan'
-                    : 'Tambah Produk Baru'}
+                    ? 'Edit Product & Packaging Photo'
+                    : 'Add New Product'}
                 </h3>
                 <p className="text-xs text-[#6E5C52]">
-                  Ubah foto produk dengan upload gambar dari perangkat, URL,
-                  atau pilih preset CORA.
+                  Change product photo by uploading from your device, entering
+                  an image URL, or selecting a CORA preset.
                 </p>
               </div>
               <button
                 type="button"
                 onClick={() => setShowProductForm(false)}
-                aria-label="Tutup modal produk"
+                aria-label="Close product modal"
                 className="rounded-full p-1.5 text-[#6E5C52] hover:bg-[#F0ECE1]"
               >
                 <X className="h-5 w-5" />
@@ -1762,13 +1763,13 @@ export default function AdminDashboardPage() {
               {/* Photo Editor Section */}
               <div className="rounded-2xl border border-[#E5DEC9] bg-[#FAF8F5] p-4">
                 <span className="block text-xs font-bold uppercase tracking-wider text-[#3B5B3D]">
-                  Foto Produk
+                  Product Photo
                 </span>
                 <div className="mt-3 flex flex-col gap-4 sm:flex-row sm:items-center">
                   <div className="relative h-28 w-28 shrink-0 overflow-hidden rounded-2xl border border-[#E5DEC9] bg-white">
                     <Image
                       src={prodImage || IMAGE_PRESETS[0].value}
-                      alt={prodName || 'Preview produk'}
+                      alt={prodName || 'Product preview'}
                       fill
                       unoptimized
                       className="object-contain p-2"
@@ -1779,7 +1780,7 @@ export default function AdminDashboardPage() {
                     <div className="flex flex-wrap items-center gap-2">
                       <label className="inline-flex cursor-pointer items-center gap-1.5 rounded-full bg-[#3B5B3D] px-4 py-2 text-xs font-semibold text-white transition hover:bg-[#2F4A31]">
                         <UploadCloud className="h-3.5 w-3.5" />
-                        Upload Foto dari Perangkat
+                        Upload Photo from Device
                         <input
                           type="file"
                           accept="image/*"
@@ -1788,26 +1789,26 @@ export default function AdminDashboardPage() {
                         />
                       </label>
                       <span className="text-[11px] text-[#6E5C52]">
-                        PNG, JPG, WebP, atau SVG
+                        PNG, JPG, WebP, or SVG
                       </span>
                     </div>
 
                     <div>
                       <label className="block text-[11px] font-semibold text-[#5C4B42]">
-                        Atau masukkan URL / Path Gambar
+                        Or enter Image URL / Path
                       </label>
                       <input
                         type="text"
                         value={prodImage}
                         onChange={(e) => setProdImage(e.target.value)}
-                        placeholder="/images/products/cora-brownies.svg atau https://..."
+                        placeholder="/images/products/brownies.jpg or https://..."
                         className="mt-1 w-full rounded-xl bg-white px-3 py-1.5 text-xs text-[#2C1E18] ring-1 ring-[#E5DEC9] focus:ring-2 focus:ring-[#3B5B3D] focus:outline-none"
                       />
                     </div>
 
                     <div className="flex flex-wrap items-center gap-1.5">
                       <span className="text-[11px] font-medium text-[#6E5C52]">
-                        Preset:
+                        Presets:
                       </span>
                       {IMAGE_PRESETS.map((preset) => (
                         <button
@@ -1831,7 +1832,7 @@ export default function AdminDashboardPage() {
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <div>
                   <label className="block text-xs font-semibold text-[#2C1E18]">
-                    Nama Produk *
+                    Product Name *
                   </label>
                   <input
                     type="text"
@@ -1856,7 +1857,7 @@ export default function AdminDashboardPage() {
                 </div>
                 <div>
                   <label className="block text-xs font-semibold text-[#2C1E18]">
-                    Kategori
+                    Category
                   </label>
                   <select
                     value={prodCategory}
@@ -1872,7 +1873,7 @@ export default function AdminDashboardPage() {
                 </div>
                 <div>
                   <label className="block text-xs font-semibold text-[#2C1E18]">
-                    Harga (Rp) *
+                    Price (IDR) *
                   </label>
                   <input
                     type="number"
@@ -1886,7 +1887,7 @@ export default function AdminDashboardPage() {
                 </div>
                 <div>
                   <label className="block text-xs font-semibold text-[#2C1E18]">
-                    Stok *
+                    Stock *
                   </label>
                   <input
                     type="number"
@@ -1901,7 +1902,7 @@ export default function AdminDashboardPage() {
                 <div className="grid grid-cols-2 gap-3">
                   <div>
                     <label className="block text-xs font-semibold text-[#2C1E18]">
-                      Berat (g)
+                      Weight (g)
                     </label>
                     <input
                       type="number"
@@ -1914,7 +1915,7 @@ export default function AdminDashboardPage() {
                   </div>
                   <div>
                     <label className="block text-xs font-semibold text-[#2C1E18]">
-                      Residu (g)
+                      Residue Saved (g)
                     </label>
                     <input
                       type="number"
@@ -1930,13 +1931,13 @@ export default function AdminDashboardPage() {
 
               <div>
                 <label className="block text-xs font-semibold text-[#2C1E18]">
-                  Deskripsi Singkat
+                  Short Description
                 </label>
                 <textarea
                   rows={2}
                   value={prodDescription}
                   onChange={(e) => setProdDescription(e.target.value)}
-                  placeholder="Deskripsi keunggulan produk sirkular CORA..."
+                  placeholder="Brief summary of circular product benefits..."
                   className="mt-1 w-full rounded-xl bg-[#FAF8F5] px-3.5 py-2 text-sm ring-1 ring-[#E5DEC9] focus:bg-white focus:ring-2 focus:ring-[#3B5B3D] focus:outline-none"
                 />
               </div>
@@ -1947,14 +1948,14 @@ export default function AdminDashboardPage() {
                   onClick={() => setShowProductForm(false)}
                   className="rounded-full border border-[#E5DEC9] px-4 py-2 text-xs font-semibold text-[#5C4B42] hover:bg-[#FAF8F5]"
                 >
-                  Batal
+                  Cancel
                 </button>
                 <button
                   type="submit"
                   className="inline-flex items-center gap-1.5 rounded-full bg-[#3B5B3D] px-5 py-2 text-xs font-semibold text-white hover:bg-[#2F4A31]"
                 >
                   <Save className="h-3.5 w-3.5" />
-                  Simpan Produk
+                  Save Product
                 </button>
               </div>
             </div>
@@ -1962,19 +1963,19 @@ export default function AdminDashboardPage() {
         </div>
       )}
 
-      {/* MODAL: CEK BUKTI TRANSFER */}
+      {/* MODAL: VERIFY TRANSFER PROOF */}
       {proofModalOrder && (
         <div
           className="animate-cora-fade-in fixed inset-0 z-50 flex items-center justify-center bg-[#2C1E18]/60 p-4 backdrop-blur-xs"
           role="dialog"
           aria-modal="true"
-          aria-label="Modal Cek Bukti Transfer"
+          aria-label="Transfer Proof Verification Modal"
         >
           <div className="animate-cora-modal w-full max-w-lg overflow-hidden rounded-2xl border border-[#E5DEC9] bg-white shadow-2xl">
             <div className="flex items-center justify-between border-b border-[#F0EAE0] px-6 py-4">
               <div>
                 <h3 className="font-serif text-lg font-bold text-[#2C1E18]">
-                  Verifikasi Bukti Transfer
+                  Verify Transfer Proof
                 </h3>
                 <p className="text-xs text-[#6E5C52]">
                   Order #{proofModalOrder.orderNumber} •{' '}
@@ -1984,7 +1985,7 @@ export default function AdminDashboardPage() {
               <button
                 type="button"
                 onClick={() => setProofModalOrder(null)}
-                aria-label="Tutup modal"
+                aria-label="Close modal"
                 className="rounded-full p-1.5 text-[#6E5C52] hover:bg-[#F0ECE1]"
               >
                 <X className="h-5 w-5" />
@@ -1994,13 +1995,13 @@ export default function AdminDashboardPage() {
             <div className="space-y-4 p-6">
               <div className="grid grid-cols-2 gap-3 rounded-2xl bg-[#FAF8F5] p-4 text-xs ring-1 ring-[#E5DEC9]">
                 <div>
-                  <p className="text-[#6E5C52]">Nominal Tagihan</p>
+                  <p className="text-[#6E5C52]">Billed Amount</p>
                   <p className="mt-0.5 text-base font-extrabold text-[#2C1E18]">
                     {formatRupiah(proofModalOrder.totalAmount)}
                   </p>
                 </div>
                 <div>
-                  <p className="text-[#6E5C52]">Rekening Tujuan</p>
+                  <p className="text-[#6E5C52]">Destination Account</p>
                   <p className="mt-0.5 font-bold text-[#3B5B3D]">
                     {proofModalOrder.bankAccountUsed}
                   </p>
@@ -2010,7 +2011,7 @@ export default function AdminDashboardPage() {
               <div className="relative h-80 w-full overflow-hidden rounded-2xl bg-[#FAF8F5] ring-1 ring-[#E5DEC9]">
                 <Image
                   src={proofModalOrder.proofImage}
-                  alt={`Bukti transfer ${proofModalOrder.orderNumber}`}
+                  alt={`Transfer proof #${proofModalOrder.orderNumber}`}
                   fill
                   unoptimized
                   className="object-contain p-2"
@@ -2025,7 +2026,7 @@ export default function AdminDashboardPage() {
                     className="inline-flex items-center gap-1.5 rounded-full border border-red-200 bg-red-50 px-4 py-2.5 text-xs font-semibold text-red-700 hover:bg-red-100"
                   >
                     <XCircle className="h-4 w-4" />
-                    Tolak
+                    Reject
                   </button>
                   <button
                     type="button"
@@ -2033,7 +2034,7 @@ export default function AdminDashboardPage() {
                     className="inline-flex items-center gap-1.5 rounded-full bg-[#3B5B3D] px-5 py-2.5 text-xs font-semibold text-white hover:bg-[#2F4A31]"
                   >
                     <Check className="h-4 w-4" />
-                    Terima Pembayaran (Approve)
+                    Approve Payment
                   </button>
                 </div>
               ) : (
@@ -2043,7 +2044,7 @@ export default function AdminDashboardPage() {
                     onClick={() => setProofModalOrder(null)}
                     className="rounded-full bg-[#F0ECE1] px-5 py-2 text-xs font-semibold text-[#2C1E18] hover:bg-[#E5DEC9]"
                   >
-                    Tutup
+                    Close
                   </button>
                 </div>
               )}
