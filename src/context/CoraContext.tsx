@@ -24,7 +24,7 @@ import type {
   SubmitPickupInput,
 } from '@/types/cora';
 
-const STORAGE_KEY = 'cora_circular_store_v1';
+const STORAGE_KEY = 'cora_circular_store_v2';
 
 interface CoraStoreState {
   products: Product[];
@@ -83,25 +83,25 @@ function createDummyReceiptDataUrl(params: {
   <rect x="20" y="20" width="380" height="480" rx="16" fill="#FFFFFF" stroke="#E2D9CE" stroke-width="2"/>
   <rect x="20" y="20" width="380" height="78" rx="16" fill="#4A5D3F"/>
   <rect x="20" y="76" width="380" height="22" fill="#4A5D3F"/>
-  <text x="210" y="55" text-anchor="middle" fill="#FAF8F5" font-family="sans-serif" font-size="18" font-weight="bold">BUKTI TRANSFER BERHASIL</text>
+  <text x="210" y="55" text-anchor="middle" fill="#FAF8F5" font-family="sans-serif" font-size="18" font-weight="bold">TRANSFER RECEIPT CONFIRMED</text>
   <text x="210" y="79" text-anchor="middle" fill="#DCE5D5" font-family="sans-serif" font-size="12">${params.bankName} Mobile Banking</text>
   <circle cx="210" cy="138" r="24" fill="#E8F0E3"/>
   <path d="M198 138 L206 146 L223 129" stroke="#4A5D3F" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
   <text x="210" y="184" text-anchor="middle" fill="#6F5E55" font-family="sans-serif" font-size="12">TOTAL TRANSFER</text>
   <text x="210" y="214" text-anchor="middle" fill="#2C1E18" font-family="sans-serif" font-size="26" font-weight="bold">${params.amountFormatted}</text>
   <line x1="44" y1="238" x2="376" y2="238" stroke="#EAE2D7" stroke-dasharray="5 5" stroke-width="1.5"/>
-  <text x="44" y="270" fill="#7B6A61" font-family="sans-serif" font-size="12">Tanggal</text>
+  <text x="44" y="270" fill="#7B6A61" font-family="sans-serif" font-size="12">Date</text>
   <text x="376" y="270" text-anchor="end" fill="#2C1E18" font-family="sans-serif" font-size="12" font-weight="bold">${params.dateText}</text>
-  <text x="44" y="302" fill="#7B6A61" font-family="sans-serif" font-size="12">No. Referensi</text>
+  <text x="44" y="302" fill="#7B6A61" font-family="sans-serif" font-size="12">Reference No.</text>
   <text x="376" y="302" text-anchor="end" fill="#2C1E18" font-family="sans-serif" font-size="12" font-weight="bold">${params.refNo}</text>
-  <text x="44" y="334" fill="#7B6A61" font-family="sans-serif" font-size="12">Pengirim</text>
+  <text x="44" y="334" fill="#7B6A61" font-family="sans-serif" font-size="12">Sender</text>
   <text x="376" y="334" text-anchor="end" fill="#2C1E18" font-family="sans-serif" font-size="12" font-weight="bold">${params.senderName}</text>
-  <text x="44" y="366" fill="#7B6A61" font-family="sans-serif" font-size="12">Rekening Tujuan</text>
+  <text x="44" y="366" fill="#7B6A61" font-family="sans-serif" font-size="12">Destination Account</text>
   <text x="376" y="366" text-anchor="end" fill="#2C1E18" font-family="sans-serif" font-size="12" font-weight="bold">${params.bankName} ${params.accountNumber}</text>
-  <text x="44" y="398" fill="#7B6A61" font-family="sans-serif" font-size="12">Penerima</text>
+  <text x="44" y="398" fill="#7B6A61" font-family="sans-serif" font-size="12">Recipient</text>
   <text x="376" y="398" text-anchor="end" fill="#2C1E18" font-family="sans-serif" font-size="12" font-weight="bold">PT CORA Circular Innovation</text>
   <rect x="44" y="426" width="332" height="50" rx="10" fill="#FAF8F5" stroke="#E6DDD0"/>
-  <text x="210" y="456" text-anchor="middle" fill="#4A5D3F" font-family="sans-serif" font-size="12" font-weight="bold">Transaksi Terverifikasi Sistem Bank (Dummy)</text>
+  <text x="210" y="456" text-anchor="middle" fill="#4A5D3F" font-family="sans-serif" font-size="12" font-weight="bold">Bank System Verified Transaction (Demo)</text>
 </svg>`;
 
   return `data:image/svg+xml;base64,${encodeBase64Ascii(svg)}`;
@@ -249,7 +249,7 @@ export const INITIAL_ORDERS: Order[] = [
     bankAccountUsed: 'Bank BCA - 8820192831',
     proofImage: RECEIPT_ORD_001,
     status: 'WAITING_VERIFICATION',
-    notes: 'Mohon kemas dengan aman ya kak.',
+    notes: 'Please pack securely with protective wrap.',
     createdAt: '2026-11-12T09:15:00.000Z',
   },
   {
@@ -271,7 +271,7 @@ export const INITIAL_ORDERS: Order[] = [
     bankAccountUsed: 'Bank Mandiri - 1450029381920',
     proofImage: RECEIPT_ORD_002,
     status: 'PROCESSING',
-    notes: 'Untuk stok baking akhir pekan.',
+    notes: 'For weekend baking stock.',
     createdAt: '2026-11-11T14:30:00.000Z',
   },
   {
@@ -301,7 +301,7 @@ export const INITIAL_ORDERS: Order[] = [
     proofImage: RECEIPT_ORD_003,
     status: 'COMPLETED',
     trackingNumber: 'JNE-CORA88291044',
-    notes: 'Titip ke satpam jika rumah kosong.',
+    notes: 'Leave with security if nobody is home.',
     createdAt: '2026-11-08T10:05:00.000Z',
   },
 ];
@@ -311,7 +311,7 @@ export const INITIAL_FINANCIAL_RECORDS: FinancialRecord[] = [
     id: 'fin-001',
     date: '2026-11-11T15:00:00.000Z',
     orderNumber: 'CORA-20261111-002',
-    description: 'Pembayaran Order #CORA-20261111-002 (Raka Pratama)',
+    description: 'Payment for Order #CORA-20261111-002 (Raka Pratama)',
     type: 'INCOME',
     amount: 75000,
     category: 'Product Sales',
@@ -320,7 +320,7 @@ export const INITIAL_FINANCIAL_RECORDS: FinancialRecord[] = [
     id: 'fin-002',
     date: '2026-11-08T11:00:00.000Z',
     orderNumber: 'CORA-20261108-003',
-    description: 'Pembayaran Order #CORA-20261108-003 (Sinta Wijaya)',
+    description: 'Payment for Order #CORA-20261108-003 (Sinta Wijaya)',
     type: 'INCOME',
     amount: 136000,
     category: 'Product Sales',
@@ -625,7 +625,7 @@ export function CoraProvider({ children }: { children: React.ReactNode }) {
                 id: generateId('fin'),
                 date: new Date().toISOString(),
                 orderNumber: targetOrder.orderNumber,
-                description: `Pembayaran Order #${targetOrder.orderNumber} (${targetOrder.customerName})`,
+                description: `Payment for Order #${targetOrder.orderNumber} (${targetOrder.customerName})`,
                 type: 'INCOME' as const,
                 amount: targetOrder.totalAmount,
                 category: 'Product Sales',

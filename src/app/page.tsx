@@ -380,9 +380,9 @@ export default function HomePage() {
                 className="animate-cora-fade-up max-w-xl text-base leading-relaxed text-[#54443B] sm:text-[17px]"
                 style={{ animationDelay: '170ms' }}
               >
-                Mengubah ampas santan kelapa menjadi tepung kelapa bernutrisi
-                tinggi, cookies, dan brownies artisan yang menggerakkan ekonomi
-                sirkular bagi pemasok kelapa lokal.
+                Upcycling coconut milk residue into nutrient-rich coconut flour,
+                artisanal cookies, and brownies that power a circular economy
+                for local coconut suppliers.
               </p>
 
               <div
@@ -393,14 +393,14 @@ export default function HomePage() {
                   href="/products"
                   className="group inline-flex items-center gap-2.5 rounded-full bg-[#3B5B3D] px-7 py-3.5 text-sm font-semibold text-white transition-all duration-300 hover:bg-[#2F4A31]"
                 >
-                  Jelajahi Katalog Produk
+                  Explore Our Products
                   <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
                 </Link>
                 <Link
                   href="/#impact"
                   className="inline-flex items-center gap-2 rounded-full border border-[#2C1E18]/25 bg-transparent px-6 py-3.5 text-sm font-semibold text-[#2C1E18] transition hover:border-[#2C1E18] hover:bg-white/60"
                 >
-                  Lihat Dampak Sirkular
+                  View Circular Impact
                 </Link>
               </div>
             </div>
@@ -417,7 +417,7 @@ export default function HomePage() {
 
         {/* 2. 4 PILLARS BAR */}
         <section
-          aria-label="Pilar Inovasi CORA"
+          aria-label="CORA Innovation Pillars"
           className="relative z-10 -mt-7 px-4 sm:px-6 lg:px-8"
         >
           <Reveal>
@@ -476,10 +476,10 @@ export default function HomePage() {
               </div>
 
               <p className="text-sm leading-relaxed text-[#5C4B42] sm:text-[15px]">
-                Produksi santan menghasilkan ampas kelapa dalam jumlah besar
-                yang kerap terbuang. CORA mengeringkan, menggiling, dan
-                mengolah ampas tersebut menjadi tepung kelapa berkualitas tinggi
-                serta camilan lezat yang didukung platform digital.
+                Coconut milk production generates large amounts of coconut
+                residue that often goes to waste. CORA hygienically dries,
+                mills, and crafts it into high-fiber flour and delicious snacks
+                supported by a digital platform.
               </p>
 
               {/* Dynamic Residue Saved Metric */}
@@ -487,10 +487,10 @@ export default function HomePage() {
                 <div className="flex items-center justify-between gap-2">
                   <span className="inline-flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-[0.12em] text-[#3B5B3D]">
                     <Leaf className="h-3.5 w-3.5" />
-                    Residu Terselamatkan
+                    Residue Saved
                   </span>
                   <span className="text-xs font-medium tabular-nums text-[#6E5C52]">
-                    {impactStats.verifiedOrderCount} pesanan terverifikasi
+                    {impactStats.verifiedOrderCount} verified orders
                   </span>
                 </div>
                 <div className="mt-3 flex items-baseline gap-2.5">
@@ -498,12 +498,12 @@ export default function HomePage() {
                     {impactStats.totalKgFromTransactions} kg
                   </span>
                   <span className="text-xs font-medium text-[#6E5C52]">
-                    ampas kelapa terolah
+                    coconut residue upcycled
                   </span>
                 </div>
                 <p className="mt-1.5 text-xs text-[#6E5C52]">
-                  Terhitung otomatis dari transaksi terverifikasi di ekosistem
-                  CORA.
+                  Calculated dynamically from verified transactions across the
+                  CORA ecosystem.
                 </p>
               </div>
 
@@ -557,18 +557,18 @@ export default function HomePage() {
                     Circular Marketplace
                   </p>
                   <h2 className="mt-2 font-serif text-3xl font-semibold tracking-[-0.015em] text-[#2C1E18] sm:text-4xl">
-                    Produk Unggulan CORA
+                    Featured CORA Products
                   </h2>
                   <p className="mt-2 max-w-2xl text-sm text-[#6E5C52] sm:text-[15px]">
-                    Setiap pembelian berkontribusi langsung mengurangi limbah
-                    ampas kelapa dan memberdayakan pemasok lokal.
+                    Every purchase directly reduces coconut residue waste while
+                    empowering local coconut suppliers.
                   </p>
                 </div>
                 <Link
                   href="/products"
                   className="group inline-flex items-center gap-2 self-start rounded-full border border-[#DDD4C1] bg-white px-5 py-2.5 text-xs font-semibold text-[#2C1E18] transition hover:border-[#3B5B3D] hover:text-[#3B5B3D] sm:self-auto"
                 >
-                  Lihat Semua Produk
+                  View All Products
                   <ArrowRight className="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-0.5" />
                 </Link>
               </div>
@@ -627,7 +627,7 @@ export default function HomePage() {
                                 outOfStock ? 'text-red-600' : 'text-[#3B5B3D]'
                               }`}
                             >
-                              {outOfStock ? 'Habis' : `Stok ${product.stock}`}
+                              {outOfStock ? 'Out of Stock' : `Stock ${product.stock}`}
                             </span>
                           </div>
 
@@ -645,12 +645,12 @@ export default function HomePage() {
                               {isAdded ? (
                                 <>
                                   <Check className="h-3.5 w-3.5" />
-                                  Ditambahkan
+                                  Added
                                 </>
                               ) : (
                                 <>
                                   <ShoppingBag className="h-3.5 w-3.5" />
-                                  Tambah ke Keranjang
+                                  Add to Cart
                                 </>
                               )}
                             </button>
@@ -664,7 +664,7 @@ export default function HomePage() {
                                 }
                                 className="rounded-full border border-[#3B5B3D]/30 bg-[#3B5B3D]/8 px-3 py-2.5 text-xs font-semibold text-[#3B5B3D] transition hover:bg-[#3B5B3D] hover:text-white"
                               >
-                                Lihat
+                                View
                               </button>
                             )}
                           </div>

@@ -23,9 +23,9 @@ export default function Footer() {
               </div>
             </div>
             <p className="max-w-md text-sm leading-relaxed text-[#5C4B42]">
-              Mengolah residu ampas kelapa dari industri santan menjadi tepung
-              kelapa bernutrisi tinggi, camilan sehat berbahan kelapa, dan
-              ekosistem digital berkelanjutan bagi pemasok lokal.
+              Transforming coconut residue from coconut milk production into
+              nutrient-rich coconut flour, wholesome snacks, and a sustainable
+              digital ecosystem for local suppliers.
             </p>
             <p className="text-xs font-semibold uppercase tracking-[0.12em] text-[#3B5B3D]">
               Zero Coconut Residue Wasted
@@ -35,7 +35,7 @@ export default function Footer() {
           {/* Navigation */}
           <div>
             <h3 className="text-[11px] font-bold uppercase tracking-[0.14em] text-[#3B5B3D]">
-              Navigasi
+              Navigation
             </h3>
             <ul className="mt-4 space-y-2.5 text-sm text-[#5C4B42]">
               <li>
@@ -80,7 +80,7 @@ export default function Footer() {
                   href="/orders"
                   className="transition hover:text-[#2C1E18]"
                 >
-                  Cek Pesanan
+                  Track Orders
                 </Link>
               </li>
             </ul>
@@ -89,7 +89,7 @@ export default function Footer() {
           {/* Contact */}
           <div>
             <h3 className="text-[11px] font-bold uppercase tracking-[0.14em] text-[#3B5B3D]">
-              Hubungi Kami
+              Contact Us
             </h3>
             <ul className="mt-4 space-y-3 text-sm text-[#5C4B42]">
               <li className="flex items-start gap-2.5">

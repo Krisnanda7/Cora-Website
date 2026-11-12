@@ -25,12 +25,12 @@ import type { Order, OrderStatus } from '@/types/cora';
 type StatusFilter = 'ALL' | OrderStatus;
 
 const STATUS_TABS: { label: string; value: StatusFilter }[] = [
-  { label: 'Semua', value: 'ALL' },
-  { label: 'Menunggu Konfirmasi', value: 'WAITING_VERIFICATION' },
-  { label: 'Sedang Dikemas', value: 'PROCESSING' },
-  { label: 'Dikirim', value: 'SHIPPED' },
-  { label: 'Selesai', value: 'COMPLETED' },
-  { label: 'Ditolak', value: 'REJECTED' },
+  { label: 'All', value: 'ALL' },
+  { label: 'Awaiting Verification', value: 'WAITING_VERIFICATION' },
+  { label: 'Processing', value: 'PROCESSING' },
+  { label: 'Shipped', value: 'SHIPPED' },
+  { label: 'Completed', value: 'COMPLETED' },
+  { label: 'Rejected', value: 'REJECTED' },
 ];
 
 const TIMELINE_STEPS: {
@@ -41,26 +41,26 @@ const TIMELINE_STEPS: {
 }[] = [
   {
     key: 'WAITING_VERIFICATION',
-    label: 'Menunggu Konfirmasi Admin',
-    description: 'Bukti transfer sedang diperiksa',
+    label: 'Awaiting Admin Verification',
+    description: 'Transfer proof is under review',
     icon: Clock,
   },
   {
     key: 'PROCESSING',
-    label: 'Sedang Dikemas',
-    description: 'Pesanan disiapkan tim CORA',
+    label: 'Processing & Packing',
+    description: 'CORA team is preparing your order',
     icon: Package,
   },
   {
     key: 'SHIPPED',
-    label: 'Dikirim',
-    description: 'Dalam perjalanan ke alamat Anda',
+    label: 'Shipped',
+    description: 'On the way to your address',
     icon: Truck,
   },
   {
     key: 'COMPLETED',
-    label: 'Selesai',
-    description: 'Pesanan telah diterima',
+    label: 'Completed',
+    description: 'Order has been delivered',
     icon: CheckCircle2,
   },
 ];
@@ -76,7 +76,7 @@ function formatRupiah(amount: number): string {
 
 function formatDate(isoString: string): string {
   try {
-    return new Intl.DateTimeFormat('id-ID', {
+    return new Intl.DateTimeFormat('en-US', {
       day: '2-digit',
       month: 'short',
       year: 'numeric',
@@ -95,27 +95,27 @@ function getStatusBadge(status: OrderStatus): {
   switch (status) {
     case 'WAITING_VERIFICATION':
       return {
-        label: 'Menunggu Konfirmasi Admin',
+        label: 'Awaiting Admin Verification',
         className: 'bg-amber-50 text-amber-800 ring-1 ring-amber-200',
       };
     case 'PROCESSING':
       return {
-        label: 'Sedang Dikemas',
+        label: 'Processing',
         className: 'bg-sky-50 text-sky-800 ring-1 ring-sky-200',
       };
     case 'SHIPPED':
       return {
-        label: 'Dikirim',
+        label: 'Shipped',
         className: 'bg-indigo-50 text-indigo-800 ring-1 ring-indigo-200',
       };
     case 'COMPLETED':
       return {
-        label: 'Selesai',
+        label: 'Completed',
         className: 'bg-[#3B5B3D]/12 text-[#3B5B3D] ring-1 ring-[#3B5B3D]/25',
       };
     case 'REJECTED':
       return {
-        label: 'Ditolak',
+        label: 'Rejected',
         className: 'bg-red-50 text-red-700 ring-1 ring-red-200',
       };
   }
@@ -155,17 +155,16 @@ function OrderTimeline({
             </span>
             <div>
               <p className="text-sm font-bold text-red-800">
-                Pesanan Ditolak oleh Admin
+                Order Rejected by Admin
               </p>
               <p className="mt-0.5 text-xs text-red-700">
-                Bukti transfer tidak sesuai atau pembayaran belum dapat
-                diverifikasi. Silakan hubungi tim CORA atau lakukan pemesanan
-                ulang.
+                The transfer proof did not match or payment could not be
+                verified. Please contact CORA support or place a new order.
               </p>
             </div>
           </div>
           <span className="self-start rounded-full bg-red-100 px-3 py-1 text-[11px] font-bold text-red-700 sm:self-center">
-            Status: Ditolak
+            Status: Rejected
           </span>
         </div>
       </div>
@@ -184,8 +183,10 @@ function OrderTimeline({
           const isReached = index <= currentStepIdx;
 
           return (
-            <div key={step.key} className="relative flex sm:flex-col gap-3 sm:gap-2">
-              {/* Connector line on desktop */}
+            <div
+              key={step.key}
+              className="relative flex sm:flex-col gap-3 sm:gap-2"
+            >
               {index < TIMELINE_STEPS.length - 1 && (
                 <div
                   className={`hidden sm:block absolute top-4 left-[calc(50%+18px)] right-[calc(-50%+18px)] h-0.5 ${
@@ -225,10 +226,9 @@ function OrderTimeline({
                   {step.description}
                 </p>
 
-                {/* Show Tracking Number under "Dikirim" step if filled by Admin */}
                 {step.key === 'SHIPPED' && order.trackingNumber && (
                   <div className="mt-2 inline-flex flex-wrap items-center gap-1.5 rounded-full bg-white px-2.5 py-1 text-[11px] font-semibold text-[#2C1E18] ring-1 ring-[#E5DEC9]">
-                    <span className="text-[#6E5C52]">Resi:</span>
+                    <span className="text-[#6E5C52]">Tracking:</span>
                     <span className="font-mono font-bold text-[#3B5B3D]">
                       {order.trackingNumber}
                     </span>
@@ -237,7 +237,7 @@ function OrderTimeline({
                       onClick={() =>
                         onCopyResi(order.id, order.trackingNumber ?? '')
                       }
-                      aria-label="Salin nomor resi"
+                      aria-label="Copy tracking number"
                       className="rounded-full p-0.5 text-[#3B5B3D] hover:bg-[#3B5B3D]/10"
                     >
                       {copiedResiId === order.id ? (
@@ -290,7 +290,7 @@ function OrdersContent() {
     try {
       await navigator.clipboard.writeText(tracking);
     } catch {
-      // Fallback still toggles visual confirmation
+      // Visual confirmation fallback
     }
     setCopiedResiId(orderId);
     window.setTimeout(() => {
@@ -308,11 +308,11 @@ function OrdersContent() {
             Order Tracking
           </span>
           <h1 className="mt-2 font-serif text-3xl font-semibold tracking-[-0.015em] text-[#2C1E18] sm:text-4xl">
-            Pelacakan Pesanan
+            Track Your Orders
           </h1>
           <p className="mt-1 text-sm text-[#6E5C52]">
-            Pantau status verifikasi pembayaran, pengemasan, dan nomor resi
-            pengiriman pesanan CORA Anda.
+            Follow payment verification, packing progress, and shipping tracking
+            numbers for your CORA orders.
           </p>
         </div>
 
@@ -321,7 +321,7 @@ function OrdersContent() {
           className="inline-flex items-center gap-2 self-start rounded-full bg-[#3B5B3D] px-5 py-2.5 text-xs font-semibold text-white transition hover:bg-[#2F4A31] sm:self-auto"
         >
           <ShoppingBag className="h-4 w-4" />
-          Belanja Produk Lagi
+          Shop More Products
         </Link>
       </div>
 
@@ -335,18 +335,18 @@ function OrdersContent() {
             <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-[#B8E3A6]" />
             <div>
               <p className="text-sm font-bold">
-                Pesanan #{createdOrderNumber} Berhasil Dikirim!
+                Order #{createdOrderNumber} Submitted Successfully!
               </p>
               <p className="mt-0.5 text-xs text-white/85">
-                Terima kasih telah berbelanja di CORA. Bukti transfer Anda telah
-                diterima dan sedang menunggu verifikasi admin.
+                Thank you for shopping with CORA. Your transfer proof has been
+                received and is awaiting admin verification.
               </p>
             </div>
           </div>
           <button
             type="button"
             onClick={() => setDismissedBanner(true)}
-            aria-label="Tutup notifikasi"
+            aria-label="Dismiss notification"
             className="rounded-full p-1 text-white/80 hover:bg-white/15 hover:text-white"
           >
             <X className="h-4 w-4" />
@@ -382,15 +382,15 @@ function OrdersContent() {
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Cari no. order, nama, atau resi..."
-            aria-label="Cari pesanan"
+            placeholder="Search order no., name, or tracking..."
+            aria-label="Search orders"
             className="w-full rounded-full bg-white py-2.5 pr-9 pl-10 text-sm text-[#2C1E18] placeholder-[#8A776C] shadow-xs ring-1 ring-[#E5DEC9]/80 focus:ring-2 focus:ring-[#3B5B3D] focus:outline-none"
           />
           {searchQuery && (
             <button
               type="button"
               onClick={() => setSearchQuery('')}
-              aria-label="Hapus pencarian"
+              aria-label="Clear search"
               className="absolute top-1/2 right-3 -translate-y-1/2 rounded-full p-1 text-[#8A776C] hover:bg-[#E6E3D8]"
             >
               <X className="h-3.5 w-3.5" />
@@ -402,13 +402,13 @@ function OrdersContent() {
       {/* Orders List */}
       <div className="mt-8 space-y-6">
         {filteredOrders.length === 0 ? (
-          <div className="rounded-3xl bg-white px-6 py-14 text-center shadow-xs">
+          <div className="rounded-2xl border border-[#E5DEC9] bg-white px-6 py-14 text-center shadow-2xs">
             <Package className="mx-auto h-10 w-10 text-[#3B5B3D]/55" />
             <h2 className="mt-4 font-serif text-xl font-bold text-[#2C1E18]">
-              Belum ada pesanan yang cocok
+              No matching orders found
             </h2>
             <p className="mt-1 text-sm text-[#6E5C52]">
-              Periksa kata kunci pencarian atau pilih status pesanan lain.
+              Check your search keywords or select a different status filter.
             </p>
           </div>
         ) : (
@@ -419,7 +419,9 @@ function OrdersContent() {
             return (
               <article
                 key={order.id}
-                style={{ animationDelay: `${Math.min(filteredOrders.indexOf(order), 6) * 55}ms` }}
+                style={{
+                  animationDelay: `${Math.min(filteredOrders.indexOf(order), 6) * 55}ms`,
+                }}
                 className={`animate-cora-fade-up overflow-hidden rounded-2xl border border-[#E5DEC9] bg-white p-6 shadow-2xs transition hover:border-[#CFC5B1] sm:p-7 ${
                   isHighlighted ? 'ring-2 ring-[#3B5B3D]' : ''
                 }`}
@@ -438,7 +440,7 @@ function OrdersContent() {
                       </span>
                     </div>
                     <p className="text-xs text-[#6E5C52]">
-                      Dipesan pada {formatDate(order.createdAt)} • Transfer ke{' '}
+                      Ordered on {formatDate(order.createdAt)} • Transferred to{' '}
                       <span className="font-semibold text-[#2C1E18]">
                         {order.bankAccountUsed}
                       </span>
@@ -453,14 +455,14 @@ function OrdersContent() {
                         className="inline-flex items-center gap-1.5 rounded-full bg-[#FAF8F5] px-3.5 py-2 text-xs font-semibold text-[#2C1E18] ring-1 ring-[#E5DEC9] transition hover:bg-[#E6E3D8]"
                       >
                         <Eye className="h-3.5 w-3.5 text-[#3B5B3D]" />
-                        Bukti Transfer
+                        Transfer Proof
                       </button>
                     )}
                     <div className="text-right">
                       <p className="text-[11px] font-medium text-[#6E5C52]">
-                        Total Pembayaran
+                        Total Payment
                       </p>
-                      <p className="text-lg font-extrabold text-[#2C1E18]">
+                      <p className="text-lg font-extrabold tabular-nums text-[#2C1E18]">
                         {formatRupiah(order.totalAmount)}
                       </p>
                     </div>
@@ -484,7 +486,7 @@ function OrdersContent() {
                       <div className="flex items-center gap-2 text-[#2C1E18]">
                         <Truck className="h-4 w-4 text-[#3B5B3D]" />
                         <span>
-                          Nomor Resi Pengiriman:{' '}
+                          Shipping Tracking Number:{' '}
                           <strong className="font-mono text-[#3B5B3D]">
                             {order.trackingNumber}
                           </strong>
@@ -500,12 +502,12 @@ function OrdersContent() {
                         {copiedResiId === order.id ? (
                           <>
                             <Check className="h-3.5 w-3.5" />
-                            Resi Tersalin!
+                            Tracking Copied!
                           </>
                         ) : (
                           <>
                             <Copy className="h-3.5 w-3.5" />
-                            Salin Resi
+                            Copy Tracking
                           </>
                         )}
                       </button>
@@ -516,7 +518,7 @@ function OrdersContent() {
                 <div className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-12">
                   <div className="space-y-3 lg:col-span-7">
                     <h3 className="text-xs font-bold uppercase tracking-wider text-[#6E5C52]">
-                      Produk Dipesan
+                      Ordered Items
                     </h3>
                     <div className="divide-y divide-[#F0EAE0] rounded-2xl bg-[#FAF8F5] px-4 py-2">
                       {order.items.map((item) => (
@@ -538,12 +540,12 @@ function OrdersContent() {
                               <p className="truncate text-sm font-semibold text-[#2C1E18]">
                                 {item.productName}
                               </p>
-                              <p className="text-xs text-[#6E5C52]">
+                              <p className="text-xs tabular-nums text-[#6E5C52]">
                                 {item.qty} × {formatRupiah(item.price)}
                               </p>
                             </div>
                           </div>
-                          <span className="text-sm font-bold text-[#2C1E18]">
+                          <span className="text-sm font-bold tabular-nums text-[#2C1E18]">
                             {formatRupiah(item.price * item.qty)}
                           </span>
                         </div>
@@ -553,7 +555,7 @@ function OrdersContent() {
 
                   <div className="space-y-2.5 rounded-2xl bg-[#FAF8F5] p-4 text-xs lg:col-span-5">
                     <h3 className="text-xs font-bold uppercase tracking-wider text-[#6E5C52]">
-                      Informasi Penerima
+                      Recipient Details
                     </h3>
                     <p className="text-sm font-bold text-[#2C1E18]">
                       {order.customerName}{' '}
@@ -567,7 +569,7 @@ function OrdersContent() {
                     {order.notes && (
                       <p className="pt-1 text-[#6E5C52]">
                         <span className="font-semibold text-[#2C1E18]">
-                          Catatan:
+                          Notes:
                         </span>{' '}
                         {order.notes}
                       </p>
@@ -586,13 +588,13 @@ function OrdersContent() {
           className="animate-cora-fade-in fixed inset-0 z-50 flex items-center justify-center bg-[#2C1E18]/55 p-4 backdrop-blur-xs"
           role="dialog"
           aria-modal="true"
-          aria-label="Preview Bukti Transfer"
+          aria-label="Transfer Proof Preview"
         >
           <div className="animate-cora-modal w-full max-w-md overflow-hidden rounded-2xl border border-[#E5DEC9] bg-white shadow-2xl">
             <div className="flex items-center justify-between border-b border-[#F0EAE0] px-5 py-4">
               <div>
                 <h3 className="font-serif text-lg font-bold text-[#2C1E18]">
-                  Bukti Transfer
+                  Transfer Proof
                 </h3>
                 <p className="text-xs text-[#6E5C52]">
                   #{previewProofOrder.orderNumber} •{' '}
@@ -602,7 +604,7 @@ function OrdersContent() {
               <button
                 type="button"
                 onClick={() => setPreviewProofOrder(null)}
-                aria-label="Tutup preview"
+                aria-label="Close preview"
                 className="rounded-full p-1.5 text-[#6E5C52] hover:bg-[#E6E3D8]"
               >
                 <X className="h-5 w-5" />
@@ -612,7 +614,7 @@ function OrdersContent() {
               <div className="relative h-80 w-full overflow-hidden rounded-2xl bg-white ring-1 ring-[#E5DEC9]">
                 <Image
                   src={previewProofOrder.proofImage}
-                  alt={`Bukti transfer ${previewProofOrder.orderNumber}`}
+                  alt={`Transfer proof ${previewProofOrder.orderNumber}`}
                   fill
                   unoptimized
                   className="object-contain p-2"
@@ -634,7 +636,7 @@ export default function OrdersPage() {
         <Suspense
           fallback={
             <div className="mx-auto max-w-7xl px-4 py-16 text-center text-sm text-[#6E5C52]">
-              Memuat data pesanan...
+              Loading orders...
             </div>
           }
         >
@@ -645,4 +647,3 @@ export default function OrdersPage() {
     </div>
   );
 }
-

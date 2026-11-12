@@ -58,21 +58,21 @@ interface HubRecipe {
 }
 
 const HOME_INGREDIENTS = [
-  'Telur',
-  'Pisang',
+  'Eggs',
+  'Banana',
   'Dark Chocolate',
-  'Susu Oat',
-  'Gula Aren',
-  'Minyak Kelapa',
-  'Madu',
-  'Kayu Manis',
+  'Oat Milk',
+  'Palm Sugar',
+  'Coconut Oil',
+  'Honey',
+  'Cinnamon',
 ] as const;
 
 const DISH_TYPES: { id: DishType; label: string; subtitle: string }[] = [
-  { id: 'Cookies', label: 'Cookies', subtitle: 'Renyah di luar, chewy di dalam' },
-  { id: 'Muffin', label: 'Muffin', subtitle: 'Lembut & tinggi serat' },
-  { id: 'Pancake', label: 'Pancake', subtitle: 'Sarapan sehat cepat saji' },
-  { id: 'Brownies', label: 'Brownies', subtitle: 'Fudgy & kaya rasa cokelat' },
+  { id: 'Cookies', label: 'Cookies', subtitle: 'Crisp edges, chewy center' },
+  { id: 'Muffin', label: 'Muffin', subtitle: 'Tender & high dietary fiber' },
+  { id: 'Pancake', label: 'Pancake', subtitle: 'Quick wholesome breakfast' },
+  { id: 'Brownies', label: 'Brownies', subtitle: 'Rich, fudgy & decadent' },
 ];
 
 const HUB_RECIPES: HubRecipe[] = [
@@ -80,101 +80,101 @@ const HUB_RECIPES: HubRecipe[] = [
     id: 'rec-fudgy-brownies',
     title: 'Fudgy Coconut Dark Choco Brownies',
     category: 'Brownies',
-    prepTime: '35 menit',
-    servings: '9 potong',
+    prepTime: '35 mins',
+    servings: '9 squares',
     calories: 165,
     coconutFlourUsed: '65g CORA Coconut Flour',
     summary:
-      'Brownies cokelat pekat tanpa tepung terigu dengan tekstur fudgy alami berkat serat halus tepung kelapa CORA.',
+      'Rich wheat-free dark chocolate brownies with a naturally fudgy crumb powered by fine CORA coconut flour.',
     ingredients: [
       '65g CORA Upcycled Coconut Flour',
-      '120g Dark Chocolate 70%, lelehkan',
-      '3 butir Telur ayam suhu ruang',
-      '75g Gula Aren bubuk',
-      '60ml Minyak kelapa atau butter cair',
-      '1/2 sdt Ekstrak vanila & sejumput garam laut',
+      '120g 70% Dark Chocolate, melted',
+      '3 Eggs at room temperature',
+      '75g Palm Sugar',
+      '60ml Coconut oil or melted butter',
+      '1/2 tsp Vanilla extract & a pinch of sea salt',
     ],
     steps: [
-      'Panaskan oven di suhu 175°C dan alasi loyang 18x18 cm dengan baking paper.',
-      'Kocok telur dan gula aren hingga berbusa ringan sekitar 2 menit.',
-      'Masukkan dark chocolate leleh dan minyak kelapa, aduk rata.',
-      'Ayak CORA Upcycled Coconut Flour beserta garam, lalu aduk lipat perlahan hingga adonan homogen.',
-      'Panggang selama 22–25 menit hingga permukaan berkilau dan bagian tengah tetap lembap.',
+      'Preheat your oven to 175°C and line an 18×18 cm baking pan with parchment paper.',
+      'Whisk eggs and palm sugar together for 2 minutes until lightly frothy.',
+      'Fold in melted dark chocolate and coconut oil until smooth.',
+      'Sift in CORA Upcycled Coconut Flour and sea salt, gently folding until combined.',
+      'Bake for 22–25 minutes until the top is glossy and the center remains moist.',
     ],
   },
   {
     id: 'rec-banana-pancake',
     title: 'Fluffy Banana Oat Coconut Pancakes',
     category: 'Pancake',
-    prepTime: '15 menit',
-    servings: '6 pancake',
+    prepTime: '15 mins',
+    servings: '6 pancakes',
     calories: 140,
     coconutFlourUsed: '45g CORA Coconut Flour',
     summary:
-      'Pancake sarapan tinggi serat berpadu manis alami pisang matang dan susu oat yang mengenyangkan lebih lama.',
+      'Fiber-rich breakfast pancakes combining naturally sweet ripe banana and creamy oat milk to keep you energized longer.',
     ingredients: [
       '45g CORA Upcycled Coconut Flour',
-      '1 buah Pisang Cavendish matang, haluskan',
-      '2 butir Telur',
-      '100ml Susu Oat hangat',
-      '1 sdt Baking powder',
-      '1/2 sdt Kayu manis bubuk',
+      '1 ripe Cavendish Banana, mashed',
+      '2 Eggs',
+      '100ml warm Oat Milk',
+      '1 tsp Baking powder',
+      '1/2 tsp Ground cinnamon',
     ],
     steps: [
-      'Haluskan pisang di mangkuk besar, lalu campurkan telur dan susu oat hingga rata.',
-      'Masukkan CORA Upcycled Coconut Flour, baking powder, dan kayu manis. Diamkan 3 menit agar tepung menyerap cairan.',
-      'Panaskan teflon anti lengket dengan api kecil-sedang.',
-      'Tuang 1 sendok sayur adonan, masak 2 menit per sisi hingga keemasan. Sajikan dengan madu atau potongan buah.',
+      'Mash the banana in a bowl, then whisk in eggs and oat milk until smooth.',
+      'Stir in CORA Upcycled Coconut Flour, baking powder, and cinnamon. Rest 3 minutes so the flour absorbs liquid.',
+      'Heat a non-stick skillet over low-medium heat.',
+      'Pour 1 ladle of batter per pancake, cook 2 minutes per side until golden brown, and serve with honey or fresh fruit.',
     ],
   },
   {
     id: 'rec-chocochip-cookies',
     title: 'Artisanal Palm Sugar Coconut Cookies',
     category: 'Cookies',
-    prepTime: '25 menit',
-    servings: '14 keping',
+    prepTime: '25 mins',
+    servings: '14 cookies',
     calories: 120,
     coconutFlourUsed: '55g CORA Coconut Flour',
     summary:
-      'Cookies rendah indeks glikemik dengan wangi karamel gula aren dan potongan dark chocolate yang lumer.',
+      'Low-glycemic cookies featuring warm caramelized palm sugar notes and melting dark chocolate chunks.',
     ingredients: [
       '55g CORA Upcycled Coconut Flour',
-      '2 butir Telur',
-      '65g Gula Aren halus',
-      '60g Minyak kelapa / unsalted butter',
-      '70g Dark Chocolate cincang',
-      '1/2 sdt Baking soda & 1 sdt vanila',
+      '2 Eggs',
+      '65g Fine Palm Sugar',
+      '60g Coconut oil or unsalted butter',
+      '70g Dark Chocolate chunks',
+      '1/2 tsp Baking soda & 1 tsp vanilla extract',
     ],
     steps: [
-      'Campurkan minyak kelapa, gula aren, telur, dan vanila hingga lembut.',
-      'Masukkan CORA Upcycled Coconut Flour dan baking soda, aduk rata hingga adonan bisa dipulung.',
-      'Tambahkan dark chocolate cincang, diamkan 5 menit.',
-      'Bentuk bulat pipih di atas loyang, panggang 12–14 menit di suhu 170°C hingga pinggirannya renyah.',
+      'Whisk coconut oil, palm sugar, eggs, and vanilla until creamy.',
+      'Mix in CORA Upcycled Coconut Flour and baking soda until a soft dough forms.',
+      'Fold in dark chocolate chunks and let the dough rest for 5 minutes.',
+      'Scoop and flatten onto a lined tray, then bake 12–14 minutes at 170°C until edges turn crisp golden.',
     ],
   },
   {
     id: 'rec-oat-muffin',
     title: 'Double Choco Oat Coconut Muffins',
     category: 'Muffin',
-    prepTime: '30 menit',
-    servings: '8 muffin',
+    prepTime: '30 mins',
+    servings: '8 muffins',
     calories: 155,
     coconutFlourUsed: '60g CORA Coconut Flour',
     summary:
-      'Muffin lembut bebas terigu dengan perpaduan susu oat, dark chocolate, dan tepung kelapa kaya serat.',
+      'Tender wheat-free muffins crafted with oat milk, dark chocolate, and high-fiber upcycled coconut flour.',
     ingredients: [
       '60g CORA Upcycled Coconut Flour',
-      '3 butir Telur',
-      '120ml Susu Oat',
-      '60g Gula Aren atau Madu',
-      '25g Cokelat bubuk tanpa gula',
+      '3 Eggs',
+      '120ml Oat Milk',
+      '60g Palm Sugar or Honey',
+      '25g Unsweetened cocoa powder',
       '50g Dark Chocolate chips',
     ],
     steps: [
-      'Panaskan oven pada 180°C dan siapkan 8 cup muffin.',
-      'Kocok telur, susu oat, dan gula aren/madu hingga tercampur rata.',
-      'Ayak CORA Coconut Flour dan cokelat bubuk, masukkan ke campuran basah lalu aduk rata.',
-      'Taburi dark chocolate chips di atas adonan dan panggang selama 20 menit hingga matang merata.',
+      'Preheat oven to 180°C and line an 8-cup muffin tin.',
+      'Whisk eggs, oat milk, and palm sugar or honey until well blended.',
+      'Sift in CORA Coconut Flour and cocoa powder, stirring gently until smooth.',
+      'Fill muffin cups 3/4 full, top with dark chocolate chips, and bake for 20 minutes.',
     ],
   },
 ];
@@ -187,60 +187,60 @@ function buildAiRecipe(
   const activeExtras =
     selectedIngredients.length > 0
       ? selectedIngredients
-      : ['Telur', 'Susu Oat', 'Gula Aren'];
+      : ['Eggs', 'Oat Milk', 'Palm Sugar'];
 
-  const sweetener = has('Gula Aren')
-    ? '65g Gula Aren bubuk'
-    : has('Madu')
-    ? '60ml Madu murni'
-    : '60g Gula kelapa / gula aren';
+  const sweetener = has('Palm Sugar')
+    ? '65g Palm Sugar'
+    : has('Honey')
+    ? '60ml Pure Honey'
+    : '60g Coconut or Palm Sugar';
 
-  const liquid = has('Susu Oat')
-    ? '110ml Susu Oat'
-    : '100ml Susu nabati / air hangat';
+  const liquid = has('Oat Milk')
+    ? '110ml Oat Milk'
+    : '100ml Plant-based milk or warm water';
 
-  const fat = has('Minyak Kelapa')
-    ? '55ml Minyak kelapa murni'
-    : '55g Butter leleh / minyak kelapa';
+  const fat = has('Coconut Oil')
+    ? '55ml Virgin Coconut Oil'
+    : '55g Melted butter or coconut oil';
 
-  const eggLine = has('Telur')
-    ? '3 butir Telur (pengikat alami serat kelapa)'
-    : '2 butir Telur atau 2 sdm chia egg (pengikat adonan)';
+  const eggLine = has('Eggs')
+    ? '3 Eggs (natural binder for coconut fiber)'
+    : '2 Eggs or 2 tbsp chia eggs (batter binder)';
 
   const flavorNotes: string[] = [];
-  if (has('Pisang')) flavorNotes.push('1 buah Pisang matang (haluskan)');
+  if (has('Banana')) flavorNotes.push('1 ripe Banana (mashed)');
   if (has('Dark Chocolate'))
-    flavorNotes.push('75g Dark Chocolate 70% (cincang / lelehkan)');
-  if (has('Kayu Manis')) flavorNotes.push('1/2 sdt Kayu manis bubuk');
+    flavorNotes.push('75g 70% Dark Chocolate (chopped or melted)');
+  if (has('Cinnamon')) flavorNotes.push('1/2 tsp Ground cinnamon');
 
   if (dishType === 'Brownies') {
     return {
-      title: has('Pisang')
+      title: has('Banana')
         ? 'CORA Banana Dark Choco Fudge Brownies'
         : 'CORA Artisanal Coconut Fudge Brownies',
       dishType,
-      tagline: `Racikan brownies fudgy rendah tepung terigu dengan ${activeExtras.slice(0, 3).join(', ')}.`,
-      prepTime: '32 menit',
-      servings: '9 potong',
+      tagline: `Low-wheat fudgy brownies tailored with ${activeExtras.slice(0, 3).join(', ')}.`,
+      prepTime: '32 mins',
+      servings: '9 squares',
       caloriesPerServing: has('Dark Chocolate') ? 172 : 148,
       fiberGrams: 5.4,
-      wheatEquivalent: '180g Tepung Terigu',
+      wheatEquivalent: '180g Wheat Flour',
       coconutFlourAmount: '60g CORA Upcycled Coconut Flour',
       hydrationTip:
-        'Rasio substitusi 1 : 3. Gunakan 60g tepung kelapa CORA menggantikan 180g terigu dengan tambahan cairan & telur agar tekstur tetap fudgy.',
+        '1 : 3 substitution ratio. Use 60g CORA coconut flour in place of 180g wheat flour with added eggs & moisture for a rich fudgy texture.',
       ingredients: [
         '60g CORA Upcycled Coconut Flour',
         eggLine,
         sweetener,
         fat,
-        '25g Cokelat bubuk murni',
+        '25g Unsweetened cocoa powder',
         ...flavorNotes,
       ],
       steps: [
-        'Panaskan oven 175°C dan siapkan loyang 18x18 cm berlapis kertas roti.',
-        'Kocok telur bersama pemanis pilihan hingga sedikit mengembang, lalu tuang lemak dan bahan cair.',
-        'Ayak CORA Upcycled Coconut Flour bersama cokelat bubuk, aduk lipat hingga menyatu.',
-        'Tambahkan potongan dark chocolate atau pisang halus jika dipilih, panggang 22–25 menit.',
+        'Preheat oven to 175°C and line an 18×18 cm baking pan with parchment paper.',
+        'Whisk eggs with your chosen sweetener until slightly airy, then stir in melted fat and liquid.',
+        'Sift in CORA Upcycled Coconut Flour and cocoa powder, folding gently until smooth.',
+        'Add chopped dark chocolate or mashed banana if selected, then bake for 22–25 minutes.',
       ],
     };
   }
@@ -251,92 +251,91 @@ function buildAiRecipe(
         ? 'CORA Choco-Chunk Coconut Cookies'
         : 'CORA Crispy Golden Coconut Cookies',
       dishType,
-      tagline: `Cookies renyah tinggi serat berbasis bahan dapur pilihan Anda (${activeExtras.slice(0, 3).join(', ')}).`,
-      prepTime: '24 menit',
-      servings: '12 keping',
+      tagline: `High-fiber crisp cookies customized with your pantry picks (${activeExtras.slice(0, 3).join(', ')}).`,
+      prepTime: '24 mins',
+      servings: '12 cookies',
       caloriesPerServing: has('Dark Chocolate') ? 128 : 112,
       fiberGrams: 4.2,
-      wheatEquivalent: '150g Tepung Terigu',
+      wheatEquivalent: '150g Wheat Flour',
       coconutFlourAmount: '50g CORA Upcycled Coconut Flour',
       hydrationTip:
-        'Substitusi 50g CORA Coconut Flour untuk 150g terigu. Diamkan adonan 5 menit sebelum dipanggang agar kelembapan terserap sempurna.',
+        'Substitute 50g CORA Coconut Flour for 150g wheat flour. Rest dough for 5 minutes before baking so the fiber hydrates evenly.',
       ingredients: [
         '50g CORA Upcycled Coconut Flour',
         eggLine,
         sweetener,
         fat,
-        '1/2 sdt Baking soda',
+        '1/2 tsp Baking soda',
         ...flavorNotes,
       ],
       steps: [
-        'Aduk bahan basah (telur, pemanis, minyak/butter) dalam mangkuk hingga rata.',
-        'Masukkan CORA Upcycled Coconut Flour dan baking soda, diamkan 5 menit agar serat mengembang.',
-        'Campurkan bahan tambahan pilihan seperti dark chocolate atau kayu manis.',
-        'Cetak pipih di loyang dan panggang 12–14 menit pada suhu 170°C hingga tepinya kecokelatan.',
+        'Whisk wet ingredients (eggs, sweetener, oil/butter) in a bowl until creamy.',
+        'Fold in CORA Upcycled Coconut Flour and baking soda, then rest 5 minutes.',
+        'Stir in optional mix-ins such as dark chocolate chunks or cinnamon.',
+        'Shape onto a baking sheet and bake for 12–14 minutes at 170°C until golden around the edges.',
       ],
     };
   }
 
   if (dishType === 'Muffin') {
     return {
-      title: has('Pisang')
+      title: has('Banana')
         ? 'CORA Banana Oat Coconut Muffins'
         : 'CORA Light & Moist Coconut Muffins',
       dishType,
-      tagline: `Muffin empuk kaya serat dengan takaran presisi CORA Upcycled Coconut Flour.`,
-      prepTime: '28 menit',
-      servings: '8 cup',
+      tagline: `Fluffy, fiber-rich muffins formulated with exact CORA Upcycled Coconut Flour hydration.`,
+      prepTime: '28 mins',
+      servings: '8 muffins',
       caloriesPerServing: 152,
       fiberGrams: 4.9,
-      wheatEquivalent: '165g Tepung Terigu',
+      wheatEquivalent: '165g Wheat Flour',
       coconutFlourAmount: '55g CORA Upcycled Coconut Flour',
       hydrationTip:
-        '55g tepung kelapa CORA menggantikan 165g tepung terigu. Kombinasi susu oat dan telur menjaga remah muffin tetap ringan dan lembut.',
+        '55g CORA coconut flour replaces 165g wheat flour. Pairing oat milk and eggs keeps the muffin crumb light and tender.',
       ingredients: [
         '55g CORA Upcycled Coconut Flour',
         eggLine,
         liquid,
         sweetener,
-        '1 sdt Baking powder',
+        '1 tsp Baking powder',
         ...flavorNotes,
       ],
       steps: [
-        'Panaskan oven 180°C dan susun cup kertas pada loyang muffin.',
-        'Campurkan telur, susu oat, pemanis, dan pisang halus (bila ada) hingga rata.',
-        'Ayak CORA Upcycled Coconut Flour bersama baking powder, aduk rata dan diamkan 3 menit.',
-        'Tuang ke cetakan 3/4 penuh, beri topping dark chocolate jika tersedia, panggang 18–20 menit.',
+        'Preheat oven to 180°C and prepare an 8-cup muffin tray with paper liners.',
+        'Whisk eggs, oat milk, sweetener, and mashed banana (if selected) until smooth.',
+        'Sift in CORA Upcycled Coconut Flour and baking powder, stir well, and rest 3 minutes.',
+        'Divide into muffin cups (3/4 full), top with dark chocolate if using, and bake for 18–20 minutes.',
       ],
     };
   }
 
-  // Pancake
   return {
-    title: has('Pisang')
+    title: has('Banana')
       ? 'CORA Fluffy Banana Oat Coconut Pancakes'
       : 'CORA Morning Fiber Coconut Pancakes',
     dishType,
-    tagline: `Pancake sarapan lembut dalam 15 menit menggunakan bahan di rumah Anda.`,
-    prepTime: '15 menit',
-    servings: '6 porsi mini',
+    tagline: `Wholesome 15-minute breakfast pancakes crafted from ingredients in your kitchen.`,
+    prepTime: '15 mins',
+    servings: '6 mini pancakes',
     caloriesPerServing: 136,
     fiberGrams: 4.6,
-    wheatEquivalent: '135g Tepung Terigu',
+    wheatEquivalent: '135g Wheat Flour',
     coconutFlourAmount: '45g CORA Upcycled Coconut Flour',
     hydrationTip:
-      '45g CORA Coconut Flour setara 135g tepung terigu. Gunakan tambahan susu oat agar adonan mudah dituang di teflon.',
+      '45g CORA Coconut Flour equals 135g wheat flour. Adding oat milk ensures a smooth, pourable batter on the skillet.',
     ingredients: [
       '45g CORA Upcycled Coconut Flour',
       eggLine,
       liquid,
       sweetener,
-      '1 sdt Baking powder',
+      '1 tsp Baking powder',
       ...flavorNotes,
     ],
     steps: [
-      'Kocok telur, susu oat, dan pemanis dalam mangkuk hingga tercampur rata.',
-      'Tambahkan CORA Upcycled Coconut Flour dan baking powder, aduk halus tanpa gumpalan.',
-      'Diamkan 3 menit sampai adonan sedikit mengental, lalu panaskan wajan anti lengket dengan api kecil.',
-      'Tuang adonan, masak 2 menit tiap sisi hingga keemasan dan sajikan hangat.',
+      'Whisk eggs, oat milk, and sweetener in a mixing bowl until smooth.',
+      'Stir in CORA Upcycled Coconut Flour and baking powder until no lumps remain.',
+      'Let batter thicken for 3 minutes while heating a non-stick skillet over low heat.',
+      'Pour batter and cook 2 minutes per side until golden brown. Serve warm.',
     ],
   };
 }
@@ -345,17 +344,17 @@ function getPickupBadge(status: PickupRequestStatus) {
   switch (status) {
     case 'PENDING':
       return {
-        label: 'Menunggu Jadwal',
+        label: 'Awaiting Schedule',
         className: 'bg-amber-50 text-amber-800 ring-1 ring-amber-200',
       };
     case 'SCHEDULED':
       return {
-        label: 'Terjadwal Jemput',
+        label: 'Scheduled',
         className: 'bg-sky-50 text-sky-800 ring-1 ring-sky-200',
       };
     case 'COMPLETED':
       return {
-        label: 'Selesai Dijemput',
+        label: 'Completed',
         className: 'bg-[#3B5B3D]/12 text-[#3B5B3D] ring-1 ring-[#3B5B3D]/25',
       };
   }
@@ -365,10 +364,9 @@ export default function EcosystemPage() {
   const { products, pickupRequests, addToCart, submitPickupRequest } =
     useCora();
 
-  // 1. CORABlend AI State
   const [selectedIngredients, setSelectedIngredients] = useState<string[]>([
-    'Telur',
-    'Pisang',
+    'Eggs',
+    'Banana',
     'Dark Chocolate',
   ]);
   const [selectedDish, setSelectedDish] = useState<DishType>('Brownies');
@@ -376,12 +374,10 @@ export default function EcosystemPage() {
   const [aiRecipe, setAiRecipe] = useState<GeneratedRecipe | null>(null);
   const [addedFlourFeedback, setAddedFlourFeedback] = useState(false);
 
-  // 2. Recipe Hub Modal State
   const [activeHubRecipe, setActiveHubRecipe] = useState<HubRecipe | null>(
     null
   );
 
-  // 3. Coconut Pickup Form State
   const [supplierName, setSupplierName] = useState('');
   const [phone, setPhone] = useState('');
   const [location, setLocation] = useState('');
@@ -449,7 +445,7 @@ export default function EcosystemPage() {
     });
 
     setPickupSubmittedMsg(
-      `Permintaan penjemputan dari ${created.supplierName} (${created.estimatedKg} kg) berhasil dijadwalkan dan langsung diteruskan ke Admin Dashboard.`
+      `Pickup request from ${created.supplierName} (${created.estimatedKg} kg) has been submitted and synced to the Admin Dashboard.`
     );
     setSupplierName('');
     setPhone('');
@@ -475,15 +471,15 @@ export default function EcosystemPage() {
                 Recipe Hub, CORABlend AI &amp; Coconut Pickup
               </h1>
               <p className="text-sm leading-relaxed text-[#5C4B42] sm:text-base">
-                Eksplorasi cara kreatif menggunakan tepung kelapa upcycled di
-                dapur Anda atau jadwalkan penjemputan limbah ampas kelapa dari
-                mitra UMKM santan lokal.
+                Explore creative ways to bake with upcycled coconut flour at
+                home or schedule coconut residue pickups for local MSMEs and
+                coconut suppliers.
               </p>
             </div>
           </div>
         </section>
 
-        {/* 1. CORABLEND AI - SMART COCONUT FLOUR RECIPE ASSISTANT */}
+        {/* 1. CORABLEND AI */}
         <section className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
           <div className="animate-cora-fade-up rounded-2xl border border-[#E5DEC9] bg-white p-6 shadow-2xs sm:p-10">
             <div className="flex flex-col justify-between gap-4 border-b border-[#F0EAE0] pb-6 md:flex-row md:items-end">
@@ -496,9 +492,9 @@ export default function EcosystemPage() {
                   CORABlend AI
                 </h2>
                 <p className="mt-1 max-w-2xl text-sm text-[#6E5C52]">
-                  Pilih bahan yang tersedia di dapur dan jenis sajian favorit
-                  Anda. AI kami akan meracik takaran substitusi tepung terigu ke
-                  CORA Upcycled Coconut Flour secara presisi.
+                  Select the ingredients you have at home and your desired dish.
+                  Our assistant calculates the exact substitution ratio from
+                  wheat flour to CORA Upcycled Coconut Flour.
                 </p>
               </div>
             </div>
@@ -506,10 +502,9 @@ export default function EcosystemPage() {
             <div className="mt-8 grid grid-cols-1 gap-8 lg:grid-cols-12">
               {/* Left Controls */}
               <div className="space-y-7 lg:col-span-6">
-                {/* Ingredient Picker */}
                 <div>
                   <label className="block text-xs font-bold uppercase tracking-wider text-[#3B5B3D]">
-                    1. Pilih Bahan yang Anda Miliki di Rumah
+                    1. Choose Ingredients You Have at Home
                   </label>
                   <div className="mt-3 flex flex-wrap gap-2.5">
                     {HOME_INGREDIENTS.map((ingredient) => {
@@ -533,10 +528,9 @@ export default function EcosystemPage() {
                   </div>
                 </div>
 
-                {/* Dish Type Picker */}
                 <div>
                   <label className="block text-xs font-bold uppercase tracking-wider text-[#3B5B3D]">
-                    2. Pilih Jenis Sajian
+                    2. Choose Dish Type
                   </label>
                   <div className="mt-3 grid grid-cols-2 gap-3">
                     {DISH_TYPES.map((dish) => {
@@ -573,7 +567,7 @@ export default function EcosystemPage() {
                   {isGenerating ? (
                     <>
                       <Loader2 className="h-4 w-4 animate-spin" />
-                      Meracik Resep Cerdas...
+                      Crafting Smart Recipe...
                     </>
                   ) : (
                     <>
@@ -587,7 +581,7 @@ export default function EcosystemPage() {
               {/* Right Result Panel */}
               <div className="lg:col-span-6">
                 {isGenerating ? (
-                  <div className="flex h-full min-h-[340px] flex-col items-center justify-center rounded-3xl border border-[#E5DEC9] bg-[#FAF8F5] p-8 text-center">
+                  <div className="flex h-full min-h-[340px] flex-col items-center justify-center rounded-2xl border border-[#E5DEC9] bg-[#FAF8F5] p-8 text-center">
                     <div className="relative flex h-20 w-20 items-center justify-center">
                       <span className="absolute inset-0 animate-ping rounded-full bg-[#4E9A34]/20" />
                       <span className="relative flex h-16 w-16 items-center justify-center rounded-full bg-[#3B5B3D] text-white shadow-md">
@@ -595,12 +589,12 @@ export default function EcosystemPage() {
                       </span>
                     </div>
                     <h3 className="mt-5 font-serif text-xl font-bold text-[#2C1E18]">
-                      CORABlend AI sedang meracik...
+                      CORABlend AI is crafting your recipe...
                     </h3>
                     <p className="mt-2 max-w-sm text-xs leading-relaxed text-[#6E5C52]">
-                      Menghitung rasio hidrasi, substitusi tepung terigu ke{' '}
-                      <strong>CORA Upcycled Coconut Flour</strong>, dan estimasi
-                      kalori untuk {selectedDish} Anda.
+                      Calculating hydration ratios, wheat-to-
+                      <strong>CORA Upcycled Coconut Flour</strong> substitution,
+                      and nutrition per serving for your {selectedDish}.
                     </p>
                   </div>
                 ) : aiRecipe ? (
@@ -609,16 +603,16 @@ export default function EcosystemPage() {
                       <div className="flex flex-wrap items-center justify-between gap-2">
                         <span className="inline-flex items-center gap-1.5 rounded-full bg-[#4E9A34] px-3 py-1 text-[11px] font-bold text-white">
                           <Sparkles className="h-3 w-3" />
-                          Rekomendasi AI • {aiRecipe.dishType}
+                          AI Match • {aiRecipe.dishType}
                         </span>
-                        <div className="flex items-center gap-3 text-xs font-semibold text-[#5C4B42]">
+                        <div className="flex items-center gap-3 text-xs font-semibold tabular-nums text-[#5C4B42]">
                           <span className="inline-flex items-center gap-1">
                             <Clock className="h-3.5 w-3.5 text-[#3B5B3D]" />
                             {aiRecipe.prepTime}
                           </span>
                           <span className="inline-flex items-center gap-1">
                             <Flame className="h-3.5 w-3.5 text-[#4E9A34]" />
-                            {aiRecipe.caloriesPerServing} kkal / porsi
+                            {aiRecipe.caloriesPerServing} kcal / serving
                           </span>
                         </div>
                       </div>
@@ -634,7 +628,7 @@ export default function EcosystemPage() {
                       <div className="mt-4 rounded-2xl border border-[#3B5B3D]/20 bg-white p-4">
                         <div className="flex items-center gap-2 text-xs font-bold text-[#3B5B3D]">
                           <Scale className="h-4 w-4" />
-                          Takaran Substitusi Tepung Terigu
+                          Wheat Flour Substitution Ratio
                         </div>
                         <div className="mt-2 flex flex-wrap items-center gap-2 text-sm font-bold text-[#2C1E18]">
                           <span className="rounded-lg bg-[#FAF8F5] px-2.5 py-1 text-xs line-through text-[#8A776C]">
@@ -654,7 +648,7 @@ export default function EcosystemPage() {
                       <div className="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-2">
                         <div>
                           <p className="text-xs font-bold uppercase tracking-wider text-[#2C1E18]">
-                            Bahan Racikan
+                            Ingredients
                           </p>
                           <ul className="mt-2 space-y-1.5 text-xs text-[#5C4B42]">
                             {aiRecipe.ingredients.map((ing) => (
@@ -667,7 +661,7 @@ export default function EcosystemPage() {
                         </div>
                         <div>
                           <p className="text-xs font-bold uppercase tracking-wider text-[#2C1E18]">
-                            Cara Membuat
+                            Instructions
                           </p>
                           <ol className="mt-2 space-y-1.5 text-xs text-[#5C4B42]">
                             {aiRecipe.steps.map((step, idx) => (
@@ -690,11 +684,11 @@ export default function EcosystemPage() {
                           <p className="text-xs font-bold text-[#2C1E18]">
                             {coconutFlourProduct.name}
                           </p>
-                          <p className="text-[11px] text-[#6E5C52]">
+                          <p className="text-[11px] tabular-nums text-[#6E5C52]">
                             Rp{' '}
                             {coconutFlourProduct.price.toLocaleString('id-ID')}{' '}
-                            • Hemat {coconutFlourProduct.residueSavedGram}g
-                            residu
+                            • Saves {coconutFlourProduct.residueSavedGram}g
+                            residue
                           </p>
                         </div>
                         <div className="flex items-center gap-2">
@@ -711,12 +705,12 @@ export default function EcosystemPage() {
                             {addedFlourFeedback ? (
                               <>
                                 <Check className="h-3.5 w-3.5" />
-                                Masuk Keranjang!
+                                Added to Cart!
                               </>
                             ) : (
                               <>
                                 <ShoppingBag className="h-3.5 w-3.5" />
-                                Beli Tepung Kelapa CORA
+                                Buy CORA Coconut Flour
                               </>
                             )}
                           </button>
@@ -733,17 +727,17 @@ export default function EcosystemPage() {
                     )}
                   </div>
                 ) : (
-                  <div className="flex h-full min-h-[340px] flex-col items-center justify-center rounded-3xl border border-dashed border-[#D6CCBA] bg-[#FAF8F5] p-8 text-center">
+                  <div className="flex h-full min-h-[340px] flex-col items-center justify-center rounded-2xl border border-dashed border-[#D6CCBA] bg-[#FAF8F5] p-8 text-center">
                     <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[#3B5B3D]/10 text-[#3B5B3D]">
                       <ChefHat className="h-7 w-7" />
                     </div>
                     <h3 className="mt-4 font-serif text-xl font-bold text-[#2C1E18]">
-                      Siap Meracik Resep Sehat?
+                      Ready to Blend a Healthy Recipe?
                     </h3>
                     <p className="mt-2 max-w-sm text-xs leading-relaxed text-[#6E5C52]">
-                      Pilih minimal satu bahan di sisi kiri, tentukan jenis
-                      sajian, lalu tekan <strong>Generate AI Recipe</strong>{' '}
-                      untuk mendapatkan panduan substitusi tepung kelapa CORA.
+                      Pick your pantry ingredients on the left, choose a dish
+                      type, and click <strong>Generate AI Recipe</strong> for a
+                      tailored CORA Coconut Flour guide.
                     </p>
                   </div>
                 )}
@@ -762,11 +756,11 @@ export default function EcosystemPage() {
                   Recipe Hub
                 </span>
                 <h2 className="mt-2 font-serif text-3xl font-bold text-[#2C1E18] sm:text-4xl">
-                  Inspirasi Resep Tepung Kelapa CORA
+                  CORA Coconut Flour Recipe Collection
                 </h2>
                 <p className="mt-1.5 max-w-2xl text-sm text-[#6E5C52]">
-                  Klik kartu resep di bawah untuk melihat takaran bahan lengkap
-                  dan langkah pembuatannya di rumah.
+                  Click any recipe card below to read the full ingredient list
+                  and step-by-step instructions.
                 </p>
               </div>
             </div>
@@ -774,41 +768,41 @@ export default function EcosystemPage() {
             <div className="mt-9 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
               {HUB_RECIPES.map((recipe, idx) => (
                 <Reveal key={recipe.id} delayMs={idx * 65}>
-                <button
-                  type="button"
-                  onClick={() => setActiveHubRecipe(recipe)}
-                  className="group flex h-full w-full flex-col justify-between rounded-2xl border border-[#E5DEC9] bg-white p-6 text-left transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-1 hover:border-[#CFC5B1] hover:shadow-md"
-                >
-                  <div>
-                    <div className="flex items-center justify-between gap-2">
-                      <span className="rounded-full bg-[#3B5B3D]/10 px-3 py-1 text-[11px] font-bold text-[#3B5B3D]">
-                        {recipe.category}
-                      </span>
-                      <span className="text-xs font-medium text-[#6E5C52]">
-                        {recipe.calories} kkal
-                      </span>
+                  <button
+                    type="button"
+                    onClick={() => setActiveHubRecipe(recipe)}
+                    className="group flex h-full w-full flex-col justify-between rounded-2xl border border-[#E5DEC9] bg-white p-6 text-left transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-1 hover:border-[#CFC5B1] hover:shadow-md"
+                  >
+                    <div>
+                      <div className="flex items-center justify-between gap-2">
+                        <span className="rounded-full bg-[#3B5B3D]/10 px-3 py-1 text-[11px] font-bold text-[#3B5B3D]">
+                          {recipe.category}
+                        </span>
+                        <span className="text-xs font-medium tabular-nums text-[#6E5C52]">
+                          {recipe.calories} kcal
+                        </span>
+                      </div>
+
+                      <h3 className="mt-4 text-lg font-bold leading-snug text-[#2C1E18] transition-colors group-hover:text-[#3B5B3D]">
+                        {recipe.title}
+                      </h3>
+                      <p className="mt-2 line-clamp-3 text-xs leading-relaxed text-[#6E5C52]">
+                        {recipe.summary}
+                      </p>
                     </div>
 
-                    <h3 className="mt-4 text-lg font-bold leading-snug text-[#2C1E18] group-hover:text-[#3B5B3D] transition-colors">
-                      {recipe.title}
-                    </h3>
-                    <p className="mt-2 line-clamp-3 text-xs leading-relaxed text-[#6E5C52]">
-                      {recipe.summary}
-                    </p>
-                  </div>
-
-                  <div className="mt-5 border-t border-[#F0EAE0] pt-4">
-                    <div className="flex items-center justify-between text-xs text-[#6E5C52]">
-                      <span className="inline-flex items-center gap-1">
-                        <Clock className="h-3.5 w-3.5 text-[#3B5B3D]" />
-                        {recipe.prepTime}
-                      </span>
-                      <span className="font-semibold text-[#3B5B3D]">
-                        Baca Resep →
-                      </span>
+                    <div className="mt-5 border-t border-[#F0EAE0] pt-4">
+                      <div className="flex items-center justify-between text-xs text-[#6E5C52]">
+                        <span className="inline-flex items-center gap-1">
+                          <Clock className="h-3.5 w-3.5 text-[#3B5B3D]" />
+                          {recipe.prepTime}
+                        </span>
+                        <span className="font-semibold text-[#3B5B3D]">
+                          Read Recipe →
+                        </span>
+                      </div>
                     </div>
-                  </div>
-                </button>
+                  </button>
                 </Reveal>
               ))}
             </div>
@@ -829,23 +823,24 @@ export default function EcosystemPage() {
                   Coconut Pickup System
                 </span>
                 <h2 className="mt-3 font-serif text-3xl font-bold leading-tight text-[#2C1E18] sm:text-4xl">
-                  Jadwalkan Penjemputan Ampas Kelapa
+                  Schedule Coconut Residue Pickup
                 </h2>
                 <p className="mt-2.5 text-sm leading-relaxed text-[#5C4B42]">
-                  Mitra UMKM santan dan petani kelapa lokal dapat menjadwalkan
-                  penjemputan residu ampas kelapa secara langsung. Tim logistik
-                  CORA akan mengolahnya menjadi tepung kelapa bernilai tambah.
+                  Local coconut milk producers and coconut farmers can schedule
+                  direct pickup for leftover coconut residue. CORA&apos;s
+                  logistics team collects and upcycles it into high-value
+                  coconut flour.
                 </p>
               </div>
 
               {/* Recent Pickups Live Feed */}
-              <div className="rounded-3xl border border-[#E5DEC9] bg-white p-5 shadow-xs">
+              <div className="rounded-2xl border border-[#E5DEC9] bg-white p-5 shadow-2xs">
                 <div className="flex items-center justify-between">
                   <h3 className="text-sm font-bold text-[#2C1E18]">
-                    Antrean Penjemputan Mitra Terbaru
+                    Recent Partner Pickup Queue
                   </h3>
-                  <span className="rounded-full bg-[#3B5B3D]/10 px-2.5 py-0.5 text-[11px] font-semibold text-[#3B5B3D]">
-                    {pickupRequests.length} permintaan
+                  <span className="rounded-full bg-[#3B5B3D]/10 px-2.5 py-0.5 text-[11px] font-semibold tabular-nums text-[#3B5B3D]">
+                    {pickupRequests.length} requests
                   </span>
                 </div>
 
@@ -872,10 +867,10 @@ export default function EcosystemPage() {
                             {badge.label}
                           </span>
                         </div>
-                        <div className="mt-2 flex items-center gap-3 text-[11px] font-medium text-[#5C4B42]">
-                          <span>Estimasi: {req.estimatedKg} kg</span>
+                        <div className="mt-2 flex items-center gap-3 text-[11px] font-medium tabular-nums text-[#5C4B42]">
+                          <span>Est. {req.estimatedKg} kg</span>
                           <span>•</span>
-                          <span>Tanggal: {req.preferredDate}</span>
+                          <span>Date: {req.preferredDate}</span>
                         </div>
                       </div>
                     );
@@ -888,14 +883,14 @@ export default function EcosystemPage() {
             <div className="lg:col-span-7">
               <form
                 onSubmit={handlePickupSubmit}
-                className="rounded-3xl border border-[#E5DEC9] bg-white p-6 shadow-sm sm:p-8"
+                className="rounded-2xl border border-[#E5DEC9] bg-white p-6 shadow-2xs sm:p-8"
               >
                 <h3 className="font-serif text-xl font-bold text-[#2C1E18]">
-                  Formulir Mitra Penjemputan Limbah Ampas Kelapa
+                  Partner Coconut Residue Pickup Form
                 </h3>
                 <p className="mt-1 text-xs text-[#6E5C52]">
-                  Data yang dikirim langsung tersinkronisasi ke Admin Dashboard
-                  CORA untuk penjadwalan armada jemput.
+                  Submitted requests sync directly with the CORA Admin Dashboard
+                  for fleet dispatch scheduling.
                 </p>
 
                 {pickupSubmittedMsg && (
@@ -916,7 +911,8 @@ export default function EcosystemPage() {
                         className="flex items-center gap-1.5 text-xs font-semibold text-[#2C1E18]"
                       >
                         <User className="h-3.5 w-3.5 text-[#3B5B3D]" />
-                        Nama Mitra / Usaha <span className="text-red-500">*</span>
+                        Partner / Business Name{' '}
+                        <span className="text-red-500">*</span>
                       </label>
                       <input
                         id="supplierName"
@@ -924,7 +920,7 @@ export default function EcosystemPage() {
                         required
                         value={supplierName}
                         onChange={(e) => setSupplierName(e.target.value)}
-                        placeholder="Contoh: Santan Segar Pak Budi"
+                        placeholder="e.g. Pak Budi Coconut Stall"
                         className="mt-1.5 w-full rounded-xl bg-[#FAF8F5] px-4 py-2.5 text-sm text-[#2C1E18] placeholder-[#9B897E] ring-1 ring-[#E5DEC9] focus:bg-white focus:ring-2 focus:ring-[#3B5B3D] focus:outline-none"
                       />
                     </div>
@@ -935,7 +931,7 @@ export default function EcosystemPage() {
                         className="flex items-center gap-1.5 text-xs font-semibold text-[#2C1E18]"
                       >
                         <Phone className="h-3.5 w-3.5 text-[#3B5B3D]" />
-                        No. WhatsApp <span className="text-red-500">*</span>
+                        WhatsApp Number <span className="text-red-500">*</span>
                       </label>
                       <input
                         id="pickupPhone"
@@ -943,7 +939,7 @@ export default function EcosystemPage() {
                         required
                         value={phone}
                         onChange={(e) => setPhone(e.target.value)}
-                        placeholder="Contoh: 081299887766"
+                        placeholder="e.g. 081299887766"
                         className="mt-1.5 w-full rounded-xl bg-[#FAF8F5] px-4 py-2.5 text-sm text-[#2C1E18] placeholder-[#9B897E] ring-1 ring-[#E5DEC9] focus:bg-white focus:ring-2 focus:ring-[#3B5B3D] focus:outline-none"
                       />
                     </div>
@@ -955,7 +951,7 @@ export default function EcosystemPage() {
                       className="flex items-center gap-1.5 text-xs font-semibold text-[#2C1E18]"
                     >
                       <MapPin className="h-3.5 w-3.5 text-[#3B5B3D]" />
-                      Alamat Lokasi Penjemputan{' '}
+                      Pickup Location Address{' '}
                       <span className="text-red-500">*</span>
                     </label>
                     <textarea
@@ -964,7 +960,7 @@ export default function EcosystemPage() {
                       rows={3}
                       value={location}
                       onChange={(e) => setLocation(e.target.value)}
-                      placeholder="Pasar, lapak, atau alamat lengkap titik jemput ampas kelapa"
+                      placeholder="Market stall, warehouse, or full street address for residue pickup"
                       className="mt-1.5 w-full rounded-xl bg-[#FAF8F5] px-4 py-2.5 text-sm text-[#2C1E18] placeholder-[#9B897E] ring-1 ring-[#E5DEC9] focus:bg-white focus:ring-2 focus:ring-[#3B5B3D] focus:outline-none"
                     />
                   </div>
@@ -976,7 +972,7 @@ export default function EcosystemPage() {
                         className="flex items-center gap-1.5 text-xs font-semibold text-[#2C1E18]"
                       >
                         <Scale className="h-3.5 w-3.5 text-[#3B5B3D]" />
-                        Estimasi Berat Ampas (Kg){' '}
+                        Estimated Residue Weight (Kg){' '}
                         <span className="text-red-500">*</span>
                       </label>
                       <input
@@ -987,7 +983,7 @@ export default function EcosystemPage() {
                         required
                         value={estimatedKg}
                         onChange={(e) => setEstimatedKg(e.target.value)}
-                        placeholder="Contoh: 50"
+                        placeholder="e.g. 50"
                         className="mt-1.5 w-full rounded-xl bg-[#FAF8F5] px-4 py-2.5 text-sm text-[#2C1E18] placeholder-[#9B897E] ring-1 ring-[#E5DEC9] focus:bg-white focus:ring-2 focus:ring-[#3B5B3D] focus:outline-none"
                       />
                     </div>
@@ -998,7 +994,7 @@ export default function EcosystemPage() {
                         className="flex items-center gap-1.5 text-xs font-semibold text-[#2C1E18]"
                       >
                         <Calendar className="h-3.5 w-3.5 text-[#3B5B3D]" />
-                        Tanggal Penjemputan{' '}
+                        Preferred Pickup Date{' '}
                         <span className="text-red-500">*</span>
                       </label>
                       <input
@@ -1017,7 +1013,7 @@ export default function EcosystemPage() {
                     className="flex w-full items-center justify-center gap-2 rounded-full bg-[#3B5B3D] px-6 py-3.5 text-sm font-semibold text-white shadow-sm transition hover:bg-[#2F4A31]"
                   >
                     <Leaf className="h-4 w-4" />
-                    Ajukan Jadwal Penjemputan Ampas Kelapa
+                    Schedule Coconut Residue Pickup
                   </button>
                 </div>
               </form>
@@ -1032,7 +1028,7 @@ export default function EcosystemPage() {
           className="animate-cora-fade-in fixed inset-0 z-50 flex items-center justify-center bg-[#2C1E18]/55 p-4 backdrop-blur-xs"
           role="dialog"
           aria-modal="true"
-          aria-label={`Resep ${activeHubRecipe.title}`}
+          aria-label={`Recipe ${activeHubRecipe.title}`}
         >
           <div className="animate-cora-modal max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-2xl border border-[#E5DEC9] bg-white shadow-2xl">
             <div className="sticky top-0 flex items-start justify-between gap-4 border-b border-[#F0EAE0] bg-white px-6 py-5">
@@ -1043,7 +1039,7 @@ export default function EcosystemPage() {
                   </span>
                   <span className="text-xs font-medium text-[#6E5C52]">
                     {activeHubRecipe.prepTime} • {activeHubRecipe.servings} •{' '}
-                    {activeHubRecipe.calories} kkal/porsi
+                    {activeHubRecipe.calories} kcal/serving
                   </span>
                 </div>
                 <h3 className="mt-2 font-serif text-2xl font-bold text-[#2C1E18]">
@@ -1053,7 +1049,7 @@ export default function EcosystemPage() {
               <button
                 type="button"
                 onClick={() => setActiveHubRecipe(null)}
-                aria-label="Tutup resep"
+                aria-label="Close recipe"
                 className="rounded-full p-2 text-[#6E5C52] hover:bg-[#E6E3D8]"
               >
                 <X className="h-5 w-5" />
@@ -1066,13 +1062,13 @@ export default function EcosystemPage() {
               </p>
 
               <div className="rounded-2xl bg-[#3B5B3D]/8 px-4 py-3 text-xs font-semibold text-[#3B5B3D]">
-                Menggunakan: {activeHubRecipe.coconutFlourUsed}
+                Featured Ingredient: {activeHubRecipe.coconutFlourUsed}
               </div>
 
               <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
                 <div>
                   <h4 className="text-xs font-bold uppercase tracking-wider text-[#2C1E18]">
-                    Bahan-Bahan
+                    Ingredients
                   </h4>
                   <ul className="mt-3 space-y-2 text-sm text-[#5C4B42]">
                     {activeHubRecipe.ingredients.map((item) => (
@@ -1086,7 +1082,7 @@ export default function EcosystemPage() {
 
                 <div>
                   <h4 className="text-xs font-bold uppercase tracking-wider text-[#2C1E18]">
-                    Cara Membuat
+                    Instructions
                   </h4>
                   <ol className="mt-3 space-y-2.5 text-sm text-[#5C4B42]">
                     {activeHubRecipe.steps.map((step, i) => (
@@ -1104,7 +1100,7 @@ export default function EcosystemPage() {
               {coconutFlourProduct && (
                 <div className="flex flex-wrap items-center justify-between gap-3 border-t border-[#F0EAE0] pt-5">
                   <span className="text-xs text-[#6E5C52]">
-                    Butuh tepung kelapa CORA untuk resep ini?
+                    Need CORA Coconut Flour for this recipe?
                   </span>
                   <button
                     type="button"
@@ -1116,7 +1112,7 @@ export default function EcosystemPage() {
                     className="inline-flex items-center gap-2 rounded-full bg-[#3B5B3D] px-5 py-2.5 text-xs font-semibold text-white transition hover:bg-[#2F4A31]"
                   >
                     <ShoppingBag className="h-4 w-4" />
-                    Tambah Tepung Kelapa ke Keranjang
+                    Add Coconut Flour to Cart
                   </button>
                 </div>
               )}
@@ -1129,4 +1125,3 @@ export default function EcosystemPage() {
     </div>
   );
 }
-

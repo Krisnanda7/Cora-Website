@@ -60,12 +60,12 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
       className="fixed inset-0 z-50 flex justify-end"
       role="dialog"
       aria-modal="true"
-      aria-label="Keranjang Belanja CORA"
+      aria-label="CORA Shopping Cart"
     >
       {/* Backdrop */}
       <button
         type="button"
-        aria-label="Tutup keranjang"
+        aria-label="Close cart"
         onClick={onClose}
         className="animate-cora-fade-in fixed inset-0 bg-[#2C1E18]/35 backdrop-blur-[2px]"
       />
@@ -80,10 +80,10 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
             </span>
             <div>
               <h2 className="font-serif text-lg font-semibold text-[#2C1E18]">
-                Keranjang Belanja
+                Shopping Cart
               </h2>
               <p className="text-xs text-[#6E5C52] tabular-nums">
-                {cartCount} item dipilih
+                {cartCount} {cartCount === 1 ? 'item' : 'items'} selected
               </p>
             </div>
           </div>
@@ -91,7 +91,7 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
             type="button"
             onClick={onClose}
             className="rounded-full p-2 text-[#6E5C52] transition hover:bg-[#E6E3D8]/60 hover:text-[#2C1E18]"
-            aria-label="Tutup panel keranjang"
+            aria-label="Close cart panel"
           >
             <X className="h-4 w-4" />
           </button>
@@ -105,18 +105,18 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
                 <ShoppingBag className="h-6 w-6" />
               </div>
               <p className="font-serif text-lg font-semibold text-[#2C1E18]">
-                Keranjang masih kosong
+                Your cart is empty
               </p>
               <p className="mt-1.5 max-w-xs text-xs leading-relaxed text-[#6E5C52]">
-                Jelajahi olahan kelapa sirkular CORA untuk menikmati rasa
-                artisan sambil menyelamatkan ampas kelapa.
+                Explore CORA&apos;s circular coconut treats and flour to enjoy
+                artisanal flavors while rescuing coconut residue.
               </p>
               <Link
                 href="/products"
                 onClick={onClose}
                 className="mt-6 inline-flex items-center gap-2 rounded-full bg-[#3B5B3D] px-5 py-2.5 text-xs font-semibold text-white transition hover:bg-[#2F4A31]"
               >
-                Lihat Katalog Produk
+                Browse Product Catalog
                 <ArrowRight className="h-3.5 w-3.5" />
               </Link>
             </div>
@@ -160,7 +160,7 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
                           type="button"
                           onClick={() => removeFromCart(item.productId)}
                           className="rounded-lg p-1.5 text-[#8A776C] transition hover:bg-red-50 hover:text-red-600"
-                          aria-label={`Hapus ${item.productName}`}
+                          aria-label={`Remove ${item.productName}`}
                         >
                           <Trash2 className="h-3.5 w-3.5" />
                         </button>
@@ -169,7 +169,7 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
                       <div className="mt-3 flex items-center justify-between gap-2">
                         <span className="inline-flex items-center gap-1 text-[11px] font-medium tabular-nums text-[#3B5B3D]">
                           <Leaf className="h-3 w-3" />
-                          {itemResidueKg} kg residu
+                          {itemResidueKg} kg residue
                         </span>
 
                         <div className="flex items-center rounded-full border border-[#E5DEC9] bg-[#FAF8F5]">
@@ -179,7 +179,7 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
                               updateCartQty(item.productId, item.qty - 1)
                             }
                             className="flex h-7 w-7 items-center justify-center rounded-l-full text-[#2C1E18] transition hover:bg-[#E6E3D8]"
-                            aria-label="Kurangi jumlah"
+                            aria-label="Decrease quantity"
                           >
                             <Minus className="h-3 w-3" />
                           </button>
@@ -193,7 +193,7 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
                             }
                             disabled={item.qty >= maxStock}
                             className="flex h-7 w-7 items-center justify-center rounded-r-full text-[#2C1E18] transition hover:bg-[#E6E3D8] disabled:opacity-40"
-                            aria-label="Tambah jumlah"
+                            aria-label="Increase quantity"
                           >
                             <Plus className="h-3 w-3" />
                           </button>
@@ -210,7 +210,7 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
                   onClick={clearCart}
                   className="text-xs font-medium text-[#7A675D] underline-offset-4 hover:text-[#2C1E18] hover:underline"
                 >
-                  Kosongkan keranjang
+                  Clear cart
                 </button>
               </div>
             </div>
@@ -223,7 +223,7 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
             <div className="flex items-center justify-between rounded-xl bg-[#3B5B3D]/8 px-3.5 py-2.5 text-xs text-[#3B5B3D]">
               <span className="flex items-center gap-1.5 font-medium">
                 <Leaf className="h-3.5 w-3.5" />
-                Estimasi Residu Terselamatkan
+                Estimated Residue Saved
               </span>
               <span className="font-bold tabular-nums">
                 {(totalResidueSavedGram / 1000).toFixed(2)} kg
@@ -232,7 +232,7 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
 
             <div className="flex items-center justify-between">
               <span className="text-sm font-medium text-[#6E5C52]">
-                Subtotal Pembayaran
+                Payment Subtotal
               </span>
               <span className="text-lg font-bold tabular-nums text-[#2C1E18]">
                 {formatRupiah(cartTotal)}
@@ -244,7 +244,7 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
               onClick={onClose}
               className="flex w-full items-center justify-center gap-2 rounded-full bg-[#3B5B3D] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#2F4A31]"
             >
-              Lanjut ke Checkout
+              Proceed to Checkout
               <ArrowRight className="h-4 w-4" />
             </Link>
           </div>

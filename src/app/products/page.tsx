@@ -21,7 +21,7 @@ import type { Product, ProductCategory } from '@/types/cora';
 type FilterCategory = 'ALL' | ProductCategory;
 
 const CATEGORY_TABS: { label: string; value: FilterCategory }[] = [
-  { label: 'Semua', value: 'ALL' },
+  { label: 'All', value: 'ALL' },
   { label: 'Brownies', value: 'Brownies' },
   { label: 'Cookies', value: 'Cookies' },
   { label: 'Coconut Flour', value: 'Flour' },
@@ -83,22 +83,21 @@ export default function ProductsPage() {
                   Circular F&amp;B Collection
                 </span>
                 <h1 className="font-serif text-3xl font-semibold tracking-[-0.015em] text-[#2C1E18] sm:text-4xl lg:text-5xl">
-                  Katalog Produk CORA
+                  CORA Product Catalog
                 </h1>
                 <p className="text-sm leading-relaxed text-[#6E5C52] sm:text-base">
-                  Temukan camilan cokelat berbahan tepung kelapa dan tepung
-                  kelapa upcycled bernutrisi tinggi yang dibuat dari residu
-                  kelapa pilihan.
+                  Discover artisanal chocolate treats and nutrient-rich upcycled
+                  coconut flour crafted from rescued coconut residue.
                 </p>
               </div>
 
               {cartCount > 0 && (
-                <div className="flex items-center gap-3 self-start rounded-2xl bg-white px-4 py-3 shadow-sm md:self-auto">
+                <div className="flex items-center gap-3 self-start rounded-2xl border border-[#E5DEC9] bg-white px-4 py-3 shadow-2xs md:self-auto">
                   <div>
-                    <p className="text-[11px] font-medium text-[#6E5C52]">
-                      {cartCount} item di keranjang
+                    <p className="text-[11px] font-medium tabular-nums text-[#6E5C52]">
+                      {cartCount} {cartCount === 1 ? 'item' : 'items'} in cart
                     </p>
-                    <p className="text-sm font-bold text-[#2C1E18]">
+                    <p className="text-sm font-bold tabular-nums text-[#2C1E18]">
                       {formatRupiah(cartTotal)}
                     </p>
                   </div>
@@ -119,7 +118,7 @@ export default function ProductsPage() {
               <div
                 className="flex flex-wrap items-center gap-2"
                 role="tablist"
-                aria-label="Filter kategori produk"
+                aria-label="Filter product category"
               >
                 {CATEGORY_TABS.map((tab) => {
                   const active = selectedCategory === tab.value;
@@ -149,15 +148,15 @@ export default function ProductsPage() {
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="Cari brownies, cookies, tepung..."
-                  aria-label="Cari produk CORA"
+                  placeholder="Search brownies, cookies, flour..."
+                  aria-label="Search CORA products"
                   className="w-full rounded-full bg-white py-2.5 pr-9 pl-10 text-sm text-[#2C1E18] placeholder-[#8A776C] shadow-xs ring-1 ring-[#E5DEC9]/80 transition focus:ring-2 focus:ring-[#3B5B3D] focus:outline-none"
                 />
                 {searchQuery && (
                   <button
                     type="button"
                     onClick={() => setSearchQuery('')}
-                    aria-label="Hapus pencarian"
+                    aria-label="Clear search"
                     className="absolute top-1/2 right-3 -translate-y-1/2 rounded-full p-1 text-[#8A776C] hover:bg-[#E6E3D8] hover:text-[#2C1E18]"
                   >
                     <X className="h-3.5 w-3.5" />
@@ -171,13 +170,14 @@ export default function ProductsPage() {
         {/* Product Grid */}
         <section className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
           {filteredProducts.length === 0 ? (
-            <div className="rounded-3xl bg-white px-6 py-16 text-center shadow-xs">
+            <div className="rounded-2xl border border-[#E5DEC9] bg-white px-6 py-16 text-center shadow-2xs">
               <PackageCheck className="mx-auto h-10 w-10 text-[#3B5B3D]/60" />
               <h2 className="mt-4 font-serif text-xl font-bold text-[#2C1E18]">
-                Produk tidak ditemukan
+                No products found
               </h2>
               <p className="mt-1.5 text-sm text-[#6E5C52]">
-                Coba ubah kata kunci pencarian atau pilih kategori lain.
+                Try adjusting your search keywords or selecting a different
+                category.
               </p>
               <button
                 type="button"
@@ -187,7 +187,7 @@ export default function ProductsPage() {
                 }}
                 className="mt-5 rounded-full bg-[#3B5B3D] px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-[#2F4A31]"
               >
-                Reset Filter
+                Reset Filters
               </button>
             </div>
           ) : (
@@ -198,110 +198,108 @@ export default function ProductsPage() {
 
                 return (
                   <Reveal key={product.id} delayMs={idx * 60}>
-                  <article
-                    className="group flex h-full flex-col overflow-hidden rounded-2xl border border-[#E5DEC9]/80 bg-white transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-1 hover:border-[#CFC5B1] hover:shadow-md"
-                  >
-                    {/* Packaging Image */}
-                    <div className="relative aspect-[4/3] overflow-hidden border-b border-[#F0EAE0] bg-[#F5F1EA] p-5">
-                      <Image
-                        src={product.image}
-                        alt={product.name}
-                        fill
-                        unoptimized
-                        className="object-contain p-5 transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.04]"
-                      />
-                      <span className="absolute top-3.5 left-3.5 inline-flex items-center gap-1 rounded-full bg-[#3B5B3D] px-2.5 py-1 text-[10px] font-semibold tracking-wide text-white">
-                        <Leaf className="h-3 w-3" />
-                        Saves {product.residueSavedGram}g Coconut Residue
-                      </span>
-                    </div>
-
-                    {/* Product Details */}
-                    <div className="flex flex-1 flex-col p-6">
-                      <div className="flex-1">
-                        <div className="flex items-center justify-between gap-2 text-[11px] font-semibold uppercase tracking-wider text-[#3B5B3D]">
-                          <span>
-                            {product.category === 'Flour'
-                              ? 'Coconut Flour'
-                              : product.category}
-                          </span>
-                          <span className="text-[#8A776C]">
-                            {product.weightGram}g
-                          </span>
-                        </div>
-
-                        <h2 className="mt-1.5 text-lg font-bold leading-snug text-[#2C1E18]">
-                          {product.name}
-                        </h2>
-                        <p className="mt-0.5 text-xs font-medium text-[#7A675D]">
-                          {product.subtitle}
-                        </p>
-                        <p className="mt-3 line-clamp-2 text-xs leading-relaxed text-[#6E5C52]">
-                          {product.description}
-                        </p>
+                    <article className="group flex h-full flex-col overflow-hidden rounded-2xl border border-[#E5DEC9]/80 bg-white transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-1 hover:border-[#CFC5B1] hover:shadow-md">
+                      {/* Packaging Image */}
+                      <div className="relative aspect-[4/3] overflow-hidden border-b border-[#F0EAE0] bg-[#F5F1EA] p-5">
+                        <Image
+                          src={product.image}
+                          alt={product.name}
+                          fill
+                          unoptimized
+                          className="object-contain p-5 transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.04]"
+                        />
+                        <span className="absolute top-3.5 left-3.5 inline-flex items-center gap-1 rounded-full bg-[#3B5B3D] px-2.5 py-1 text-[10px] font-semibold tracking-wide text-white">
+                          <Leaf className="h-3 w-3" />
+                          Saves {product.residueSavedGram}g Coconut Residue
+                        </span>
                       </div>
 
-                      <div className="mt-6 pt-4 border-t border-[#F0EAE0]">
-                        <div className="flex items-baseline justify-between gap-2">
-                          <span className="text-xl font-bold tabular-nums text-[#2C1E18]">
-                            {formatRupiah(product.price)}
-                          </span>
-                          <span
-                            className={`rounded-full px-2.5 py-0.5 text-[11px] font-semibold tabular-nums ${
-                              isOutOfStock
-                                ? 'bg-red-50 text-red-600'
-                                : product.stock <= 10
-                                ? 'bg-amber-50 text-amber-700'
-                                : 'bg-[#3B5B3D]/10 text-[#3B5B3D]'
-                            }`}
-                          >
-                            {isOutOfStock
-                              ? 'Stok Habis'
-                              : `Sisa stok: ${product.stock}`}
-                          </span>
+                      {/* Product Details */}
+                      <div className="flex flex-1 flex-col p-6">
+                        <div className="flex-1">
+                          <div className="flex items-center justify-between gap-2 text-[11px] font-semibold uppercase tracking-wider text-[#3B5B3D]">
+                            <span>
+                              {product.category === 'Flour'
+                                ? 'Coconut Flour'
+                                : product.category}
+                            </span>
+                            <span className="text-[#8A776C]">
+                              {product.weightGram}g
+                            </span>
+                          </div>
+
+                          <h2 className="mt-1.5 text-lg font-bold leading-snug text-[#2C1E18]">
+                            {product.name}
+                          </h2>
+                          <p className="mt-0.5 text-xs font-medium text-[#7A675D]">
+                            {product.subtitle}
+                          </p>
+                          <p className="mt-3 line-clamp-2 text-xs leading-relaxed text-[#6E5C52]">
+                            {product.description}
+                          </p>
                         </div>
 
-                        <div className="mt-4 flex items-center gap-2">
-                          <button
-                            type="button"
-                            disabled={isOutOfStock}
-                            onClick={() => handleAddToCart(product)}
-                            className={`flex flex-1 items-center justify-center gap-2 rounded-full px-4 py-2.5 text-xs font-semibold transition ${
-                              isAdded
-                                ? 'bg-[#4E9A34] text-white'
-                                : 'bg-[#3B5B3D] text-white hover:bg-[#2F4A31] disabled:cursor-not-allowed disabled:bg-[#D5CCC0]'
-                            }`}
-                          >
-                            {isAdded ? (
-                              <>
-                                <Check className="h-4 w-4" />
-                                Ditambahkan!
-                              </>
-                            ) : (
-                              <>
-                                <ShoppingBag className="h-4 w-4" />
-                                Tambah ke Keranjang
-                              </>
-                            )}
-                          </button>
+                        <div className="mt-6 border-t border-[#F0EAE0] pt-4">
+                          <div className="flex items-baseline justify-between gap-2">
+                            <span className="text-xl font-bold tabular-nums text-[#2C1E18]">
+                              {formatRupiah(product.price)}
+                            </span>
+                            <span
+                              className={`rounded-full px-2.5 py-0.5 text-[11px] font-semibold tabular-nums ${
+                                isOutOfStock
+                                  ? 'bg-red-50 text-red-600'
+                                  : product.stock <= 10
+                                  ? 'bg-amber-50 text-amber-700'
+                                  : 'bg-[#3B5B3D]/10 text-[#3B5B3D]'
+                              }`}
+                            >
+                              {isOutOfStock
+                                ? 'Out of Stock'
+                                : `Stock left: ${product.stock}`}
+                            </span>
+                          </div>
 
-                          {isAdded && (
+                          <div className="mt-4 flex items-center gap-2">
                             <button
                               type="button"
-                              onClick={() =>
-                                window.dispatchEvent(
-                                  new CustomEvent('cora:open-cart')
-                                )
-                              }
-                              className="rounded-full bg-[#E6E3D8] px-3.5 py-2.5 text-xs font-semibold text-[#2C1E18] transition hover:bg-[#D8D3C4]"
+                              disabled={isOutOfStock}
+                              onClick={() => handleAddToCart(product)}
+                              className={`flex flex-1 items-center justify-center gap-2 rounded-full px-4 py-2.5 text-xs font-semibold transition ${
+                                isAdded
+                                  ? 'bg-[#4E9A34] text-white'
+                                  : 'bg-[#3B5B3D] text-white hover:bg-[#2F4A31] disabled:cursor-not-allowed disabled:bg-[#D5CCC0]'
+                              }`}
                             >
-                              Keranjang
+                              {isAdded ? (
+                                <>
+                                  <Check className="h-4 w-4" />
+                                  Added!
+                                </>
+                              ) : (
+                                <>
+                                  <ShoppingBag className="h-4 w-4" />
+                                  Add to Cart
+                                </>
+                              )}
                             </button>
-                          )}
+
+                            {isAdded && (
+                              <button
+                                type="button"
+                                onClick={() =>
+                                  window.dispatchEvent(
+                                    new CustomEvent('cora:open-cart')
+                                  )
+                                }
+                                className="rounded-full bg-[#E6E3D8] px-3.5 py-2.5 text-xs font-semibold text-[#2C1E18] transition hover:bg-[#D8D3C4]"
+                              >
+                                Cart
+                              </button>
+                            )}
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  </article>
+                    </article>
                   </Reveal>
                 );
               })}
@@ -314,4 +312,3 @@ export default function ProductsPage() {
     </div>
   );
 }
-

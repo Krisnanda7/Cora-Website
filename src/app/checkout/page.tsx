@@ -22,7 +22,7 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { useCora } from '@/context/CoraContext';
 
-type CourierOption = 'Reguler' | 'Next Day';
+type CourierOption = 'Regular' | 'Next Day';
 
 function formatRupiah(amount: number): string {
   return new Intl.NumberFormat('id-ID', {
@@ -40,14 +40,13 @@ async function fileToBase64DataUrl(file: File): Promise<string> {
       if (typeof reader.result === 'string') {
         resolve(reader.result);
       } else {
-        reject(new Error('Gagal membaca file gambar.'));
+        reject(new Error('Failed to read image file.'));
       }
     };
-    reader.onerror = () => reject(new Error('Gagal membaca file gambar.'));
+    reader.onerror = () => reject(new Error('Failed to read image file.'));
     reader.readAsDataURL(file);
   });
 
-  // Compress large photos cleanly so localStorage stays lightweight
   if (file.size <= 350 * 1024 || file.type === 'image/svg+xml') {
     return rawDataUrl;
   }
@@ -85,7 +84,7 @@ export default function CheckoutPage() {
   const [customerName, setCustomerName] = useState('');
   const [customerPhone, setCustomerPhone] = useState('');
   const [shippingAddress, setShippingAddress] = useState('');
-  const [courier, setCourier] = useState<CourierOption>('Reguler');
+  const [courier, setCourier] = useState<CourierOption>('Regular');
   const [notes, setNotes] = useState('');
 
   const [selectedBankId, setSelectedBankId] = useState<string>('');
@@ -112,16 +111,13 @@ export default function CheckoutPage() {
   const handleCopyAccount = async (bankId: string, accountNumber: string) => {
     try {
       await navigator.clipboard.writeText(accountNumber);
-      setCopiedBankId(bankId);
-      window.setTimeout(() => {
-        setCopiedBankId((curr) => (curr === bankId ? null : curr));
-      }, 1800);
     } catch {
-      setCopiedBankId(bankId);
-      window.setTimeout(() => {
-        setCopiedBankId((curr) => (curr === bankId ? null : curr));
-      }, 1800);
+      // Visual confirmation fallback
     }
+    setCopiedBankId(bankId);
+    window.setTimeout(() => {
+      setCopiedBankId((curr) => (curr === bankId ? null : curr));
+    }, 1800);
   };
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -129,7 +125,7 @@ export default function CheckoutPage() {
     if (!file) return;
 
     if (!file.type.startsWith('image/')) {
-      setFormError('Mohon unggah file gambar (PNG, JPG, JPEG, atau WebP).');
+      setFormError('Please upload a valid image file (PNG, JPG, JPEG, or WebP).');
       return;
     }
 
@@ -139,7 +135,7 @@ export default function CheckoutPage() {
       setProofImage(base64);
       setProofFileName(file.name);
     } catch {
-      setFormError('Gagal memproses gambar bukti transfer. Coba file lain.');
+      setFormError('Failed to process transfer proof image. Please try another file.');
     }
   };
 
@@ -148,37 +144,37 @@ export default function CheckoutPage() {
     setFormError(null);
 
     if (cart.length === 0) {
-      setFormError('Keranjang belanja Anda masih kosong.');
+      setFormError('Your shopping cart is empty.');
       return;
     }
     if (!customerName.trim()) {
-      setFormError('Nama lengkap wajib diisi.');
+      setFormError('Full name is required.');
       return;
     }
     if (!customerPhone.trim()) {
-      setFormError('Nomor WhatsApp wajib diisi.');
+      setFormError('WhatsApp number is required.');
       return;
     }
     if (!shippingAddress.trim()) {
-      setFormError('Alamat lengkap pengiriman wajib diisi.');
+      setFormError('Complete shipping address is required.');
       return;
     }
 
     const chosenBank =
       activeBanks.find((b) => b.id === effectiveBankId) ?? activeBanks[0];
     if (!chosenBank) {
-      setFormError('Pilih rekening bank tujuan transfer.');
+      setFormError('Please select a destination bank account.');
       return;
     }
     if (!proofImage) {
-      setFormError('Mohon unggah foto atau screenshot bukti transfer terlebih dahulu.');
+      setFormError('Please upload a photo or screenshot of your transfer proof.');
       return;
     }
 
     setIsSubmitting(true);
 
     const combinedNotes = [
-      `Kurir: ${courier}`,
+      `Courier: ${courier}`,
       notes.trim() ? notes.trim() : null,
     ]
       .filter(Boolean)
@@ -212,40 +208,40 @@ export default function CheckoutPage() {
                 className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#3B5B3D] hover:underline"
               >
                 <ArrowLeft className="h-3.5 w-3.5" />
-                Kembali ke Katalog Produk
+                Back to Product Catalog
               </Link>
               <h1 className="mt-2 font-serif text-3xl font-semibold tracking-[-0.015em] text-[#2C1E18] sm:text-4xl">
-                Checkout &amp; Pembayaran
+                Checkout &amp; Payment
               </h1>
               <p className="mt-1 text-sm text-[#6E5C52]">
-                Lengkapi detail pengiriman dan unggah bukti transfer ke rekening
-                resmi CORA.
+                Complete your shipping details and upload your transfer proof to
+                an official CORA bank account.
               </p>
             </div>
             <div className="inline-flex items-center gap-2 self-start rounded-full border border-[#3B5B3D]/20 bg-white px-3.5 py-1.5 text-xs font-semibold text-[#3B5B3D]">
               <Lock className="h-3.5 w-3.5" />
-              Verifikasi Manual Resmi CORA
+              Official CORA Manual Verification
             </div>
           </div>
 
           {/* Empty Cart State */}
           {isHydrated && cart.length === 0 && !isSubmitting ? (
-            <div className="rounded-3xl bg-white px-6 py-16 text-center shadow-sm">
-              <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-[#E6E3D8] text-[#3B5B3D]">
+            <div className="rounded-2xl border border-[#E5DEC9] bg-white px-6 py-16 text-center shadow-2xs">
+              <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-[#E6E3D8] text-[#3B5B3D]">
                 <ShoppingBag className="h-7 w-7" />
               </div>
               <h2 className="mt-4 font-serif text-2xl font-bold text-[#2C1E18]">
-                Keranjang Belanja Kosong
+                Your Cart Is Empty
               </h2>
               <p className="mx-auto mt-2 max-w-md text-sm text-[#6E5C52]">
-                Tambahkan produk olahan kelapa CORA terlebih dahulu sebelum
-                melanjutkan ke halaman checkout.
+                Add CORA coconut products to your cart before proceeding to
+                checkout.
               </p>
               <Link
                 href="/products"
                 className="mt-6 inline-flex items-center gap-2 rounded-full bg-[#3B5B3D] px-6 py-3 text-sm font-semibold text-white transition hover:bg-[#2F4A31]"
               >
-                Jelajahi Produk CORA
+                Browse CORA Products
               </Link>
             </div>
           ) : (
@@ -254,7 +250,10 @@ export default function CheckoutPage() {
               className="grid grid-cols-1 gap-8 lg:grid-cols-12 lg:items-start"
             >
               {/* LEFT COLUMN: Shipping Form */}
-              <div className="animate-cora-fade-up space-y-6 lg:col-span-7" style={{ animationDelay: '60ms' }}>
+              <div
+                className="animate-cora-fade-up space-y-6 lg:col-span-7"
+                style={{ animationDelay: '60ms' }}
+              >
                 <section className="rounded-2xl border border-[#E5DEC9] bg-white p-6 shadow-2xs sm:p-8">
                   <div className="flex items-center gap-3 border-b border-[#F0EAE0] pb-4">
                     <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[#3B5B3D] text-xs font-bold text-white">
@@ -262,11 +261,11 @@ export default function CheckoutPage() {
                     </span>
                     <div>
                       <h2 className="text-lg font-bold text-[#2C1E18]">
-                        Data Pengiriman
+                        Shipping Information
                       </h2>
                       <p className="text-xs text-[#6E5C52]">
-                        Pastikan alamat dan nomor WhatsApp aktif untuk update
-                        pesanan.
+                        Make sure your address and WhatsApp number are active
+                        for delivery updates.
                       </p>
                     </div>
                   </div>
@@ -278,7 +277,7 @@ export default function CheckoutPage() {
                           htmlFor="customerName"
                           className="block text-xs font-semibold text-[#2C1E18]"
                         >
-                          Nama Lengkap <span className="text-red-500">*</span>
+                          Full Name <span className="text-red-500">*</span>
                         </label>
                         <input
                           id="customerName"
@@ -286,7 +285,7 @@ export default function CheckoutPage() {
                           required
                           value={customerName}
                           onChange={(e) => setCustomerName(e.target.value)}
-                          placeholder="Contoh: Nadia Kusuma"
+                          placeholder="e.g. Nadia Kusuma"
                           className="mt-1.5 w-full rounded-xl bg-[#FAF8F5] px-4 py-2.5 text-sm text-[#2C1E18] placeholder-[#9B897E] ring-1 ring-[#E5DEC9] transition focus:bg-white focus:ring-2 focus:ring-[#3B5B3D] focus:outline-none"
                         />
                       </div>
@@ -296,7 +295,7 @@ export default function CheckoutPage() {
                           htmlFor="customerPhone"
                           className="block text-xs font-semibold text-[#2C1E18]"
                         >
-                          Nomor WhatsApp <span className="text-red-500">*</span>
+                          WhatsApp Number <span className="text-red-500">*</span>
                         </label>
                         <input
                           id="customerPhone"
@@ -304,7 +303,7 @@ export default function CheckoutPage() {
                           required
                           value={customerPhone}
                           onChange={(e) => setCustomerPhone(e.target.value)}
-                          placeholder="Contoh: 081234567890"
+                          placeholder="e.g. 081234567890"
                           className="mt-1.5 w-full rounded-xl bg-[#FAF8F5] px-4 py-2.5 text-sm text-[#2C1E18] placeholder-[#9B897E] ring-1 ring-[#E5DEC9] transition focus:bg-white focus:ring-2 focus:ring-[#3B5B3D] focus:outline-none"
                         />
                       </div>
@@ -315,7 +314,8 @@ export default function CheckoutPage() {
                         htmlFor="shippingAddress"
                         className="block text-xs font-semibold text-[#2C1E18]"
                       >
-                        Alamat Lengkap <span className="text-red-500">*</span>
+                        Full Shipping Address{' '}
+                        <span className="text-red-500">*</span>
                       </label>
                       <textarea
                         id="shippingAddress"
@@ -323,7 +323,7 @@ export default function CheckoutPage() {
                         rows={3}
                         value={shippingAddress}
                         onChange={(e) => setShippingAddress(e.target.value)}
-                        placeholder="Nama jalan, nomor rumah, RT/RW, kecamatan, kota, dan kode pos"
+                        placeholder="Street name, house number, district, city, and postal code"
                         className="mt-1.5 w-full rounded-xl bg-[#FAF8F5] px-4 py-2.5 text-sm text-[#2C1E18] placeholder-[#9B897E] ring-1 ring-[#E5DEC9] transition focus:bg-white focus:ring-2 focus:ring-[#3B5B3D] focus:outline-none"
                       />
                     </div>
@@ -331,22 +331,22 @@ export default function CheckoutPage() {
                     {/* Courier Selection */}
                     <div>
                       <span className="block text-xs font-semibold text-[#2C1E18]">
-                        Pilihan Kurir <span className="text-red-500">*</span>
+                        Courier Option <span className="text-red-500">*</span>
                       </span>
                       <div className="mt-2 grid grid-cols-1 gap-3 sm:grid-cols-2">
                         {(
                           [
                             {
-                              id: 'Reguler' as const,
-                              title: 'Kurir Reguler',
-                              eta: 'Estimasi tiba 2–3 hari kerja',
-                              badge: 'Gratis Ongkir',
+                              id: 'Regular' as const,
+                              title: 'Regular Courier',
+                              eta: 'Estimated 2–3 business days',
+                              badge: 'Free Shipping',
                             },
                             {
                               id: 'Next Day' as const,
-                              title: 'Kurir Next Day',
-                              eta: 'Estimasi tiba 1 hari kerja (Prioritas)',
-                              badge: 'Promo CORA Rp 0',
+                              title: 'Next Day Courier',
+                              eta: 'Estimated 1 business day (Priority)',
+                              badge: 'CORA Promo Rp 0',
                             },
                           ] as const
                         ).map((option) => {
@@ -395,14 +395,14 @@ export default function CheckoutPage() {
                         htmlFor="notes"
                         className="block text-xs font-semibold text-[#2C1E18]"
                       >
-                        Catatan Pesanan (Opsional)
+                        Order Notes (Optional)
                       </label>
                       <textarea
                         id="notes"
                         rows={2}
                         value={notes}
                         onChange={(e) => setNotes(e.target.value)}
-                        placeholder="Contoh: Packing bubble wrap ekstra atau titip ke resepsionis"
+                        placeholder="e.g. Extra protective packaging or leave with receptionist"
                         className="mt-1.5 w-full rounded-xl bg-[#FAF8F5] px-4 py-2.5 text-sm text-[#2C1E18] placeholder-[#9B897E] ring-1 ring-[#E5DEC9] transition focus:bg-white focus:ring-2 focus:ring-[#3B5B3D] focus:outline-none"
                       />
                     </div>
@@ -411,11 +411,14 @@ export default function CheckoutPage() {
               </div>
 
               {/* RIGHT COLUMN: Order Summary & Manual Bank Transfer */}
-              <div className="animate-cora-fade-up space-y-6 lg:col-span-5" style={{ animationDelay: '130ms' }}>
+              <div
+                className="animate-cora-fade-up space-y-6 lg:col-span-5"
+                style={{ animationDelay: '130ms' }}
+              >
                 {/* a) Order Summary */}
                 <section className="rounded-2xl border border-[#E5DEC9] bg-white p-6 shadow-2xs">
                   <h2 className="text-base font-bold text-[#2C1E18]">
-                    Rincian Produk Dibeli
+                    Order Summary
                   </h2>
 
                   <div className="mt-4 divide-y divide-[#F0EAE0]">
@@ -437,11 +440,11 @@ export default function CheckoutPage() {
                           <p className="truncate text-sm font-semibold text-[#2C1E18]">
                             {item.productName}
                           </p>
-                          <p className="text-xs text-[#6E5C52]">
+                          <p className="text-xs tabular-nums text-[#6E5C52]">
                             {item.qty} × {formatRupiah(item.price)}
                           </p>
                         </div>
-                        <span className="text-sm font-bold text-[#2C1E18]">
+                        <span className="text-sm font-bold tabular-nums text-[#2C1E18]">
                           {formatRupiah(item.price * item.qty)}
                         </span>
                       </div>
@@ -450,23 +453,23 @@ export default function CheckoutPage() {
 
                   <div className="mt-5 space-y-2.5 border-t border-[#F0EAE0] pt-4 text-sm">
                     <div className="flex items-center justify-between text-[#6E5C52]">
-                      <span>Pengiriman ({courier})</span>
-                      <span className="font-semibold text-[#3B5B3D]">
-                        Gratis
-                      </span>
+                      <span>Shipping ({courier})</span>
+                      <span className="font-semibold text-[#3B5B3D]">Free</span>
                     </div>
                     <div className="flex items-center justify-between rounded-xl bg-[#3B5B3D]/8 px-3 py-2 text-xs text-[#3B5B3D]">
                       <span className="flex items-center gap-1.5 font-medium">
                         <Leaf className="h-3.5 w-3.5" />
-                        Dampak Residu Diselamatkan
+                        Coconut Residue Saved
                       </span>
-                      <span className="font-bold">{totalResidueSavedKg} kg</span>
+                      <span className="font-bold tabular-nums">
+                        {totalResidueSavedKg} kg
+                      </span>
                     </div>
                     <div className="flex items-center justify-between pt-2">
                       <span className="text-sm font-bold text-[#2C1E18]">
-                        Total Tagihan
+                        Total Amount
                       </span>
-                      <span className="text-2xl font-extrabold text-[#2C1E18]">
+                      <span className="text-2xl font-extrabold tabular-nums text-[#2C1E18]">
                         {formatRupiah(cartTotal)}
                       </span>
                     </div>
@@ -481,11 +484,11 @@ export default function CheckoutPage() {
                     </span>
                     <div>
                       <h2 className="text-base font-bold text-[#2C1E18]">
-                        Transfer ke Rekening Resmi CORA
+                        Transfer to Official CORA Account
                       </h2>
                       <p className="text-xs text-[#6E5C52]">
-                        Transfer tepat sesuai total tagihan ke salah satu
-                        rekening berikut.
+                        Transfer the exact total amount to one of our active
+                        accounts below.
                       </p>
                     </div>
                   </div>
@@ -517,11 +520,11 @@ export default function CheckoutPage() {
                               <span className="inline-block rounded-full bg-[#3B5B3D]/10 px-2.5 py-0.5 text-[11px] font-bold text-[#3B5B3D]">
                                 {bank.bankName}
                               </span>
-                              <p className="mt-2 font-mono text-lg font-extrabold tracking-wide text-[#2C1E18]">
+                              <p className="mt-2 font-mono text-lg font-extrabold tracking-wide tabular-nums text-[#2C1E18]">
                                 {bank.accountNumber}
                               </p>
                               <p className="mt-0.5 text-xs font-medium text-[#6E5C52]">
-                                a.n. {bank.accountHolder}
+                                Account Holder: {bank.accountHolder}
                               </p>
                             </div>
 
@@ -540,12 +543,12 @@ export default function CheckoutPage() {
                               {isCopied ? (
                                 <>
                                   <Check className="h-3.5 w-3.5" />
-                                  Tersalin!
+                                  Copied!
                                 </>
                               ) : (
                                 <>
                                   <Copy className="h-3.5 w-3.5" />
-                                  Salin Nomor Rekening
+                                  Copy Account No.
                                 </>
                               )}
                             </button>
@@ -559,7 +562,7 @@ export default function CheckoutPage() {
                 {/* c) Upload Transfer Proof */}
                 <section className="rounded-2xl border border-[#E5DEC9] bg-white p-6 shadow-2xs space-y-4">
                   <h2 className="text-base font-bold text-[#2C1E18]">
-                    Upload Bukti Transfer
+                    Upload Transfer Proof
                   </h2>
 
                   <div>
@@ -567,7 +570,7 @@ export default function CheckoutPage() {
                       htmlFor="bankTarget"
                       className="block text-xs font-semibold text-[#2C1E18]"
                     >
-                      Rekening Tujuan yang Dipilih
+                      Destination Bank Account
                     </label>
                     <select
                       id="bankTarget"
@@ -586,7 +589,7 @@ export default function CheckoutPage() {
 
                   <div>
                     <span className="block text-xs font-semibold text-[#2C1E18]">
-                      Foto / Screenshot Bukti Transfer{' '}
+                      Transfer Receipt Photo / Screenshot{' '}
                       <span className="text-red-500">*</span>
                     </span>
 
@@ -597,10 +600,10 @@ export default function CheckoutPage() {
                       >
                         <UploadCloud className="h-8 w-8 text-[#3B5B3D]" />
                         <span className="mt-2 text-sm font-semibold text-[#2C1E18]">
-                          Pilih gambar bukti transfer
+                          Choose transfer receipt image
                         </span>
                         <span className="mt-1 text-xs text-[#6E5C52]">
-                          Format PNG, JPG, atau WebP
+                          Supports PNG, JPG, or WebP
                         </span>
                         <input
                           id="proofUpload"
@@ -615,7 +618,7 @@ export default function CheckoutPage() {
                         <div className="relative h-52 w-full overflow-hidden rounded-xl bg-white">
                           <Image
                             src={proofImage}
-                            alt="Preview bukti transfer"
+                            alt="Transfer proof preview"
                             fill
                             unoptimized
                             className="object-contain"
@@ -623,7 +626,7 @@ export default function CheckoutPage() {
                         </div>
                         <div className="mt-3 flex items-center justify-between gap-2 px-1">
                           <span className="truncate text-xs font-medium text-[#5C4B42]">
-                            {proofFileName || 'bukti-transfer.png'}
+                            {proofFileName || 'transfer-receipt.png'}
                           </span>
                           <div className="flex items-center gap-2">
                             <label
@@ -631,7 +634,7 @@ export default function CheckoutPage() {
                               className="inline-flex cursor-pointer items-center gap-1 rounded-full bg-white px-3 py-1 text-xs font-semibold text-[#3B5B3D] ring-1 ring-[#E5DEC9] hover:bg-[#E6E3D8]"
                             >
                               <ImagePlus className="h-3.5 w-3.5" />
-                              Ganti
+                              Change
                               <input
                                 id="proofReupload"
                                 type="file"
@@ -649,7 +652,7 @@ export default function CheckoutPage() {
                               className="inline-flex items-center gap-1 rounded-full bg-red-50 px-3 py-1 text-xs font-semibold text-red-600 hover:bg-red-100"
                             >
                               <Trash2 className="h-3.5 w-3.5" />
-                              Hapus
+                              Remove
                             </button>
                           </div>
                         </div>
@@ -673,8 +676,8 @@ export default function CheckoutPage() {
                     className="flex w-full items-center justify-center gap-2 rounded-full bg-[#3B5B3D] px-6 py-3.5 text-sm font-semibold text-white shadow-sm transition hover:bg-[#2F4A31] disabled:opacity-60"
                   >
                     {isSubmitting
-                      ? 'Memproses Pesanan...'
-                      : 'Kirim Pesanan & Bukti Transfer'}
+                      ? 'Processing Order...'
+                      : 'Submit Order & Transfer Proof'}
                   </button>
                 </section>
               </div>

@@ -13,7 +13,7 @@ const NAV_LINKS = [
   { label: 'Our Product', href: '/products' },
   { label: 'Recipe & AI', href: '/ecosystem' },
   { label: 'Coconut Pickup', href: '/ecosystem#pickup' },
-  { label: 'Cek Pesanan', href: '/orders' },
+  { label: 'Track Orders', href: '/orders' },
 ] as const;
 
 function CoconutLogoMark() {
@@ -83,7 +83,7 @@ export default function Navbar() {
 
           {/* Center: Editorial Underline Nav Links */}
           <nav
-            aria-label="Navigasi utama"
+            aria-label="Main navigation"
             className="hidden items-center gap-6 lg:flex"
           >
             {NAV_LINKS.map((link) => {
@@ -109,11 +109,11 @@ export default function Navbar() {
             <button
               type="button"
               onClick={() => setIsCartOpen(true)}
-              aria-label="Buka keranjang belanja"
+              aria-label="Open shopping cart"
               className="relative inline-flex items-center gap-2 rounded-full border border-[#DDD4C1] bg-white px-4 py-2 text-xs font-semibold text-[#2C1E18] transition hover:border-[#3B5B3D]/50 hover:bg-[#FAF8F5]"
             >
               <ShoppingBag className="h-3.5 w-3.5 text-[#3B5B3D]" />
-              <span className="hidden sm:inline">Keranjang</span>
+              <span className="hidden sm:inline">Cart</span>
               {cartCount > 0 && (
                 <span className="inline-flex h-4.5 min-w-4.5 items-center justify-center rounded-full bg-[#3B5B3D] px-1.5 text-[10px] font-bold tabular-nums text-white">
                   {cartCount}
@@ -132,7 +132,7 @@ export default function Navbar() {
             <button
               type="button"
               onClick={() => setIsMobileMenuOpen((prev) => !prev)}
-              aria-label="Toggle menu navigasi"
+              aria-label="Toggle navigation menu"
               aria-expanded={isMobileMenuOpen}
               className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-[#DDD4C1] bg-white text-[#2C1E18] transition hover:bg-[#E6E3D8]/60 lg:hidden"
             >
@@ -148,7 +148,7 @@ export default function Navbar() {
         {/* Mobile Menu Dropdown */}
         {isMobileMenuOpen && (
           <nav
-            aria-label="Navigasi mobile"
+            aria-label="Mobile navigation"
             className="animate-cora-fade-in border-t border-[#E5DEC9] bg-[#FAF8F5] px-4 py-3 lg:hidden"
           >
             <div className="grid grid-cols-2 gap-1.5 sm:grid-cols-3">
