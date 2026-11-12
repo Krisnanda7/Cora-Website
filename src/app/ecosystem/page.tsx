@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useMemo, useState } from 'react';
+import Image from 'next/image';
 import Link from 'next/link';
 import {
   ArrowRight,
@@ -459,18 +460,36 @@ export default function EcosystemPage() {
       <Navbar />
 
       <main className="flex-1">
-        {/* Top Hero Banner */}
-        <section className="border-b border-[#E5DEC9] bg-[#E6E3D8]">
-          <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
+        {/* Top Hero Banner with Natural Coconut Background & Dark Gradient Overlay */}
+        <section className="relative overflow-hidden bg-[#121B13] text-[#FAF8F5]">
+          {/* z-0: Minimalist & Natural Raw Coconut Background Image */}
+          <div className="pointer-events-none absolute inset-0 z-0 select-none">
+            <Image
+              src="/images/hero/hero.jpg"
+              alt="Natural raw coconut background"
+              fill
+              priority
+              className="object-cover object-center brightness-35 contrast-100"
+            />
+          </div>
+
+          {/* z-10: Dark gradient overlay for text readability */}
+          <div
+            className="pointer-events-none absolute inset-0 z-10 bg-gradient-to-r from-black/85 via-black/60 to-black/35"
+            aria-hidden="true"
+          />
+
+          {/* z-20: Content Layer */}
+          <div className="relative z-20 mx-auto max-w-7xl px-4 py-14 sm:px-6 sm:py-20 lg:px-8">
             <div className="animate-cora-fade-up max-w-3xl space-y-3">
-              <span className="inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.16em] text-[#3B5B3D]">
+              <span className="inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.18em] text-[#86C975]">
                 <Sparkles className="h-3.5 w-3.5" />
                 CORA Digital Ecosystem
               </span>
-              <h1 className="font-serif text-3xl font-semibold tracking-tight text-[#2C1E18] sm:text-4xl lg:text-5xl">
+              <h1 className="font-serif text-3xl font-semibold tracking-tight text-[#FAF8F5] sm:text-4xl lg:text-5xl drop-shadow-sm">
                 Recipe Hub, CORABlend AI &amp; Coconut Pickup
               </h1>
-              <p className="text-sm leading-relaxed text-[#5C4B42] sm:text-base">
+              <p className="text-sm leading-relaxed text-[#E2DACF] sm:text-base">
                 Explore creative ways to bake with upcycled coconut flour at
                 home or schedule coconut residue pickups for local MSMEs and
                 coconut suppliers.

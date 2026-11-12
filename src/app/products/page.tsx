@@ -73,37 +73,55 @@ export default function ProductsPage() {
       <Navbar />
 
       <main className="flex-1">
-        {/* Top Minimalist Store Header */}
-        <section className="border-b border-[#E5DEC9]/80 bg-[#EFECE3]/60">
-          <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-14 lg:px-8">
+        {/* Hero Section with Natural Coconut Background & Dark Gradient Overlay */}
+        <section className="relative overflow-hidden bg-[#121B13] text-[#FAF8F5]">
+          {/* z-0: Minimalist & Natural Raw Coconut Background Image */}
+          <div className="pointer-events-none absolute inset-0 z-0 select-none">
+            <Image
+              src="/images/hero/hero.jpg"
+              alt="Natural raw coconut background"
+              fill
+              priority
+              className="object-cover object-center brightness-35 contrast-100"
+            />
+          </div>
+
+          {/* z-10: Dark gradient overlay for text readability */}
+          <div
+            className="pointer-events-none absolute inset-0 z-10 bg-gradient-to-r from-black/85 via-black/60 to-black/35"
+            aria-hidden="true"
+          />
+
+          {/* z-20: Content Layer */}
+          <div className="relative z-20 mx-auto max-w-7xl px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
             <div className="animate-cora-fade-up flex flex-col justify-between gap-6 md:flex-row md:items-end">
               <div className="max-w-2xl space-y-2.5">
-                <span className="inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.16em] text-[#3B5B3D]">
+                <span className="inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.18em] text-[#86C975]">
                   <Leaf className="h-3.5 w-3.5" />
                   Circular F&amp;B Collection
                 </span>
-                <h1 className="font-serif text-3xl font-semibold tracking-tight text-[#2C1E18] sm:text-4xl lg:text-5xl">
+                <h1 className="font-serif text-3xl font-semibold tracking-tight text-[#FAF8F5] sm:text-4xl lg:text-5xl drop-shadow-sm">
                   CORA Product Catalog
                 </h1>
-                <p className="text-sm leading-relaxed text-[#6E5C52] sm:text-base">
+                <p className="text-sm leading-relaxed text-[#E2DACF] sm:text-base">
                   Discover artisanal chocolate treats and nutrient-rich upcycled
                   coconut flour crafted from rescued coconut residue.
                 </p>
               </div>
 
               {cartCount > 0 && (
-                <div className="flex items-center gap-3 self-start rounded-2xl border border-[#E5DEC9] bg-white px-4 py-3 shadow-2xs md:self-auto">
+                <div className="flex items-center gap-3 self-start rounded-2xl border border-white/20 bg-white/10 px-4 py-3 shadow-md backdrop-blur-md md:self-auto">
                   <div>
-                    <p className="text-[11px] font-medium tabular-nums text-[#6E5C52]">
+                    <p className="text-[11px] font-medium tabular-nums text-[#E2DACF]">
                       {cartCount} {cartCount === 1 ? 'item' : 'items'} in cart
                     </p>
-                    <p className="text-sm font-bold tabular-nums text-[#2C1E18]">
+                    <p className="text-sm font-bold tabular-nums text-[#FAF8F5]">
                       {formatRupiah(cartTotal)}
                     </p>
                   </div>
                   <Link
                     href="/checkout"
-                    className="inline-flex items-center gap-1.5 rounded-full bg-[#3B5B3D] px-4 py-2 text-xs font-semibold text-white transition hover:bg-[#2F4A31]"
+                    className="inline-flex items-center gap-1.5 rounded-full bg-[#4E9A34] px-4 py-2 text-xs font-semibold text-white shadow-xs transition hover:bg-[#3F8129]"
                   >
                     Checkout
                     <ArrowRight className="h-3.5 w-3.5" />
@@ -131,8 +149,8 @@ export default function ProductsPage() {
                       onClick={() => setSelectedCategory(tab.value)}
                       className={`rounded-full px-4 py-2 text-sm font-medium transition ${
                         active
-                          ? 'bg-[#2C1E18] text-[#FAF8F5] shadow-xs'
-                          : 'bg-white text-[#5C4B42] shadow-2xs hover:bg-[#E6E3D8]/70 hover:text-[#2C1E18]'
+                          ? 'bg-[#4E9A34] text-white shadow-sm font-semibold'
+                          : 'border border-white/25 bg-white/10 text-[#FAF8F5] backdrop-blur-xs hover:bg-white/20 hover:text-white'
                       }`}
                     >
                       {tab.label}
@@ -143,21 +161,21 @@ export default function ProductsPage() {
 
               {/* Search Input */}
               <div className="relative w-full lg:max-w-xs">
-                <Search className="pointer-events-none absolute top-1/2 left-3.5 h-4 w-4 -translate-y-1/2 text-[#8A776C]" />
+                <Search className="pointer-events-none absolute top-1/2 left-3.5 h-4 w-4 -translate-y-1/2 text-[#D2C8BC]" />
                 <input
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="Search brownies, cookies, flour..."
                   aria-label="Search CORA products"
-                  className="w-full rounded-full bg-white py-2.5 pr-9 pl-10 text-sm text-[#2C1E18] placeholder-[#8A776C] shadow-xs ring-1 ring-[#E5DEC9]/80 transition focus:ring-2 focus:ring-[#3B5B3D] focus:outline-none"
+                  className="w-full rounded-full border border-white/25 bg-white/15 py-2.5 pr-9 pl-10 text-sm text-[#FAF8F5] placeholder-[#D2C8BC] shadow-xs backdrop-blur-md transition focus:border-white/60 focus:bg-white/25 focus:ring-2 focus:ring-[#86C975] focus:outline-none"
                 />
                 {searchQuery && (
                   <button
                     type="button"
                     onClick={() => setSearchQuery('')}
                     aria-label="Clear search"
-                    className="absolute top-1/2 right-3 -translate-y-1/2 rounded-full p-1 text-[#8A776C] hover:bg-[#E6E3D8] hover:text-[#2C1E18]"
+                    className="absolute top-1/2 right-3 -translate-y-1/2 rounded-full p-1 text-[#D2C8BC] hover:bg-white/20 hover:text-white"
                   >
                     <X className="h-3.5 w-3.5" />
                   </button>
