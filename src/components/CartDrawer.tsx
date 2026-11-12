@@ -240,7 +240,7 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
             </div>
 
             <Link
-              href="/products?checkout=true"
+              href="/checkout"
               onClick={onClose}
               className="flex w-full items-center justify-center gap-2 rounded-full bg-[#3B5B3D] px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-[#2F4A31]"
             >
