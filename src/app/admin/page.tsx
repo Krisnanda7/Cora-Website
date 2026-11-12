@@ -13,6 +13,7 @@ import {
   Download,
   Edit3,
   Eye,
+  ImagePlus,
   LayoutDashboard,
   Leaf,
   Package,
@@ -23,6 +24,7 @@ import {
   TrendingDown,
   TrendingUp,
   Truck,
+  UploadCloud,
   Wallet,
   X,
   XCircle,
@@ -128,6 +130,47 @@ const IMAGE_PRESETS: { label: string; value: string }[] = [
     value: '/images/products/cora-brownies-twin.svg',
   },
 ];
+
+async function productImageFileToDataUrl(file: File): Promise<string> {
+  const rawDataUrl = await new Promise<string>((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      if (typeof reader.result === 'string') {
+        resolve(reader.result);
+      } else {
+        reject(new Error('Gagal membaca file gambar.'));
+      }
+    };
+    reader.onerror = () => reject(new Error('Gagal membaca file gambar.'));
+    reader.readAsDataURL(file);
+  });
+
+  if (file.size <= 250 * 1024 || file.type === 'image/svg+xml') {
+    return rawDataUrl;
+  }
+
+  return new Promise<string>((resolve) => {
+    const img = new window.Image();
+    img.onload = () => {
+      const maxDim = 800;
+      const scale = Math.min(1, maxDim / Math.max(img.width, img.height));
+      const canvas = document.createElement('canvas');
+      canvas.width = Math.max(1, Math.round(img.width * scale));
+      canvas.height = Math.max(1, Math.round(img.height * scale));
+      const ctx = canvas.getContext('2d');
+      if (!ctx) {
+        resolve(rawDataUrl);
+        return;
+      }
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+      const outputMime =
+        file.type === 'image/png' ? 'image/png' : 'image/jpeg';
+      resolve(canvas.toDataURL(outputMime, 0.82));
+    };
+    img.onerror = () => resolve(rawDataUrl);
+    img.src = rawDataUrl;
+  });
+}
 
 export default function AdminDashboardPage() {
   const {
@@ -412,6 +455,42 @@ export default function AdminDashboardPage() {
       return copy;
     });
     showToast(`Harga & stok ${product.name} diperbarui.`);
+  };
+
+  const handleQuickPhotoUpload = async (
+    product: Product,
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const file = e.target.files?.[0];
+    e.target.value = '';
+    if (!file || !file.type.startsWith('image/')) {
+      showToast('Mohon pilih file gambar yang valid (PNG, JPG, WebP, SVG).');
+      return;
+    }
+    try {
+      const dataUrl = await productImageFileToDataUrl(file);
+      saveProduct({ ...product, image: dataUrl });
+      showToast(`Foto produk ${product.name} berhasil diganti.`);
+    } catch {
+      showToast('Gagal memproses foto produk.');
+    }
+  };
+
+  const handleModalPhotoUpload = async (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const file = e.target.files?.[0];
+    e.target.value = '';
+    if (!file || !file.type.startsWith('image/')) {
+      showToast('Mohon pilih file gambar yang valid (PNG, JPG, WebP, SVG).');
+      return;
+    }
+    try {
+      const dataUrl = await productImageFileToDataUrl(file);
+      setProdImage(dataUrl);
+    } catch {
+      showToast('Gagal memproses foto produk.');
+    }
   };
 
   const handleEditBank = (bank: BankAccount) => {
@@ -1178,8 +1257,8 @@ export default function AdminDashboardPage() {
                       Manajemen Produk CORA
                     </h2>
                     <p className="text-xs text-[#6E5C52]">
-                      Tambah produk baru, ubah harga &amp; stok cepat langsung di
-                      tabel, atau hapus produk.
+                      Tambah produk baru, edit detail &amp; ganti foto produk,
+                      ubah harga &amp; stok cepat, atau hapus produk.
                     </p>
                   </div>
                   <button
@@ -1192,173 +1271,7 @@ export default function AdminDashboardPage() {
                   </button>
                 </div>
 
-                {showProductForm && (
-                  <form
-                    onSubmit={handleSaveProductForm}
-                    className="rounded-3xl border border-[#3B5B3D]/25 bg-white p-6 shadow-sm space-y-4"
-                  >
-                    <div className="flex items-center justify-between border-b border-[#F0EAE0] pb-3">
-                      <h3 className="font-serif text-lg font-bold text-[#2C1E18]">
-                        {editingProductId
-                          ? 'Edit Detail Produk'
-                          : 'Tambah Produk Baru'}
-                      </h3>
-                      <button
-                        type="button"
-                        onClick={() => setShowProductForm(false)}
-                        className="rounded-full p-1 text-[#6E5C52] hover:bg-[#F0ECE1]"
-                      >
-                        <X className="h-4 w-4" />
-                      </button>
-                    </div>
-
-                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                      <div>
-                        <label className="block text-xs font-semibold text-[#2C1E18]">
-                          Nama Produk *
-                        </label>
-                        <input
-                          type="text"
-                          required
-                          value={prodName}
-                          onChange={(e) => setProdName(e.target.value)}
-                          placeholder="CORA Coconut Granola"
-                          className="mt-1 w-full rounded-xl bg-[#FAF8F5] px-3.5 py-2 text-sm ring-1 ring-[#E5DEC9] focus:bg-white focus:ring-2 focus:ring-[#3B5B3D] focus:outline-none"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-xs font-semibold text-[#2C1E18]">
-                          Subtitle
-                        </label>
-                        <input
-                          type="text"
-                          value={prodSubtitle}
-                          onChange={(e) => setProdSubtitle(e.target.value)}
-                          placeholder="Coconut Based Snack"
-                          className="mt-1 w-full rounded-xl bg-[#FAF8F5] px-3.5 py-2 text-sm ring-1 ring-[#E5DEC9] focus:bg-white focus:ring-2 focus:ring-[#3B5B3D] focus:outline-none"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-xs font-semibold text-[#2C1E18]">
-                          Kategori
-                        </label>
-                        <select
-                          value={prodCategory}
-                          onChange={(e) =>
-                            setProdCategory(e.target.value as ProductCategory)
-                          }
-                          className="mt-1 w-full rounded-xl bg-[#FAF8F5] px-3.5 py-2 text-sm ring-1 ring-[#E5DEC9] focus:bg-white focus:ring-2 focus:ring-[#3B5B3D] focus:outline-none"
-                        >
-                          <option value="Brownies">Brownies</option>
-                          <option value="Cookies">Cookies</option>
-                          <option value="Flour">Flour</option>
-                        </select>
-                      </div>
-                      <div>
-                        <label className="block text-xs font-semibold text-[#2C1E18]">
-                          Harga (Rp) *
-                        </label>
-                        <input
-                          type="number"
-                          min={0}
-                          required
-                          value={prodPrice}
-                          onChange={(e) => setProdPrice(e.target.value)}
-                          placeholder="35000"
-                          className="mt-1 w-full rounded-xl bg-[#FAF8F5] px-3.5 py-2 text-sm ring-1 ring-[#E5DEC9] focus:bg-white focus:ring-2 focus:ring-[#3B5B3D] focus:outline-none"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-xs font-semibold text-[#2C1E18]">
-                          Stok *
-                        </label>
-                        <input
-                          type="number"
-                          min={0}
-                          required
-                          value={prodStock}
-                          onChange={(e) => setProdStock(e.target.value)}
-                          placeholder="30"
-                          className="mt-1 w-full rounded-xl bg-[#FAF8F5] px-3.5 py-2 text-sm ring-1 ring-[#E5DEC9] focus:bg-white focus:ring-2 focus:ring-[#3B5B3D] focus:outline-none"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-xs font-semibold text-[#2C1E18]">
-                          Residu Kelapa Diselamatkan (g)
-                        </label>
-                        <input
-                          type="number"
-                          min={0}
-                          value={prodResidue}
-                          onChange={(e) => setProdResidue(e.target.value)}
-                          placeholder="250"
-                          className="mt-1 w-full rounded-xl bg-[#FAF8F5] px-3.5 py-2 text-sm ring-1 ring-[#E5DEC9] focus:bg-white focus:ring-2 focus:ring-[#3B5B3D] focus:outline-none"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-xs font-semibold text-[#2C1E18]">
-                          Berat Bersih (g)
-                        </label>
-                        <input
-                          type="number"
-                          min={0}
-                          value={prodWeight}
-                          onChange={(e) => setProdWeight(e.target.value)}
-                          placeholder="200"
-                          className="mt-1 w-full rounded-xl bg-[#FAF8F5] px-3.5 py-2 text-sm ring-1 ring-[#E5DEC9] focus:bg-white focus:ring-2 focus:ring-[#3B5B3D] focus:outline-none"
-                        />
-                      </div>
-                      <div className="sm:col-span-2">
-                        <label className="block text-xs font-semibold text-[#2C1E18]">
-                          Preset Gambar Kemasan
-                        </label>
-                        <select
-                          value={prodImage}
-                          onChange={(e) => setProdImage(e.target.value)}
-                          className="mt-1 w-full rounded-xl bg-[#FAF8F5] px-3.5 py-2 text-sm ring-1 ring-[#E5DEC9] focus:bg-white focus:ring-2 focus:ring-[#3B5B3D] focus:outline-none"
-                        >
-                          {IMAGE_PRESETS.map((preset) => (
-                            <option key={preset.value} value={preset.value}>
-                              {preset.label} ({preset.value})
-                            </option>
-                          ))}
-                        </select>
-                      </div>
-                    </div>
-
-                    <div>
-                      <label className="block text-xs font-semibold text-[#2C1E18]">
-                        Deskripsi Singkat
-                      </label>
-                      <textarea
-                        rows={2}
-                        value={prodDescription}
-                        onChange={(e) => setProdDescription(e.target.value)}
-                        placeholder="Deskripsi keunggulan produk sirkular CORA..."
-                        className="mt-1 w-full rounded-xl bg-[#FAF8F5] px-3.5 py-2 text-sm ring-1 ring-[#E5DEC9] focus:bg-white focus:ring-2 focus:ring-[#3B5B3D] focus:outline-none"
-                      />
-                    </div>
-
-                    <div className="flex justify-end gap-2">
-                      <button
-                        type="button"
-                        onClick={() => setShowProductForm(false)}
-                        className="rounded-full border border-[#E5DEC9] px-4 py-2 text-xs font-semibold text-[#5C4B42] hover:bg-[#FAF8F5]"
-                      >
-                        Batal
-                      </button>
-                      <button
-                        type="submit"
-                        className="inline-flex items-center gap-1.5 rounded-full bg-[#3B5B3D] px-5 py-2 text-xs font-semibold text-white hover:bg-[#2F4A31]"
-                      >
-                        <Save className="h-3.5 w-3.5" />
-                        Simpan Produk
-                      </button>
-                    </div>
-                  </form>
-                )}
-
-                {/* Product Table with Quick Price & Stock Edit */}
+                {/* Product Table with Quick Price, Stock & Photo Edit */}
                 <div className="overflow-hidden rounded-3xl border border-[#E5DEC9] bg-white shadow-xs">
                   <div className="overflow-x-auto">
                     <table className="w-full min-w-[820px] border-collapse text-left text-xs">
@@ -1389,15 +1302,29 @@ export default function AdminDashboardPage() {
                             >
                               <td className="px-5 py-3.5">
                                 <div className="flex items-center gap-3">
-                                  <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-xl bg-[#FAF8F5] ring-1 ring-[#E5DEC9]">
+                                  <label
+                                    title="Klik untuk ganti foto produk"
+                                    className="group/img relative h-14 w-14 shrink-0 cursor-pointer overflow-hidden rounded-xl bg-[#FAF8F5] ring-1 ring-[#E5DEC9]"
+                                  >
                                     <Image
                                       src={product.image}
                                       alt={product.name}
                                       fill
                                       unoptimized
-                                      className="object-contain p-1"
+                                      className="object-contain p-1 transition group-hover/img:opacity-65"
                                     />
-                                  </div>
+                                    <span className="absolute inset-0 flex items-center justify-center bg-[#2C1E18]/45 text-white opacity-0 transition group-hover/img:opacity-100">
+                                      <ImagePlus className="h-4 w-4" />
+                                    </span>
+                                    <input
+                                      type="file"
+                                      accept="image/*"
+                                      onChange={(e) =>
+                                        handleQuickPhotoUpload(product, e)
+                                      }
+                                      className="sr-only"
+                                    />
+                                  </label>
                                   <div>
                                     <p className="font-bold text-[#2C1E18]">
                                       {product.name}
@@ -1794,6 +1721,246 @@ export default function AdminDashboardPage() {
           )}
         </main>
       </div>
+
+      {/* MODAL: TAMBAH / EDIT PRODUK & FOTO */}
+      {showProductForm && (
+        <div
+          className="animate-cora-fade-in fixed inset-0 z-50 flex items-center justify-center bg-[#2C1E18]/60 p-4 backdrop-blur-xs"
+          role="dialog"
+          aria-modal="true"
+          aria-label={
+            editingProductId ? 'Edit Detail Produk' : 'Tambah Produk Baru'
+          }
+        >
+          <form
+            onSubmit={handleSaveProductForm}
+            className="animate-cora-modal max-h-[92vh] w-full max-w-2xl overflow-y-auto rounded-2xl border border-[#E5DEC9] bg-white shadow-2xl"
+          >
+            <div className="sticky top-0 z-10 flex items-center justify-between border-b border-[#F0EAE0] bg-white px-6 py-4">
+              <div>
+                <h3 className="font-serif text-lg font-bold text-[#2C1E18]">
+                  {editingProductId
+                    ? 'Edit Produk & Foto Kemasan'
+                    : 'Tambah Produk Baru'}
+                </h3>
+                <p className="text-xs text-[#6E5C52]">
+                  Ubah foto produk dengan upload gambar dari perangkat, URL,
+                  atau pilih preset CORA.
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowProductForm(false)}
+                aria-label="Tutup modal produk"
+                className="rounded-full p-1.5 text-[#6E5C52] hover:bg-[#F0ECE1]"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+
+            <div className="space-y-5 p-6">
+              {/* Photo Editor Section */}
+              <div className="rounded-2xl border border-[#E5DEC9] bg-[#FAF8F5] p-4">
+                <span className="block text-xs font-bold uppercase tracking-wider text-[#3B5B3D]">
+                  Foto Produk
+                </span>
+                <div className="mt-3 flex flex-col gap-4 sm:flex-row sm:items-center">
+                  <div className="relative h-28 w-28 shrink-0 overflow-hidden rounded-2xl border border-[#E5DEC9] bg-white">
+                    <Image
+                      src={prodImage || IMAGE_PRESETS[0].value}
+                      alt={prodName || 'Preview produk'}
+                      fill
+                      unoptimized
+                      className="object-contain p-2"
+                    />
+                  </div>
+
+                  <div className="flex-1 space-y-3">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <label className="inline-flex cursor-pointer items-center gap-1.5 rounded-full bg-[#3B5B3D] px-4 py-2 text-xs font-semibold text-white transition hover:bg-[#2F4A31]">
+                        <UploadCloud className="h-3.5 w-3.5" />
+                        Upload Foto dari Perangkat
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={handleModalPhotoUpload}
+                          className="sr-only"
+                        />
+                      </label>
+                      <span className="text-[11px] text-[#6E5C52]">
+                        PNG, JPG, WebP, atau SVG
+                      </span>
+                    </div>
+
+                    <div>
+                      <label className="block text-[11px] font-semibold text-[#5C4B42]">
+                        Atau masukkan URL / Path Gambar
+                      </label>
+                      <input
+                        type="text"
+                        value={prodImage}
+                        onChange={(e) => setProdImage(e.target.value)}
+                        placeholder="/images/products/cora-brownies.svg atau https://..."
+                        className="mt-1 w-full rounded-xl bg-white px-3 py-1.5 text-xs text-[#2C1E18] ring-1 ring-[#E5DEC9] focus:ring-2 focus:ring-[#3B5B3D] focus:outline-none"
+                      />
+                    </div>
+
+                    <div className="flex flex-wrap items-center gap-1.5">
+                      <span className="text-[11px] font-medium text-[#6E5C52]">
+                        Preset:
+                      </span>
+                      {IMAGE_PRESETS.map((preset) => (
+                        <button
+                          key={preset.value}
+                          type="button"
+                          onClick={() => setProdImage(preset.value)}
+                          className={`rounded-full px-2.5 py-1 text-[11px] font-semibold transition ${
+                            prodImage === preset.value
+                              ? 'bg-[#2C1E18] text-white'
+                              : 'bg-white text-[#5C4B42] ring-1 ring-[#E5DEC9] hover:bg-[#E6E3D8]'
+                          }`}
+                        >
+                          {preset.label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                <div>
+                  <label className="block text-xs font-semibold text-[#2C1E18]">
+                    Nama Produk *
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={prodName}
+                    onChange={(e) => setProdName(e.target.value)}
+                    placeholder="CORA Brownies"
+                    className="mt-1 w-full rounded-xl bg-[#FAF8F5] px-3.5 py-2 text-sm ring-1 ring-[#E5DEC9] focus:bg-white focus:ring-2 focus:ring-[#3B5B3D] focus:outline-none"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold text-[#2C1E18]">
+                    Subtitle
+                  </label>
+                  <input
+                    type="text"
+                    value={prodSubtitle}
+                    onChange={(e) => setProdSubtitle(e.target.value)}
+                    placeholder="Coconut Based Brownies"
+                    className="mt-1 w-full rounded-xl bg-[#FAF8F5] px-3.5 py-2 text-sm ring-1 ring-[#E5DEC9] focus:bg-white focus:ring-2 focus:ring-[#3B5B3D] focus:outline-none"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold text-[#2C1E18]">
+                    Kategori
+                  </label>
+                  <select
+                    value={prodCategory}
+                    onChange={(e) =>
+                      setProdCategory(e.target.value as ProductCategory)
+                    }
+                    className="mt-1 w-full rounded-xl bg-[#FAF8F5] px-3.5 py-2 text-sm ring-1 ring-[#E5DEC9] focus:bg-white focus:ring-2 focus:ring-[#3B5B3D] focus:outline-none"
+                  >
+                    <option value="Brownies">Brownies</option>
+                    <option value="Cookies">Cookies</option>
+                    <option value="Flour">Flour</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold text-[#2C1E18]">
+                    Harga (Rp) *
+                  </label>
+                  <input
+                    type="number"
+                    min={0}
+                    required
+                    value={prodPrice}
+                    onChange={(e) => setProdPrice(e.target.value)}
+                    placeholder="38000"
+                    className="mt-1 w-full rounded-xl bg-[#FAF8F5] px-3.5 py-2 text-sm ring-1 ring-[#E5DEC9] focus:bg-white focus:ring-2 focus:ring-[#3B5B3D] focus:outline-none"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold text-[#2C1E18]">
+                    Stok *
+                  </label>
+                  <input
+                    type="number"
+                    min={0}
+                    required
+                    value={prodStock}
+                    onChange={(e) => setProdStock(e.target.value)}
+                    placeholder="40"
+                    className="mt-1 w-full rounded-xl bg-[#FAF8F5] px-3.5 py-2 text-sm ring-1 ring-[#E5DEC9] focus:bg-white focus:ring-2 focus:ring-[#3B5B3D] focus:outline-none"
+                  />
+                </div>
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-xs font-semibold text-[#2C1E18]">
+                      Berat (g)
+                    </label>
+                    <input
+                      type="number"
+                      min={0}
+                      value={prodWeight}
+                      onChange={(e) => setProdWeight(e.target.value)}
+                      placeholder="200"
+                      className="mt-1 w-full rounded-xl bg-[#FAF8F5] px-3 py-2 text-sm ring-1 ring-[#E5DEC9] focus:bg-white focus:ring-2 focus:ring-[#3B5B3D] focus:outline-none"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-semibold text-[#2C1E18]">
+                      Residu (g)
+                    </label>
+                    <input
+                      type="number"
+                      min={0}
+                      value={prodResidue}
+                      onChange={(e) => setProdResidue(e.target.value)}
+                      placeholder="250"
+                      className="mt-1 w-full rounded-xl bg-[#FAF8F5] px-3 py-2 text-sm ring-1 ring-[#E5DEC9] focus:bg-white focus:ring-2 focus:ring-[#3B5B3D] focus:outline-none"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-[#2C1E18]">
+                  Deskripsi Singkat
+                </label>
+                <textarea
+                  rows={2}
+                  value={prodDescription}
+                  onChange={(e) => setProdDescription(e.target.value)}
+                  placeholder="Deskripsi keunggulan produk sirkular CORA..."
+                  className="mt-1 w-full rounded-xl bg-[#FAF8F5] px-3.5 py-2 text-sm ring-1 ring-[#E5DEC9] focus:bg-white focus:ring-2 focus:ring-[#3B5B3D] focus:outline-none"
+                />
+              </div>
+
+              <div className="flex justify-end gap-2 border-t border-[#F0EAE0] pt-4">
+                <button
+                  type="button"
+                  onClick={() => setShowProductForm(false)}
+                  className="rounded-full border border-[#E5DEC9] px-4 py-2 text-xs font-semibold text-[#5C4B42] hover:bg-[#FAF8F5]"
+                >
+                  Batal
+                </button>
+                <button
+                  type="submit"
+                  className="inline-flex items-center gap-1.5 rounded-full bg-[#3B5B3D] px-5 py-2 text-xs font-semibold text-white hover:bg-[#2F4A31]"
+                >
+                  <Save className="h-3.5 w-3.5" />
+                  Simpan Produk
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+      )}
 
       {/* MODAL: CEK BUKTI TRANSFER */}
       {proofModalOrder && (
