@@ -114,3 +114,4 @@ export interface SubmitPickupInput {
   estimatedKg: number;
   preferredDate: string;
 }
+
