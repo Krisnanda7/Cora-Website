@@ -530,7 +530,7 @@ export default function AdminDashboardPage() {
   }[] = [
     {
       id: 'orders',
-      label: 'Order Verification & Shipping',
+      label: 'Order Verification',
       icon: ClipboardCheck,
       badge: pendingOrdersCount > 0 ? pendingOrdersCount : undefined,
     },
