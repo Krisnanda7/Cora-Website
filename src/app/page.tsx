@@ -264,11 +264,11 @@ export default function HomePage() {
           {/* z-0: Minimalist & Natural Raw Coconut Background Image */}
           <div className="pointer-events-none absolute inset-0 z-0 select-none">
             <Image
-              src="/images/hero/natural-coconut-bg.jpg"
+              src="/images/hero/hero.jpg"
               alt="Natural raw coconut background"
               fill
               priority
-              className="object-cover object-center"
+              className="object-cover object-center brightness-35 contrast-100"
             />
           </div>
 

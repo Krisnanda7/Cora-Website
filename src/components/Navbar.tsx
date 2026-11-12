@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Menu, ShieldCheck, ShoppingBag, X } from 'lucide-react';
+import { Menu, ShoppingBag, User, X } from 'lucide-react';
 import { useCora } from '@/context/CoraContext';
 import CartDrawer from '@/components/CartDrawer';
 
@@ -134,7 +134,7 @@ export default function Navbar() {
               title="Admin Portal"
               className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-[#DDD4C1] bg-white text-[#5C4B42] transition hover:border-[#3B5B3D] hover:bg-[#FAF8F5] hover:text-[#2C1E18]"
             >
-              <ShieldCheck className="h-4 w-4" />
+              <User className="h-4 w-4" />
             </Link>
 
             {/* Mobile Menu Trigger */}
