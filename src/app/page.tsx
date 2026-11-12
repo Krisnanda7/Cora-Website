@@ -82,7 +82,7 @@ const JOURNEY_STEPS = [
 
 function HeroProductShowcase() {
   return (
-    <div className="group relative overflow-hidden rounded-3xl border border-[#E5DEC9] bg-[#EDE9E0] shadow-2xl transition-all duration-500 hover:shadow-[0_25px_60px_-15px_rgba(44,30,24,0.18)]">
+    <div className="group relative overflow-hidden rounded-3xl border border-white/20 bg-neutral-900/50 shadow-[0_20px_50px_rgba(0,0,0,0.45)] ring-1 ring-white/10 backdrop-blur-md transition-all duration-500 hover:border-white/35 hover:shadow-[0_25px_65px_rgba(0,0,0,0.6)]">
       {/* Real product photograph */}
       <div className="relative aspect-[16/10] w-full overflow-hidden sm:aspect-[16/9]">
         <Image
@@ -93,7 +93,7 @@ function HeroProductShowcase() {
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 600px"
           className="object-cover object-center transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.03]"
         />
-        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#2C1E18]/55 via-transparent to-black/10" />
+        <div className="pointer-events-none absolute inset-0 bg-black/20" />
 
         {/* Floating Product Badges */}
         <div className="absolute top-4 left-4 flex flex-wrap items-center gap-2">
@@ -101,7 +101,7 @@ function HeroProductShowcase() {
             <Sparkles className="h-3 w-3" />
             100% Upcycled Flour
           </span>
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-[#3B5B3D]/90 px-3 py-1 text-[11px] font-bold text-white shadow-sm backdrop-blur-xs">
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-[#3B5B3D]/95 px-3 py-1 text-[11px] font-bold text-white shadow-sm backdrop-blur-xs">
             Residue to Value
           </span>
         </div>
@@ -259,72 +259,92 @@ export default function HomePage() {
       <Navbar />
 
       <main className="flex-1">
-        {/* 1. HERO SECTION */}
-        <section className="relative overflow-hidden border-b border-[#E5DEC9] bg-[#E6E3D8]">
-          <div className="mx-auto grid max-w-7xl items-center gap-12 px-4 py-14 sm:px-6 sm:py-20 lg:grid-cols-12 lg:gap-14 lg:px-8 lg:py-24">
-            {/* Hero Left */}
-            <div className="lg:col-span-6 space-y-6">
-              <div
-                className="animate-cora-fade-up flex items-center gap-3 text-xs font-semibold uppercase tracking-[0.16em] text-[#3B5B3D]"
-                style={{ animationDelay: '0ms' }}
-              >
-                <span className="h-[1.5px] w-7 bg-[#3B5B3D]" />
-                <span>From Coconut Residue To A Brighter Tomorrow</span>
+        {/* 1. HERO SECTION WITH NATURAL COCONUT BG & DARK GRADIENT OVERLAY */}
+        <section className="relative overflow-hidden bg-[#121B13] text-[#FAF8F5]">
+          {/* z-0: Minimalist & Natural Raw Coconut Background Image */}
+          <div className="pointer-events-none absolute inset-0 z-0 select-none">
+            <Image
+              src="/images/hero/natural-coconut-bg.jpg"
+              alt="Natural raw coconut background"
+              fill
+              priority
+              className="object-cover object-center"
+            />
+          </div>
+
+          {/* z-10: Dark gradient overlay on the left for maximum text contrast */}
+          <div
+            className="pointer-events-none absolute inset-0 z-10 bg-gradient-to-r from-black/85 via-black/55 to-black/25"
+            aria-hidden="true"
+          />
+
+          {/* z-20: Content with generous responsive padding */}
+          <div className="relative z-20 mx-auto max-w-7xl px-6 md:px-16 lg:px-24 pt-16 pb-24 sm:pt-20 sm:pb-28 lg:pt-28 lg:pb-36">
+            <div className="grid items-center gap-12 lg:grid-cols-12 lg:gap-14">
+              {/* Left Grid: 50%+ on desktop (lg:col-span-7), 100% on mobile */}
+              <div className="w-full lg:col-span-7 space-y-6">
+                <div
+                  className="animate-cora-fade-up flex items-center gap-3 text-xs font-semibold uppercase tracking-[0.18em] text-[#86C975]"
+                  style={{ animationDelay: '0ms' }}
+                >
+                  <span className="h-[2px] w-7 bg-[#86C975]" />
+                  <span>From Coconut Residue To A Brighter Tomorrow</span>
+                </div>
+
+                <h1
+                  className="animate-cora-fade-up font-serif text-4xl font-semibold leading-[1.08] tracking-[-0.02em] text-[#FAF8F5] sm:text-5xl lg:text-[56px] drop-shadow-sm"
+                  style={{ animationDelay: '90ms' }}
+                >
+                  Turning Coconut Residues into New Possibilities
+                </h1>
+
+                <p
+                  className="animate-cora-fade-up max-w-xl text-base leading-relaxed text-[#E2DACF] sm:text-[17px]"
+                  style={{ animationDelay: '170ms' }}
+                >
+                  Upcycling coconut milk residue into nutrient-rich coconut flour,
+                  artisanal cookies, and brownies that power a circular economy
+                  for local coconut suppliers.
+                </p>
+
+                <div
+                  className="animate-cora-fade-up flex flex-wrap items-center gap-4 pt-2"
+                  style={{ animationDelay: '240ms' }}
+                >
+                  <Link
+                    href="/products"
+                    className="group inline-flex items-center gap-2.5 rounded-full bg-[#4E9A34] px-7 py-3.5 text-sm font-semibold text-white shadow-lg shadow-[#4E9A34]/30 transition-all duration-300 hover:bg-[#43882C] hover:shadow-xl hover:shadow-[#4E9A34]/40 hover:-translate-y-0.5"
+                  >
+                    Explore Our Products
+                    <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
+                  </Link>
+                  <Link
+                    href="/#impact"
+                    className="inline-flex items-center gap-2 rounded-full border border-white/35 bg-white/10 px-6 py-3.5 text-sm font-semibold text-[#FAF8F5] backdrop-blur-sm transition-all duration-300 hover:border-white/70 hover:bg-white/20 hover:-translate-y-0.5"
+                  >
+                    View Circular Impact
+                  </Link>
+                </div>
               </div>
 
-              <h1
-                className="animate-cora-fade-up font-serif text-4xl font-semibold leading-[1.08] tracking-[-0.02em] text-[#2C1E18] sm:text-5xl lg:text-[56px]"
-                style={{ animationDelay: '90ms' }}
-              >
-                Turning Coconut Residues into New Possibilities
-              </h1>
-
-              <p
-                className="animate-cora-fade-up max-w-xl text-base leading-relaxed text-[#54443B] sm:text-[17px]"
-                style={{ animationDelay: '170ms' }}
-              >
-                Upcycling coconut milk residue into nutrient-rich coconut flour,
-                artisanal cookies, and brownies that power a circular economy
-                for local coconut suppliers.
-              </p>
-
+              {/* Right Grid: Transparent Card "CORA Signature Collection" */}
               <div
-                className="animate-cora-fade-up flex flex-wrap items-center gap-3.5 pt-2"
-                style={{ animationDelay: '240ms' }}
+                className="animate-cora-fade-up w-full lg:col-span-5"
+                style={{ animationDelay: '140ms' }}
               >
-                <Link
-                  href="/products"
-                  className="group inline-flex items-center gap-2.5 rounded-full bg-[#3B5B3D] px-7 py-3.5 text-sm font-semibold text-white transition-all duration-300 hover:bg-[#2F4A31]"
-                >
-                  Explore Our Products
-                  <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
-                </Link>
-                <Link
-                  href="/#impact"
-                  className="inline-flex items-center gap-2 rounded-full border border-[#2C1E18]/25 bg-transparent px-6 py-3.5 text-sm font-semibold text-[#2C1E18] transition hover:border-[#2C1E18] hover:bg-white/60"
-                >
-                  View Circular Impact
-                </Link>
+                <HeroProductShowcase />
               </div>
-            </div>
-
-            {/* Hero Right */}
-            <div
-              className="animate-cora-fade-up lg:col-span-6"
-              style={{ animationDelay: '140ms' }}
-            >
-              <HeroProductShowcase />
             </div>
           </div>
         </section>
 
-        {/* 2. 4 PILLARS BAR */}
+        {/* 2. 4 PILLARS FLOATING BAR (OVERLAPPING ON TOP OF HERO) */}
         <section
           aria-label="CORA Innovation Pillars"
-          className="relative z-10 -mt-7 px-4 sm:px-6 lg:px-8"
+          className="relative z-30 -mt-10 sm:-mt-14 lg:-mt-16 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8"
         >
           <Reveal>
-            <div className="mx-auto max-w-7xl overflow-hidden rounded-2xl border border-[#E5DEC9] bg-white shadow-xs">
+            <div className="overflow-hidden rounded-2xl border border-[#E5DEC9] bg-white shadow-[0_16px_40px_-6px_rgba(0,0,0,0.14)]">
               <div className="grid grid-cols-1 divide-y divide-[#E5DEC9] sm:grid-cols-2 sm:divide-y-0 lg:grid-cols-4 lg:divide-x">
                 {PILLARS.map((pillar, index) => {
                   const Icon = pillar.icon;

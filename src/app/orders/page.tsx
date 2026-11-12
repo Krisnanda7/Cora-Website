@@ -439,7 +439,7 @@ function OrdersContent() {
                         {badge.label}
                       </span>
                     </div>
-                    <p className="text-xs text-[#6E5C52]">
+                    <p className="text-xs text-[#6E5C52]" suppressHydrationWarning>
                       Ordered on {formatDate(order.createdAt)} • Transferred to{' '}
                       <span className="font-semibold text-[#2C1E18]">
                         {order.bankAccountUsed}

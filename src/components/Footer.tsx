@@ -83,6 +83,14 @@ export default function Footer() {
                   Track Orders
                 </Link>
               </li>
+              <li>
+                <Link
+                  href="/admin"
+                  className="transition hover:text-[#2C1E18]"
+                >
+                  Admin Portal
+                </Link>
+              </li>
             </ul>
           </div>
 
