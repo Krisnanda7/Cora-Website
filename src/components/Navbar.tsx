@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Menu, ShoppingBag, User, X } from 'lucide-react';
+import { ChevronRight, Menu, ShoppingBag, User, X } from 'lucide-react';
 import { useCora } from '@/context/CoraContext';
 import CartDrawer from '@/components/CartDrawer';
 
@@ -19,7 +19,7 @@ function CoconutLogoMark() {
   return (
     <svg
       viewBox="0 0 48 48"
-      className="h-9 w-9 shrink-0 transition-transform duration-300 group-hover:scale-105"
+      className="h-8 w-8 sm:h-9 sm:w-9 shrink-0 transition-transform duration-300 group-hover:scale-105"
       fill="none"
       aria-hidden="true"
     >
@@ -46,12 +46,27 @@ export default function Navbar() {
   const { cartCount } = useCora();
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [prevPathname, setPrevPathname] = useState(pathname);
+
+  if (prevPathname !== pathname) {
+    setPrevPathname(pathname);
+    setIsMobileMenuOpen(false);
+  }
 
   useEffect(() => {
     const handleOpenCart = () => setIsCartOpen(true);
     window.addEventListener('cora:open-cart', handleOpenCart);
     return () => window.removeEventListener('cora:open-cart', handleOpenCart);
   }, []);
+
+  useEffect(() => {
+    if (!isMobileMenuOpen) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setIsMobileMenuOpen(false);
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isMobileMenuOpen]);
 
   const isActiveLink = (href: string) => {
     if (href === '/') return pathname === '/';
@@ -63,19 +78,19 @@ export default function Navbar() {
   return (
     <>
       <header className="sticky top-0 z-40 border-b border-[#E5DEC9] bg-[#FAF8F5] transform-gpu">
-        <div className="mx-auto flex max-w-7xl items-center justify-between gap-6 px-6 md:px-12 lg:px-16 py-3.5">
+        <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 sm:px-6 md:px-12 lg:px-16 py-3 sm:py-3.5">
           {/* Left: Brand Logo with generous spacing to links */}
-          <div className="flex items-center gap-10 lg:gap-14">
+          <div className="flex items-center gap-6 lg:gap-14">
             <Link
               href="/"
-              className="group flex items-center gap-3 shrink-0 focus:outline-none"
+              className="group flex items-center gap-2.5 sm:gap-3 shrink-0 focus:outline-none"
             >
               <CoconutLogoMark />
-              <div className="leading-none">
-                <span className="block font-serif text-xl font-semibold tracking-tight text-[#2C1E18] transition-colors group-hover:text-[#3B5B3D]">
+              <div className="flex flex-col justify-center leading-tight">
+                <span className="font-serif text-lg sm:text-xl font-bold tracking-tight text-[#2C1E18] transition-colors group-hover:text-[#3B5B3D]">
                   CORA
                 </span>
-                <span className="mt-1 block text-[10px] font-medium uppercase tracking-[0.14em] text-[#6E5C52]">
+                <span className="hidden text-[9.5px] font-semibold uppercase tracking-[0.14em] text-[#6E5C52] sm:block">
                   Circular Food Innovation
                 </span>
               </div>
@@ -108,19 +123,19 @@ export default function Navbar() {
             </nav>
           </div>
 
-          {/* Right: Cart as Primary Action & Discrete Admin */}
-          <div className="flex items-center gap-2 sm:gap-3">
-            {/* Primary Action: Contrasting Solid Cart Pill */}
+          {/* Right: Cart, Admin, and Mobile Menu Trigger */}
+          <div className="flex items-center gap-2 sm:gap-2.5 shrink-0">
+            {/* Primary Action: Responsive Cart (compact circle on mobile, pill on desktop) */}
             <button
               type="button"
               onClick={() => setIsCartOpen(true)}
-              aria-label="Open shopping cart"
-              className="relative inline-flex items-center gap-2 rounded-full bg-[#3B5B3D] px-4 py-2 text-xs font-semibold text-white shadow-sm transition hover:bg-[#2F4A31]"
+              aria-label={`Open shopping cart${cartCount > 0 ? `, ${cartCount} items` : ''}`}
+              className="relative inline-flex h-9 w-9 sm:w-auto sm:px-4 items-center justify-center gap-2 rounded-full bg-[#3B5B3D] text-xs font-semibold text-white shadow-xs transition hover:bg-[#2F4A31] focus:outline-none focus:ring-2 focus:ring-[#3B5B3D] focus:ring-offset-2 active:scale-95"
             >
-              <ShoppingBag className="h-3.5 w-3.5 text-white" />
-              <span>Cart</span>
+              <ShoppingBag className="h-4 w-4 shrink-0 text-white" />
+              <span className="hidden sm:inline">Cart</span>
               {cartCount > 0 && (
-                <span className="inline-flex h-4.5 min-w-4.5 items-center justify-center rounded-full bg-white px-1.5 text-[10px] font-bold tabular-nums text-[#3B5B3D]">
+                <span className="absolute -top-1 -right-1 flex h-4.5 min-w-4.5 items-center justify-center rounded-full bg-white px-1 text-[10px] font-bold text-[#3B5B3D] border border-[#3B5B3D] shadow-xs sm:static sm:top-auto sm:right-auto sm:border-0 sm:px-1.5">
                   {cartCount}
                 </span>
               )}
@@ -131,7 +146,7 @@ export default function Navbar() {
               href="/admin"
               aria-label="Admin Portal"
               title="Admin Portal"
-              className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-[#DDD4C1] bg-white text-[#5C4B42] transition hover:border-[#3B5B3D] hover:bg-[#FAF8F5] hover:text-[#2C1E18]"
+              className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-[#DDD4C1] bg-white text-[#5C4B42] transition hover:border-[#3B5B3D] hover:bg-[#FAF8F5] hover:text-[#2C1E18] focus:outline-none focus:ring-2 focus:ring-[#3B5B3D]/30 active:scale-95"
             >
               <User className="h-4 w-4" />
             </Link>
@@ -140,9 +155,9 @@ export default function Navbar() {
             <button
               type="button"
               onClick={() => setIsMobileMenuOpen((prev) => !prev)}
-              aria-label="Toggle navigation menu"
+              aria-label={isMobileMenuOpen ? 'Close navigation menu' : 'Open navigation menu'}
               aria-expanded={isMobileMenuOpen}
-              className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-[#DDD4C1] bg-white text-[#2C1E18] transition hover:bg-[#E6E3D8]/60 lg:hidden"
+              className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-[#DDD4C1] bg-white text-[#2C1E18] transition hover:bg-[#E6E3D8]/60 focus:outline-none focus:ring-2 focus:ring-[#3B5B3D]/30 active:scale-95 lg:hidden"
             >
               {isMobileMenuOpen ? (
                 <X className="h-4 w-4" />
@@ -157,9 +172,9 @@ export default function Navbar() {
         {isMobileMenuOpen && (
           <nav
             aria-label="Mobile navigation"
-            className="animate-cora-fade-in border-t border-[#E5DEC9] bg-[#FAF8F5] px-4 py-3 lg:hidden"
+            className="border-t border-[#E5DEC9] bg-[#FAF8F5] shadow-lg lg:hidden"
           >
-            <div className="grid grid-cols-2 gap-1.5 sm:grid-cols-3">
+            <div className="mx-auto max-w-7xl px-4 py-3 space-y-1">
               {NAV_LINKS.map((link) => {
                 const active = isActiveLink(link.href);
                 return (
@@ -167,16 +182,36 @@ export default function Navbar() {
                     key={link.href}
                     href={link.href}
                     onClick={() => setIsMobileMenuOpen(false)}
-                    className={`rounded-lg px-3 py-2 text-xs font-medium transition ${
+                    className={`flex items-center justify-between rounded-xl px-4 py-2.5 text-sm transition ${
                       active
-                        ? 'bg-[#3B5B3D]/10 text-[#3B5B3D] font-semibold'
-                        : 'text-[#5C4B42] hover:bg-[#E6E3D8]/60 hover:text-[#2C1E18]'
+                        ? 'bg-[#3B5B3D] font-semibold text-white shadow-xs'
+                        : 'font-medium text-[#5C4B42] hover:bg-[#E6E3D8]/50 hover:text-[#2C1E18] active:bg-[#E6E3D8]'
                     }`}
                   >
-                    {link.label}
+                    <span>{link.label}</span>
+                    <ChevronRight
+                      className={`h-4 w-4 transition-transform ${
+                        active ? 'text-white' : 'text-[#8C7A6B]'
+                      }`}
+                    />
                   </Link>
                 );
               })}
+
+              {/* Mobile Menu Footer Actions */}
+              <div className="pt-2.5 mt-2 border-t border-[#E5DEC9]/80 flex items-center justify-between text-xs text-[#6E5C52] px-1">
+                <Link
+                  href="/admin"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="inline-flex items-center gap-2 rounded-lg py-1.5 px-2 font-medium hover:text-[#2C1E18] transition"
+                >
+                  <User className="h-3.5 w-3.5 text-[#3B5B3D]" />
+                  <span>Admin Portal</span>
+                </Link>
+                <span className="text-[11px] text-[#8C7A6B] font-medium tracking-wide">
+                  CORA &copy; {new Date().getFullYear()}
+                </span>
+              </div>
             </div>
           </nav>
         )}
