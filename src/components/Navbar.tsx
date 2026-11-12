@@ -62,7 +62,7 @@ export default function Navbar() {
 
   return (
     <>
-      <header className="sticky top-0 z-40 border-b border-[#E5DEC9]/90 bg-[#FAF8F5]/92 backdrop-blur-md">
+      <header className="sticky top-0 z-40 border-b border-[#E5DEC9] bg-[#FAF8F5] transform-gpu">
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-6 px-6 md:px-12 lg:px-16 py-3.5">
           {/* Left: Brand Logo with generous spacing to links */}
           <div className="flex items-center gap-10 lg:gap-14">

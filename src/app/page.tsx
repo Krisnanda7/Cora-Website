@@ -82,7 +82,7 @@ const JOURNEY_STEPS = [
 
 function HeroProductShowcase() {
   return (
-    <div className="group relative overflow-hidden rounded-3xl border border-white/20 bg-neutral-900/50 shadow-[0_20px_50px_rgba(0,0,0,0.45)] ring-1 ring-white/10 backdrop-blur-md transition-all duration-500 hover:border-white/35 hover:shadow-[0_25px_65px_rgba(0,0,0,0.6)]">
+    <div className="group relative overflow-hidden rounded-3xl border border-white/20 bg-stone-900/90 shadow-md ring-1 ring-white/10 transform-gpu transition-[border-color,box-shadow] duration-300 hover:border-white/35 hover:shadow-lg">
       {/* Real product photograph */}
       <div className="relative aspect-[16/10] w-full overflow-hidden">
         <Image
@@ -97,17 +97,17 @@ function HeroProductShowcase() {
 
         {/* Floating Product Badges */}
         <div className="absolute top-4 left-4 sm:top-5 sm:left-5 flex flex-wrap items-center gap-2">
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-white/95 px-3 py-1 sm:px-3.5 sm:py-1.5 text-[11px] sm:text-xs font-bold text-[#3B5B3D] shadow-sm backdrop-blur-xs">
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-white/95 px-3 py-1 sm:px-3.5 sm:py-1.5 text-[11px] sm:text-xs font-bold text-[#3B5B3D] shadow-sm">
             <Sparkles className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
             100% Upcycled Flour
           </span>
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-[#3B5B3D]/95 px-3 py-1 sm:px-3.5 sm:py-1.5 text-[11px] sm:text-xs font-bold text-white shadow-sm backdrop-blur-xs">
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-[#3B5B3D] px-3 py-1 sm:px-3.5 sm:py-1.5 text-[11px] sm:text-xs font-bold text-white shadow-sm">
             Residue to Value
           </span>
         </div>
 
         {/* Bottom Bar on photo */}
-        <div className="absolute right-4 bottom-4 left-4 sm:right-5 sm:bottom-5 sm:left-5 flex items-center justify-between rounded-2xl bg-white/95 px-4 py-2.5 sm:px-5 sm:py-3 shadow-md backdrop-blur-md">
+        <div className="absolute right-4 bottom-4 left-4 sm:right-5 sm:bottom-5 sm:left-5 flex items-center justify-between rounded-2xl bg-white/95 px-4 py-2.5 sm:px-5 sm:py-3 shadow-md">
           <div className="flex items-center gap-3">
             <span className="flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-xl bg-[#3B5B3D] text-white">
               <Leaf className="h-4 w-4 sm:h-5 sm:w-5" />
@@ -262,7 +262,7 @@ export default function HomePage() {
         {/* 1. HERO SECTION WITH NATURAL COCONUT BG & DARK GRADIENT OVERLAY */}
         <section className="relative overflow-hidden bg-[#121B13] text-[#FAF8F5]">
           {/* z-0: Minimalist & Natural Raw Coconut Background Image */}
-          <div className="pointer-events-none absolute inset-0 z-0 select-none">
+          <div className="pointer-events-none absolute inset-0 z-0 select-none transform-gpu">
             <Image
               src="/images/hero/hero.jpg"
               alt="Natural raw coconut background"
@@ -313,14 +313,14 @@ export default function HomePage() {
                 >
                   <Link
                     href="/products"
-                    className="group inline-flex items-center gap-2.5 rounded-full bg-[#4E9A34] px-7 py-3.5 text-sm font-semibold text-white shadow-lg shadow-[#4E9A34]/30 transition-all duration-300 hover:bg-[#43882C] hover:shadow-xl hover:shadow-[#4E9A34]/40 hover:-translate-y-0.5"
+                    className="group inline-flex items-center gap-2.5 rounded-full bg-[#4E9A34] px-7 py-3.5 text-sm font-semibold text-white shadow-sm transition-transform duration-300 hover:bg-[#43882C] hover:shadow-md hover:-translate-y-0.5"
                   >
                     Explore Our Products
                     <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
                   </Link>
                   <Link
                     href="/#impact"
-                    className="inline-flex items-center gap-2 rounded-full border border-white/35 bg-white/10 px-6 py-3.5 text-sm font-semibold text-[#FAF8F5] backdrop-blur-sm transition-all duration-300 hover:border-white/70 hover:bg-white/20 hover:-translate-y-0.5"
+                    className="inline-flex items-center gap-2 rounded-full border border-white/35 bg-white/15 px-6 py-3.5 text-sm font-semibold text-[#FAF8F5] transition-transform duration-300 hover:border-white/70 hover:bg-white/25 hover:-translate-y-0.5"
                   >
                     View Circular Impact
                   </Link>
@@ -329,7 +329,7 @@ export default function HomePage() {
 
               {/* Right Grid: Enlarged Transparent Card aligned with Title */}
               <div
-                className="animate-cora-fade-up w-full lg:col-span-6 lg:pt-10"
+                className="animate-cora-fade-up w-full lg:col-span-6 lg:pt-10 transform-gpu"
                 style={{ animationDelay: '140ms' }}
               >
                 <HeroProductShowcase />
@@ -341,10 +341,10 @@ export default function HomePage() {
         {/* 2. 4 PILLARS FLOATING BAR (OVERLAPPING ON TOP OF HERO) */}
         <section
           aria-label="CORA Innovation Pillars"
-          className="relative z-30 -mt-10 sm:-mt-14 lg:-mt-16 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8"
+          className="relative z-30 -mt-10 sm:-mt-14 lg:-mt-16 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 transform-gpu"
         >
           <Reveal>
-            <div className="overflow-hidden rounded-2xl border border-[#E5DEC9] bg-white shadow-[0_16px_40px_-6px_rgba(0,0,0,0.14)]">
+            <div className="overflow-hidden rounded-2xl border border-[#E5DEC9] bg-white shadow-md transform-gpu">
               <div className="grid grid-cols-1 divide-y divide-[#E5DEC9] sm:grid-cols-2 sm:divide-y-0 lg:grid-cols-4 lg:divide-x">
                 {PILLARS.map((pillar, index) => {
                   const Icon = pillar.icon;

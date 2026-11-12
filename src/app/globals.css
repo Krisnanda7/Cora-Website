@@ -170,10 +170,13 @@ html {
 
 .animate-cora-fade-up {
   animation: coraFadeUp 0.65s cubic-bezier(0.22, 1, 0.36, 1) both;
+  will-change: opacity, transform;
+  transform: translateZ(0);
 }
 
 .animate-cora-fade-in {
   animation: coraFadeIn 0.3s ease-out both;
+  will-change: opacity;
 }
 
 .animate-cora-drawer {
