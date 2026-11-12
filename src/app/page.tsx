@@ -292,7 +292,7 @@ export default function HomePage() {
                 </div>
 
                 <h1
-                  className="animate-cora-fade-up font-serif text-4xl font-semibold leading-[1.08] tracking-[-0.02em] text-[#FAF8F5] sm:text-5xl lg:text-[56px] drop-shadow-sm"
+                  className="animate-cora-fade-up font-serif text-4xl font-semibold leading-[1.08] tracking-tight text-[#FAF8F5] sm:text-5xl lg:text-[56px] drop-shadow-sm"
                   style={{ animationDelay: '90ms' }}
                 >
                   Turning Coconut Residues into New Possibilities
@@ -393,7 +393,7 @@ export default function HomePage() {
                 <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#3B5B3D]">
                   Our Journey
                 </p>
-                <h2 className="mt-2 font-serif text-3xl font-semibold leading-[1.15] tracking-[-0.015em] text-[#2C1E18] sm:text-4xl">
+                <h2 className="mt-2 font-serif text-3xl font-semibold leading-[1.15] tracking-tight text-[#2C1E18] sm:text-4xl">
                   From Waste to Value
                 </h2>
               </div>
@@ -479,7 +479,7 @@ export default function HomePage() {
                   <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#3B5B3D]">
                     Circular Marketplace
                   </p>
-                  <h2 className="mt-2 font-serif text-3xl font-semibold tracking-[-0.015em] text-[#2C1E18] sm:text-4xl">
+                  <h2 className="mt-2 font-serif text-3xl font-semibold tracking-tight text-[#2C1E18] sm:text-4xl">
                     Featured CORA Products
                   </h2>
                   <p className="mt-2 max-w-2xl text-sm text-[#6E5C52] sm:text-[15px]">

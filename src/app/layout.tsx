@@ -1,17 +1,19 @@
 import type { Metadata } from "next";
-import { DM_Sans, Fraunces } from "next/font/google";
+import { Fraunces, Plus_Jakarta_Sans } from "next/font/google";
 import { CoraProvider } from "@/context/CoraContext";
 import "./globals.css";
 
 const fraunces = Fraunces({
   variable: "--font-serif",
   subsets: ["latin"],
+  weight: ["500", "600", "700"],
   display: "swap",
 });
 
-const dmSans = DM_Sans({
+const plusJakartaSans = Plus_Jakarta_Sans({
   variable: "--font-sans",
   subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
   display: "swap",
 });
 
@@ -30,7 +32,7 @@ export default function RootLayout({
     <html
       lang="en"
       data-scroll-behavior="smooth"
-      className={`${fraunces.variable} ${dmSans.variable} h-full antialiased`}
+      className={`${fraunces.variable} ${plusJakartaSans.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-[#FAF8F5] text-[#2C1E18] font-sans selection:bg-[#3B5B3D]/15 selection:text-[#2C1E18]">
         <CoraProvider>{children}</CoraProvider>

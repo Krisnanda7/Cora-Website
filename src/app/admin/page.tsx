@@ -643,7 +643,7 @@ export default function AdminDashboardPage() {
                 <LayoutDashboard className="h-4 w-4" />
               </span>
               <div>
-                <h1 className="font-serif text-xl font-bold text-[#2C1E18] sm:text-2xl">
+                <h1 className="font-serif text-xl font-bold tracking-tight text-[#2C1E18] sm:text-2xl">
                   {activeTabTitle}
                 </h1>
                 <p className="text-xs text-[#6E5C52]">
@@ -801,7 +801,7 @@ export default function AdminDashboardPage() {
                                     </li>
                                   ))}
                                 </ul>
-                                <p className="mt-2 text-sm font-extrabold text-[#2C1E18]">
+                                <p className="mt-2 text-sm font-extrabold tabular-nums text-[#2C1E18]">
                                   {formatRupiah(order.totalAmount)}
                                 </p>
                               </td>
@@ -934,7 +934,7 @@ export default function AdminDashboardPage() {
                       <TrendingUp className="h-4 w-4" />
                     </span>
                   </div>
-                  <p className="mt-3 text-2xl font-extrabold text-[#2C1E18]">
+                  <p className="mt-3 text-2xl font-extrabold tabular-nums tracking-tight text-[#2C1E18]">
                     {formatRupiah(financeStats.grossRevenue)}
                   </p>
                   <p className="mt-1 text-[11px] text-[#3B5B3D]">
@@ -951,7 +951,7 @@ export default function AdminDashboardPage() {
                       <TrendingDown className="h-4 w-4" />
                     </span>
                   </div>
-                  <p className="mt-3 text-2xl font-extrabold text-[#2C1E18]">
+                  <p className="mt-3 text-2xl font-extrabold tabular-nums tracking-tight text-[#2C1E18]">
                     {formatRupiah(financeStats.totalExpense)}
                   </p>
                   <p className="mt-1 text-[11px] text-[#6E5C52]">
@@ -969,7 +969,7 @@ export default function AdminDashboardPage() {
                     </span>
                   </div>
                   <p
-                    className={`mt-3 text-2xl font-extrabold ${
+                    className={`mt-3 text-2xl font-extrabold tabular-nums tracking-tight ${
                       financeStats.netProfit >= 0
                         ? 'text-[#3B5B3D]'
                         : 'text-red-600'
@@ -1228,7 +1228,7 @@ export default function AdminDashboardPage() {
                               </span>
                             </td>
                             <td
-                              className={`px-5 py-3.5 text-right font-bold whitespace-nowrap ${
+                              className={`px-5 py-3.5 text-right font-bold tabular-nums whitespace-nowrap ${
                                 isIncome ? 'text-[#3B5B3D]' : 'text-rose-600'
                               }`}
                             >

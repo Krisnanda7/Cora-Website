@@ -82,7 +82,7 @@ export default function ProductsPage() {
                   <Leaf className="h-3.5 w-3.5" />
                   Circular F&amp;B Collection
                 </span>
-                <h1 className="font-serif text-3xl font-semibold tracking-[-0.015em] text-[#2C1E18] sm:text-4xl lg:text-5xl">
+                <h1 className="font-serif text-3xl font-semibold tracking-tight text-[#2C1E18] sm:text-4xl lg:text-5xl">
                   CORA Product Catalog
                 </h1>
                 <p className="text-sm leading-relaxed text-[#6E5C52] sm:text-base">

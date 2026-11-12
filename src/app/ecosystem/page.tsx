@@ -467,7 +467,7 @@ export default function EcosystemPage() {
                 <Sparkles className="h-3.5 w-3.5" />
                 CORA Digital Ecosystem
               </span>
-              <h1 className="font-serif text-3xl font-semibold tracking-[-0.015em] text-[#2C1E18] sm:text-4xl lg:text-5xl">
+              <h1 className="font-serif text-3xl font-semibold tracking-tight text-[#2C1E18] sm:text-4xl lg:text-5xl">
                 Recipe Hub, CORABlend AI &amp; Coconut Pickup
               </h1>
               <p className="text-sm leading-relaxed text-[#5C4B42] sm:text-base">
