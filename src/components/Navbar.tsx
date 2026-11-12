@@ -13,7 +13,6 @@ const NAV_LINKS = [
   { label: 'Our Product', href: '/products' },
   { label: 'Recipe & AI', href: '/ecosystem' },
   { label: 'Coconut Pickup', href: '/ecosystem#pickup' },
-  { label: 'Track Orders', href: '/orders' },
 ] as const;
 
 function CoconutLogoMark() {

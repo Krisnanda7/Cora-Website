@@ -77,14 +77,6 @@ export default function Footer() {
               </li>
               <li>
                 <Link
-                  href="/orders"
-                  className="transition hover:text-[#2C1E18]"
-                >
-                  Track Orders
-                </Link>
-              </li>
-              <li>
-                <Link
                   href="/admin"
                   className="transition hover:text-[#2C1E18]"
                 >

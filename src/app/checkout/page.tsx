@@ -3,7 +3,6 @@
 import React, { useMemo, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import {
   AlertCircle,
   ArrowLeft,
@@ -21,6 +20,7 @@ import {
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { useCora } from '@/context/CoraContext';
+import type { Order } from '@/types/cora';
 
 type CourierOption = 'Regular' | 'Next Day';
 
@@ -73,7 +73,6 @@ async function fileToBase64DataUrl(file: File): Promise<string> {
 }
 
 export default function CheckoutPage() {
-  const router = useRouter();
   const { cart, cartTotal, bankAccounts, createOrder, isHydrated } = useCora();
 
   const activeBanks = useMemo(
@@ -99,6 +98,7 @@ export default function CheckoutPage() {
   const [proofFileName, setProofFileName] = useState<string>('');
   const [formError, setFormError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submittedOrder, setSubmittedOrder] = useState<Order | null>(null);
 
   const totalResidueSavedKg = useMemo(() => {
     const grams = cart.reduce(
@@ -189,10 +189,75 @@ export default function CheckoutPage() {
       notes: combinedNotes,
     });
 
-    router.push(
-      `/orders?created=${encodeURIComponent(createdOrder.orderNumber)}`
-    );
+    setIsSubmitting(false);
+    setSubmittedOrder(createdOrder);
   };
+
+  if (submittedOrder) {
+    return (
+      <div className="flex min-h-screen flex-col bg-[#FAF8F5] text-[#2C1E18]">
+        <Navbar />
+
+        <main className="flex-1 py-16">
+          <div className="mx-auto max-w-2xl px-4 sm:px-6">
+            <div className="rounded-3xl border border-[#E5DEC9] bg-white p-8 sm:p-10 text-center shadow-lg">
+              <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-[#3B5B3D]/10 text-[#3B5B3D]">
+                <Check className="h-8 w-8" />
+              </div>
+              <span className="mt-4 inline-block text-xs font-bold uppercase tracking-[0.16em] text-[#3B5B3D]">
+                Order Placed Successfully
+              </span>
+              <h1 className="mt-2 font-serif text-3xl font-semibold text-[#2C1E18] sm:text-4xl">
+                Thank you, {submittedOrder.customerName}!
+              </h1>
+              <p className="mt-3 text-sm text-[#6E5C52]">
+                Your transfer proof has been submitted. The CORA admin team will
+                verify your payment and prepare your order for shipment.
+              </p>
+
+              <div className="mt-6 rounded-2xl border border-[#E5DEC9] bg-[#FAF8F5] p-5 text-left">
+                <div className="flex items-center justify-between border-b border-[#E5DEC9] pb-3 text-xs text-[#6E5C52]">
+                  <span>Order Reference</span>
+                  <span className="font-mono font-bold text-[#2C1E18]">
+                    {submittedOrder.orderNumber}
+                  </span>
+                </div>
+                <div className="flex items-center justify-between border-b border-[#E5DEC9] py-3 text-xs text-[#6E5C52]">
+                  <span>Bank Account</span>
+                  <span className="font-semibold text-[#2C1E18]">
+                    {submittedOrder.bankAccountUsed}
+                  </span>
+                </div>
+                <div className="flex items-center justify-between pt-3 text-sm font-bold text-[#2C1E18]">
+                  <span>Total Amount</span>
+                  <span className="text-[#3B5B3D]">
+                    {formatRupiah(submittedOrder.totalAmount)}
+                  </span>
+                </div>
+              </div>
+
+              <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
+                <Link
+                  href="/products"
+                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-full bg-[#3B5B3D] px-6 py-3 text-sm font-semibold text-white transition hover:bg-[#2F4A31]"
+                >
+                  Continue Shopping
+                </Link>
+                <Link
+                  href="/"
+                  className="w-full sm:w-auto inline-flex items-center justify-center rounded-full border border-[#2C1E18]/30 px-6 py-3 text-sm font-semibold text-[#2C1E18] transition hover:bg-black/5"
+                >
+                  Back to Home
+                </Link>
+              </div>
+            </div>
+          </div>
+        </main>
+
+        <Footer />
+      </div>
+    );
+  }
 
   return (
     <div className="flex min-h-screen flex-col bg-[#FAF8F5] text-[#2C1E18]">
