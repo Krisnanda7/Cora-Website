@@ -926,7 +926,7 @@ export default function CoconutPickupPage() {
             </p>
             <div className="pt-2">
               <a
-                href="https://wa.me/6281234567890?text=Halo%20Tim%20Logistik%20CORA,%20saya%20ingin%20berkonsultasi%20mengenai%20penjemputan%20ampas%20kelapa."
+                href="https://wa.me/6285858687329?text=Halo%20Tim%20Logistik%20CORA,%20saya%20ingin%20berkonsultasi%20mengenai%20penjemputan%20ampas%20kelapa."
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 rounded-full bg-[#3B5B3D] px-6 py-3 text-xs font-bold text-white shadow-sm transition hover:bg-[#2F4A31]"

@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { ChevronRight, Menu, Search, ShoppingBag, User, X } from 'lucide-react';
+import { ChevronRight, Menu, Search, ShoppingBag, Truck, User, X } from 'lucide-react';
 import { useCora } from '@/context/CoraContext';
 import CartDrawer from '@/components/CartDrawer';
 import GlobalSearchModal from '@/components/GlobalSearchModal';
@@ -132,7 +132,7 @@ export default function Navbar() {
             </nav>
           </div>
 
-          {/* Right: Search, Cart, User Profile, and Mobile Menu Trigger */}
+          {/* Right: Search, Track Order, Cart, User Profile, and Mobile Menu Trigger */}
           <div className="flex items-center gap-2 sm:gap-2.5 shrink-0">
             {/* Global Search Button */}
             <button
@@ -144,6 +144,21 @@ export default function Navbar() {
             >
               <Search className="h-4 w-4" />
             </button>
+
+            {/* Quick Action: Lacak Pesanan */}
+            <Link
+              href="/track"
+              title="Lacak Status Pesanan &amp; Resi Pengiriman"
+              aria-label="Lacak Status Pesanan &amp; Resi Pengiriman"
+              className={`inline-flex h-9 w-9 sm:w-auto sm:px-3.5 items-center justify-center gap-1.5 rounded-full border text-xs font-semibold transition active:scale-95 focus:outline-none focus:ring-2 focus:ring-[#3B5B3D]/30 ${
+                pathname === '/track'
+                  ? 'border-[#3B5B3D] bg-[#3B5B3D]/10 text-[#3B5B3D]'
+                  : 'border-[#DDD4C1] bg-white text-[#5C4B42] hover:border-[#3B5B3D] hover:bg-[#FAF8F5] hover:text-[#2C1E18]'
+              }`}
+            >
+              <Truck className="h-4 w-4 shrink-0 text-[#3B5B3D]" />
+              <span className="hidden sm:inline">Lacak Pesanan</span>
+            </Link>
 
             {/* Primary Action: Responsive Cart (compact circle on mobile, pill on desktop) */}
             <button
@@ -195,6 +210,31 @@ export default function Navbar() {
             className="border-t border-[#E5DEC9] bg-[#FAF8F5] shadow-lg lg:hidden"
           >
             <div className="mx-auto max-w-7xl px-4 py-3 space-y-1">
+              {/* Highlighted Mobile Track Order Card */}
+              <Link
+                href="/track"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className={`flex items-center justify-between rounded-xl px-4 py-2.5 text-sm transition border mb-2 ${
+                  pathname === '/track'
+                    ? 'border-[#3B5B3D] bg-[#3B5B3D] font-semibold text-white shadow-xs'
+                    : 'border-[#3B5B3D]/25 bg-[#3B5B3D]/8 font-semibold text-[#3B5B3D] hover:bg-[#3B5B3D]/15'
+                }`}
+              >
+                <div className="flex items-center gap-2">
+                  <Truck className="h-4 w-4" />
+                  <span>Lacak Status Pesanan</span>
+                </div>
+                <span
+                  className={`text-[11px] rounded-full px-2 py-0.5 font-bold shadow-2xs ${
+                    pathname === '/track'
+                      ? 'bg-white/20 text-white'
+                      : 'bg-white text-[#3B5B3D]'
+                  }`}
+                >
+                  Cek Resi →
+                </span>
+              </Link>
+
               {NAV_LINKS.map((link) => {
                 const active = isActiveLink(link.href);
                 return (
