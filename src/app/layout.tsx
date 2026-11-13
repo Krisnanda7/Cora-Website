@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
+import { Analytics } from "@vercel/analytics/react";
 import { CoraProvider } from "@/context/CoraContext";
 import "./globals.css";
 
@@ -36,6 +37,7 @@ export default function RootLayout({
         className={`${fraunces.variable} ${plusJakartaSans.variable} min-h-full flex flex-col bg-[#FAF8F5] text-[#2C1E18] font-sans selection:bg-[#3B5B3D]/15 selection:text-[#2C1E18]`}
       >
         <CoraProvider>{children}</CoraProvider>
+        <Analytics />
       </body>
     </html>
   );
