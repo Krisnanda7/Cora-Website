@@ -64,7 +64,7 @@ export default function Footer() {
                   href="/track"
                   className="transition hover:text-[#2C1E18]"
                 >
-                  Lacak Pesanan
+                  Track Order
                 </Link>
               </li>
               <li>
@@ -96,7 +96,7 @@ export default function Footer() {
                   href="/profile"
                   className="transition hover:text-[#2C1E18]"
                 >
-                  Profil Pengguna
+                  User Profile
                 </Link>
               </li>
               <li>
@@ -133,7 +133,7 @@ export default function Footer() {
         </div>
 
         <div className="mt-12 flex flex-col items-start justify-between gap-3 border-t border-[#E5DEC9] pt-6 text-xs text-[#6E5C52] sm:flex-row sm:items-center">
-          <p>&copy; 2026 PT CORA Circular Innovation. All rights reserved.</p>
+          <p>&copy; 2026 CORA Circular Innovation. All rights reserved.</p>
           <Link
             href="/admin"
             className="font-medium text-[#3B5B3D] hover:underline"

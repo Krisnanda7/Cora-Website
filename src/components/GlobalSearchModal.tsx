@@ -14,59 +14,75 @@ interface SearchResultItem {
   id: string;
   title: string;
   subtitle: string;
-  category: 'Produk CORA' | 'Resep' | 'Artikel Edukasi' | 'Informasi CORA';
+  category: 'CORA Products' | 'Recipes' | 'Educational Articles' | 'CORA Information';
   href: string;
+  keywords?: string[];
 }
 
 const STATIC_INFO_ITEMS: SearchResultItem[] = [
   {
     id: 'info-story',
-    title: 'Our Story & Latar Belakang CORA',
-    subtitle: 'Kisah transformasi limbah ampas kelapa menjadi produk pangan sirkular bernutrisi tinggi.',
-    category: 'Informasi CORA',
+    title: 'Our Story & CORA Background',
+    subtitle: 'The journey of transforming coconut milk residue into high-nutrition circular food products.',
+    category: 'CORA Information',
     href: '/about',
+    keywords: ['story', 'about', 'tentang', 'background', 'sejarah', 'mission', 'cora'],
   },
   {
     id: 'info-vision',
-    title: 'Visi dan Misi Berkelanjutan',
-    subtitle: 'Komitmen CORA dalam mewujudkan zero food waste dan pemberdayaan pemasok lokal.',
-    category: 'Informasi CORA',
+    title: 'Sustainable Vision & Mission',
+    subtitle: 'Our commitment to zero food waste, climate action, and empowering local coconut suppliers.',
+    category: 'CORA Information',
     href: '/about#vision',
+    keywords: ['vision', 'mission', 'visi', 'misi', 'sustainable', 'zero waste', 'sdg'],
   },
   {
     id: 'info-team',
-    title: 'Profil Tim Inovasi CORA',
-    subtitle: 'Para inovator muda di balik riset dan pengembangan pangan sirkular.',
-    category: 'Informasi CORA',
+    title: 'CORA Innovation Team Profile',
+    subtitle: 'Meet the founders and innovators behind circular food upcycling research and technology.',
+    category: 'CORA Information',
     href: '/about#team',
+    keywords: ['team', 'founder', 'tim', 'developer', 'innovator'],
   },
   {
     id: 'info-contact',
-    title: 'Kontak & Formulir Kerja Sama',
-    subtitle: 'Email, WhatsApp, dan kemitraan pasokan ampas kelapa di Denpasar, Bali.',
-    category: 'Informasi CORA',
+    title: 'Contact & Supplier Partnerships',
+    subtitle: 'Email, WhatsApp hotline, and coconut residue supplier partnerships in Bali.',
+    category: 'CORA Information',
     href: '/about#contact',
+    keywords: ['contact', 'kontak', 'whatsapp', 'email', 'partner', 'kemitraan', 'supplier', 'bali'],
   },
   {
     id: 'edu-upcycling',
-    title: 'Edukasi: Apa itu Upcycling Pangan?',
-    subtitle: 'Memahami ekonomi sirkular dan optimalisasi hasil samping perasan santan kelapa.',
-    category: 'Artikel Edukasi',
+    title: 'Education: What is Food Upcycling?',
+    subtitle: 'Understanding circular economy principles and turning by-products into high-value ingredients.',
+    category: 'Educational Articles',
     href: '/#impact',
+    keywords: ['upcycling', 'edukasi', 'education', 'sirkular', 'circular', 'limbah', 'waste', 'impact'],
   },
   {
     id: 'edu-baking',
-    title: 'Edukasi: Panduan Baking dengan Tepung Kelapa',
-    subtitle: 'Tips takaran substitusi, rasio cairan, dan rekayasa adonan bebas gluten.',
-    category: 'Artikel Edukasi',
+    title: 'Education: Baking Guide with Coconut Flour',
+    subtitle: 'Liquid ratio tips, substitution formulas, and gluten-free dough optimization.',
+    category: 'Educational Articles',
     href: '/ecosystem',
+    keywords: ['baking', 'flour', 'tepung', 'resep', 'recipe', 'gluten free', 'panduan', 'guide'],
   },
   {
     id: 'pickup-system',
-    title: 'Coconut Pickup: Layanan Penjemputan Ampas',
-    subtitle: 'Alur penjemputan gratis dan kompensasi ekonomis bagi pedagang santan pasar.',
-    category: 'Informasi CORA',
+    title: 'Coconut Pickup: Residue Collection Service',
+    subtitle: 'Free scheduled pickup logistics and economic income for local coconut milk vendors.',
+    category: 'CORA Information',
     href: '/pickup',
+    keywords: ['pickup', 'penjemputan', 'ampas', 'kelapa', 'residue', 'mitra', 'supplier', 'logistics'],
+  },
+  {
+    id: 'info-track',
+    title: 'Track Order & Live Shipment Status',
+    subtitle: 'Monitor bank payment verification, courier tracking number, and order progress.',
+    category: 'CORA Information',
+    href: '/track',
+    keywords: ['track', 'lacak', 'order', 'pesanan', 'resi', 'shipping', 'status', 'delivery', 'kurir'],
   },
 ];
 
@@ -106,7 +122,7 @@ export default function GlobalSearchModal({
         id: p.id,
         title: p.name,
         subtitle: `${p.subtitle} • Rp ${p.price.toLocaleString('id-ID')}`,
-        category: 'Produk CORA',
+        category: 'CORA Products',
         href: '/products',
       }));
 
@@ -121,14 +137,15 @@ export default function GlobalSearchModal({
         id: r.id,
         title: r.title,
         subtitle: `${r.category} • ${r.prepTime} • ${r.difficulty}`,
-        category: 'Resep',
+        category: 'Recipes',
         href: '/ecosystem',
       }));
 
     const infoResults = STATIC_INFO_ITEMS.filter(
       (item) =>
         item.title.toLowerCase().includes(q) ||
-        item.subtitle.toLowerCase().includes(q)
+        item.subtitle.toLowerCase().includes(q) ||
+        (item.keywords && item.keywords.some((k) => k.toLowerCase().includes(q)))
     );
 
     return [...productResults, ...recipeResults, ...infoResults];
@@ -151,13 +168,14 @@ export default function GlobalSearchModal({
             autoFocus
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            placeholder="Cari produk CORA, resep, artikel edukasi, atau info..."
+            placeholder="Search CORA products, recipes, educational guides, or topics..."
             className="flex-1 bg-transparent text-sm text-[#2C1E18] placeholder-[#9C8A7B] focus:outline-none"
           />
           {searchTerm && (
             <button
               type="button"
               onClick={() => setSearchTerm('')}
+              aria-label="Clear search input"
               className="p-1 rounded-full text-[#8C7A6B] hover:bg-[#FAF8F5]"
             >
               <X className="h-4 w-4" />
@@ -178,15 +196,15 @@ export default function GlobalSearchModal({
             <div className="py-8 text-center">
               <Sparkles className="mx-auto h-8 w-8 text-[#3B5B3D]/50" />
               <p className="mt-2 text-xs font-semibold text-[#2C1E18]">
-                Pencarian Terpusat CORA
+                CORA Global Search
               </p>
               <p className="mt-1 text-[11px] text-[#6E5C52]">
-                Ketik &ldquo;brownies&rdquo;, &ldquo;pancake&rdquo;, &ldquo;pickup&rdquo;, atau &ldquo;edukasi&rdquo;.
+                Try searching &ldquo;brownies&rdquo;, &ldquo;pancake&rdquo;, &ldquo;flour&rdquo;, &ldquo;track order&rdquo;, or &ldquo;pickup&rdquo;.
               </p>
             </div>
           ) : searchResults.length === 0 ? (
             <div className="py-8 text-center text-xs text-[#6E5C52]">
-              Tidak ada hasil yang cocok dengan &ldquo;{searchTerm}&rdquo;.
+              No matching results found for &ldquo;{searchTerm}&rdquo;.
             </div>
           ) : (
             <div className="space-y-1.5">

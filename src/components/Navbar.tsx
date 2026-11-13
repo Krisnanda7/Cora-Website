@@ -138,18 +138,18 @@ export default function Navbar() {
             <button
               type="button"
               onClick={() => setIsSearchOpen(true)}
-              aria-label="Cari produk, resep, atau artikel (Cmd+K)"
-              title="Pencarian Terpusat (Cmd+K)"
+              aria-label="Search products, recipes, or articles (Cmd+K)"
+              title="Global Search (Cmd+K)"
               className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-[#DDD4C1] bg-white text-[#5C4B42] transition hover:border-[#3B5B3D] hover:bg-[#FAF8F5] hover:text-[#2C1E18] focus:outline-none active:scale-95"
             >
               <Search className="h-4 w-4" />
             </button>
 
-            {/* Quick Action: Lacak Pesanan */}
+            {/* Quick Action: Track Order */}
             <Link
               href="/track"
-              title="Lacak Status Pesanan &amp; Resi Pengiriman"
-              aria-label="Lacak Status Pesanan &amp; Resi Pengiriman"
+              title="Track Order &amp; Shipment Status"
+              aria-label="Track Order &amp; Shipment Status"
               className={`inline-flex h-9 w-9 sm:w-auto sm:px-3.5 items-center justify-center gap-1.5 rounded-full border text-xs font-semibold transition active:scale-95 focus:outline-none focus:ring-2 focus:ring-[#3B5B3D]/30 ${
                 pathname === '/track'
                   ? 'border-[#3B5B3D] bg-[#3B5B3D]/10 text-[#3B5B3D]'
@@ -157,7 +157,7 @@ export default function Navbar() {
               }`}
             >
               <Truck className="h-4 w-4 shrink-0 text-[#3B5B3D]" />
-              <span className="hidden sm:inline">Lacak Pesanan</span>
+              <span className="hidden sm:inline">Track Order</span>
             </Link>
 
             {/* Primary Action: Responsive Cart (compact circle on mobile, pill on desktop) */}
@@ -179,8 +179,8 @@ export default function Navbar() {
             {/* User Profile Button */}
             <Link
               href="/profile"
-              aria-label="User Profile & Akun Demo"
-              title="Profil Pengguna"
+              aria-label="User Profile &amp; Demo Account"
+              title="User Profile"
               className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-[#DDD4C1] bg-white text-[#5C4B42] transition hover:border-[#3B5B3D] hover:bg-[#FAF8F5] hover:text-[#2C1E18] focus:outline-none focus:ring-2 focus:ring-[#3B5B3D]/30 active:scale-95"
             >
               <User className="h-4 w-4" />
@@ -222,7 +222,7 @@ export default function Navbar() {
               >
                 <div className="flex items-center gap-2">
                   <Truck className="h-4 w-4" />
-                  <span>Lacak Status Pesanan</span>
+                  <span>Track Order Status</span>
                 </div>
                 <span
                   className={`text-[11px] rounded-full px-2 py-0.5 font-bold shadow-2xs ${
@@ -231,7 +231,7 @@ export default function Navbar() {
                       : 'bg-white text-[#3B5B3D]'
                   }`}
                 >
-                  Cek Resi →
+                  Check Status →
                 </span>
               </Link>
 
@@ -266,7 +266,7 @@ export default function Navbar() {
                   className="inline-flex items-center gap-1.5 rounded-lg py-1.5 px-2 font-medium hover:text-[#2C1E18] transition"
                 >
                   <User className="h-3.5 w-3.5 text-[#3B5B3D]" />
-                  <span>Profil &amp; Akun</span>
+                  <span>Profile &amp; Account</span>
                 </Link>
                 <Link
                   href="/admin"

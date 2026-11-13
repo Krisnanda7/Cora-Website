@@ -75,7 +75,7 @@ export default function CoconutPickupPage() {
   const [pickupLocation, setPickupLocation] = useState('');
   const [pickupKg, setPickupKg] = useState('');
   const [pickupDate, setPickupDate] = useState('');
-  const [pickupTime, setPickupTime] = useState('08:00 - 10:00 WITA (Pagi)');
+  const [pickupTime, setPickupTime] = useState('08:00 - 10:00 WITA (Morning)');
   const [pickupNotes, setPickupNotes] = useState('');
   const [pickupSuccessMsg, setPickupSuccessMsg] = useState<string | null>(null);
 
@@ -83,9 +83,9 @@ export default function CoconutPickupPage() {
   const [regName, setRegName] = useState('');
   const [regPhone, setRegPhone] = useState('');
   const [regLocation, setRegLocation] = useState('');
-  const [regBusinessType, setRegBusinessType] = useState('Kios Santan Pasar');
+  const [regBusinessType, setRegBusinessType] = useState('Traditional Coconut Milk Stall');
   const [regEstimatedKg, setRegEstimatedKg] = useState('');
-  const [regFrequency, setRegFrequency] = useState('Setiap Hari');
+  const [regFrequency, setRegFrequency] = useState('Daily');
   const [regSuccessMsg, setRegSuccessMsg] = useState<string | null>(null);
 
   // Total Residue Picked Up
@@ -114,7 +114,7 @@ export default function CoconutPickupPage() {
     });
 
     setPickupSuccessMsg(
-      `Permintaan penjemputan ${pickupKg} kg ampas kelapa berhasil diajukan! Tim CORA akan menghubungi via WhatsApp.`
+      `Pickup request for ${pickupKg} kg of coconut residue has been successfully submitted! Our team will contact you via WhatsApp.`
     );
     setPickupKg('');
     setPickupNotes('');
@@ -141,7 +141,7 @@ export default function CoconutPickupPage() {
     });
 
     setRegSuccessMsg(
-      `Selamat! Usaha "${regName}" berhasil didaftarkan sebagai mitra pemasok CORA.`
+      `Congratulations! "${regName}" has been successfully registered as an official CORA supplier partner.`
     );
     setRegName('');
     setRegPhone('');
@@ -197,10 +197,10 @@ export default function CoconutPickupPage() {
                 </h1>
 
                 <p className="text-sm sm:text-base leading-relaxed text-[#E2DACF] max-w-2xl">
-                  Solusi penjemputan logistik terpadu untuk produsen santan,
-                  pedagang kelapa parut, dan industri kuliner lokal. Kami
-                  mengubah ampas kelapa segar yang biasanya terbuang menjadi
-                  tepung bernutrisi tinggi dan bernilai ekonomi sirkular.
+                  An integrated circular logistics solution for coconut milk producers,
+                  grated coconut vendors, and local food makers. We transform fresh coconut
+                  residues—often discarded as waste—into high-nutrition upcycled flour with
+                  tangible circular economic value.
                 </p>
 
                 {/* Hero Action CTA Buttons */}
@@ -215,7 +215,7 @@ export default function CoconutPickupPage() {
                     className="inline-flex items-center gap-2 rounded-full bg-[#4E9A34] px-5 py-3 text-xs font-bold text-white shadow-sm transition hover:bg-[#3F8129]"
                   >
                     <Truck className="h-4 w-4" />
-                    Ajukan Penjemputan
+                    Request a Pickup
                   </button>
 
                   <button
@@ -228,7 +228,7 @@ export default function CoconutPickupPage() {
                     className="inline-flex items-center gap-2 rounded-full border border-white/30 bg-white/10 px-5 py-3 text-xs font-bold text-white backdrop-blur-md transition hover:bg-white/20"
                   >
                     <Users className="h-4 w-4 text-[#86C975]" />
-                    Daftar Jadi Mitra
+                    Become Our Supplier
                   </button>
 
                   <button
@@ -241,7 +241,7 @@ export default function CoconutPickupPage() {
                     className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-black/30 px-4 py-3 text-xs font-semibold text-[#E2DACF] hover:text-white transition"
                   >
                     <Clock className="h-4 w-4" />
-                    Lacak Status Penjemputan
+                    Track Pickup Status
                   </button>
                 </div>
               </div>
@@ -250,19 +250,19 @@ export default function CoconutPickupPage() {
               <div className="lg:col-span-5 grid grid-cols-2 gap-3.5">
                 <div className="rounded-2xl border border-white/15 bg-white/10 p-4.5 backdrop-blur-md">
                   <p className="text-[11px] font-semibold text-[#86C975] uppercase tracking-wider">
-                    Mitra Terdaftar
+                    Registered Partners
                   </p>
                   <p className="mt-1 font-serif text-3xl font-extrabold text-white">
                     {suppliers.length}
                   </p>
                   <p className="mt-1 text-[11px] text-[#D0C5B5]">
-                    Kios santan &amp; pedagang aktif
+                    Active stalls &amp; vendors
                   </p>
                 </div>
 
                 <div className="rounded-2xl border border-white/15 bg-white/10 p-4.5 backdrop-blur-md">
                   <p className="text-[11px] font-semibold text-[#86C975] uppercase tracking-wider">
-                    Ampas Terolah
+                    Residue Upcycled
                   </p>
                   <p className="mt-1 font-serif text-3xl font-extrabold text-white">
                     {totalCompletedKg + 280}{' '}
@@ -271,13 +271,13 @@ export default function CoconutPickupPage() {
                     </span>
                   </p>
                   <p className="mt-1 text-[11px] text-[#D0C5B5]">
-                    Diselamatkan dari pembuangan
+                    Diverted from landfills
                   </p>
                 </div>
 
                 <div className="rounded-2xl border border-white/15 bg-white/10 p-4.5 backdrop-blur-md">
                   <p className="text-[11px] font-semibold text-[#86C975] uppercase tracking-wider">
-                    Jangkauan Rute
+                    Route Coverage
                   </p>
                   <p className="mt-1 font-serif text-2xl font-bold text-white">
                     Bali Area
@@ -289,13 +289,13 @@ export default function CoconutPickupPage() {
 
                 <div className="rounded-2xl border border-white/15 bg-white/10 p-4.5 backdrop-blur-md">
                   <p className="text-[11px] font-semibold text-[#86C975] uppercase tracking-wider">
-                    Biaya Penjemputan
+                    Pickup Service
                   </p>
                   <p className="mt-1 font-serif text-2xl font-bold text-[#86C975]">
-                    Gratis + Reward
+                    Free + Reward
                   </p>
                   <p className="mt-1 text-[11px] text-[#D0C5B5]">
-                    Insentif rupiah per kg ampas
+                    Cash incentive per kg residue
                   </p>
                 </div>
               </div>
@@ -304,19 +304,19 @@ export default function CoconutPickupPage() {
         </section>
 
         {/* =========================================================================
-            2. 4-STEP ALUR LOGISTIK PENJEMPUTAN (HOW IT WORKS)
+            2. 4-STEP LOGISTICS WORKFLOW (HOW IT WORKS)
            ========================================================================= */}
         <section className="border-b border-[#E5DEC9] bg-[#F2EFE8]/70 py-12">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div className="text-center max-w-2xl mx-auto space-y-1">
               <span className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#3B5B3D]">
-                Alur Kerja Mudah
+                Simple Workflow
               </span>
               <h2 className="font-serif text-2xl sm:text-3xl font-bold text-[#2C1E18]">
-                Bagaimana Sistem Coconut Pickup Bekerja?
+                How Does the Coconut Pickup System Work?
               </h2>
               <p className="text-xs sm:text-sm text-[#6E5C52]">
-                Proses penjemputan higienis dan transparan dalam 4 tahap teratur.
+                A hygienic, reliable, and transparent collection process in 4 clear steps.
               </p>
             </div>
 
@@ -326,11 +326,11 @@ export default function CoconutPickupPage() {
                   01
                 </span>
                 <h3 className="text-sm font-bold text-[#2C1E18]">
-                  Ajukan Permintaan
+                  Submit Request
                 </h3>
                 <p className="text-xs leading-relaxed text-[#6E5C52]">
-                  Mitra memasukkan estimasi berat ampas kelapa, lokasi usaha, dan
-                  pilihan tanggal serta waktu penjemputan melalui website.
+                  Suppliers enter estimated residue weight, facility location, and
+                  preferred pickup date and time window online.
                 </p>
               </div>
 
@@ -339,11 +339,11 @@ export default function CoconutPickupPage() {
                   02
                 </span>
                 <h3 className="text-sm font-bold text-[#2C1E18]">
-                  Konfirmasi Jadwal
+                  Schedule Confirmation
                 </h3>
                 <p className="text-xs leading-relaxed text-[#6E5C52]">
-                  Tim operasional CORA memverifikasi pengajuan dan menjadwalkan
-                  rute kurir penjemputan terdekat ke lokasi kios Anda.
+                  CORA operations team verifies the request and optimizes the courier
+                  dispatch route directly to your stall.
                 </p>
               </div>
 
@@ -352,11 +352,11 @@ export default function CoconutPickupPage() {
                   03
                 </span>
                 <h3 className="text-sm font-bold text-[#2C1E18]">
-                  Penjemputan Higienis
+                  Hygienic Collection
                 </h3>
                 <p className="text-xs leading-relaxed text-[#6E5C52]">
-                  Driver CORA tiba di lokasi dengan wadah tertutup food-grade,
-                  menimbang ampas secara transparan, dan memberikan tanda terima.
+                  CORA courier arrives with clean food-grade containers, transparently
+                  weighs the residue, and issues a digital receipt.
                 </p>
               </div>
 
@@ -365,11 +365,11 @@ export default function CoconutPickupPage() {
                   04
                 </span>
                 <h3 className="text-sm font-bold text-[#2C1E18]">
-                  Diolah Menjadi Tepung
+                  Upcycled into Flour
                 </h3>
                 <p className="text-xs leading-relaxed text-[#6E5C52]">
-                  Ampas dibawa ke fasilitas pengolahan CORA untuk proses
-                  pengeringan higienis dan penggilingan menjadi tepung bernutrisi.
+                  Residue is brought to CORA processing hub for hygienic drying,
+                  milling, and refinement into wholesome gluten-free flour.
                 </p>
               </div>
             </div>
@@ -383,16 +383,16 @@ export default function CoconutPickupPage() {
           {/* Tabs Navigation Switcher */}
           <div className="flex flex-wrap justify-center gap-2">
             {[
-              { id: 'request', label: 'Ajukan Penjemputan', icon: Truck },
-              { id: 'register', label: 'Daftar Mitra Pemasok', icon: Users },
+              { id: 'request', label: 'Request a Pickup', icon: Truck },
+              { id: 'register', label: 'Become Our Supplier', icon: Users },
               {
                 id: 'tracking',
-                label: 'Status & Dashboard Pemasok',
+                label: 'Supplier Dashboard & Tracking',
                 icon: Clock,
               },
               {
                 id: 'guidelines',
-                label: 'Panduan & Standar Mutu',
+                label: 'Quality & Hygiene Guidelines',
                 icon: ShieldCheck,
               },
             ].map((tab) => {
@@ -433,11 +433,11 @@ export default function CoconutPickupPage() {
                 </span>
                 <div>
                   <h3 className="font-serif text-2xl font-bold text-[#2C1E18]">
-                    Formulir Permintaan Penjemputan (Pickup Request)
+                    Pickup Request Form
                   </h3>
                   <p className="text-xs text-[#6E5C52]">
-                    Ajukan jadwal penjemputan ampas kelapa. Tim logistik CORA
-                    akan menghubungi Anda via WhatsApp untuk konfirmasi kedatangan.
+                    Schedule a fresh coconut residue collection. Our logistics team
+                    will confirm your arrival window via WhatsApp.
                   </p>
                 </div>
               </div>
@@ -452,14 +452,14 @@ export default function CoconutPickupPage() {
               <form onSubmit={handlePickupSubmit} className="mt-6 space-y-4">
                 <div>
                   <label className="block text-xs font-bold text-[#2C1E18]">
-                    Nama Pemasok / Usaha *
+                    Supplier / Stall Name *
                   </label>
                   <input
                     type="text"
                     required
                     value={pickupSupplierName}
                     onChange={(e) => setPickupSupplierName(e.target.value)}
-                    placeholder="misal: Kelapa Segar Barokah / Pak Wayan"
+                    placeholder="e.g., Barokah Coconut Stall / Pak Wayan"
                     className="mt-1 w-full rounded-xl border border-[#E5DEC9] bg-[#FAF8F5] p-3 text-xs text-[#2C1E18] focus:border-[#3B5B3D] focus:bg-white focus:outline-none"
                   />
                 </div>
@@ -467,21 +467,21 @@ export default function CoconutPickupPage() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-xs font-bold text-[#2C1E18]">
-                      Nomor WhatsApp *
+                      WhatsApp Number *
                     </label>
                     <input
                       type="tel"
                       required
                       value={pickupPhone}
                       onChange={(e) => setPickupPhone(e.target.value)}
-                      placeholder="081234567890"
+                      placeholder="+62 812-3456-7890"
                       className="mt-1 w-full rounded-xl border border-[#E5DEC9] bg-[#FAF8F5] p-3 text-xs text-[#2C1E18] focus:border-[#3B5B3D] focus:bg-white focus:outline-none"
                     />
                   </div>
 
                   <div>
                     <label className="block text-xs font-bold text-[#2C1E18]">
-                      Jumlah Ampas Kelapa (kg) *
+                      Residue Weight (kg) *
                     </label>
                     <input
                       type="number"
@@ -489,7 +489,7 @@ export default function CoconutPickupPage() {
                       min={10}
                       value={pickupKg}
                       onChange={(e) => setPickupKg(e.target.value)}
-                      placeholder="Minimal 10 kg"
+                      placeholder="Minimum 10 kg"
                       className="mt-1 w-full rounded-xl border border-[#E5DEC9] bg-[#FAF8F5] p-3 text-xs text-[#2C1E18] focus:border-[#3B5B3D] focus:bg-white focus:outline-none"
                     />
                   </div>
@@ -497,14 +497,14 @@ export default function CoconutPickupPage() {
 
                 <div>
                   <label className="block text-xs font-bold text-[#2C1E18]">
-                    Lokasi / Alamat Lengkap Penjemputan *
+                    Pickup Location / Complete Address *
                   </label>
                   <textarea
                     rows={2}
                     required
                     value={pickupLocation}
                     onChange={(e) => setPickupLocation(e.target.value)}
-                    placeholder="Alamat kios/pabrik santan lengkap beserta patokan..."
+                    placeholder="Complete stall/market address with nearby landmarks..."
                     className="mt-1 w-full rounded-xl border border-[#E5DEC9] bg-[#FAF8F5] p-3 text-xs text-[#2C1E18] focus:border-[#3B5B3D] focus:bg-white focus:outline-none"
                   />
                 </div>
@@ -512,7 +512,7 @@ export default function CoconutPickupPage() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-xs font-bold text-[#2C1E18]">
-                      Tanggal Penjemputan *
+                      Pickup Date *
                     </label>
                     <input
                       type="date"
@@ -525,29 +525,29 @@ export default function CoconutPickupPage() {
 
                   <div>
                     <label className="block text-xs font-bold text-[#2C1E18]">
-                      Pilihan Waktu Penjemputan
+                      Preferred Time Window
                     </label>
                     <select
                       value={pickupTime}
                       onChange={(e) => setPickupTime(e.target.value)}
                       className="mt-1 w-full rounded-xl border border-[#E5DEC9] bg-[#FAF8F5] p-3 text-xs text-[#2C1E18] focus:border-[#3B5B3D] focus:bg-white focus:outline-none"
                     >
-                      <option>08:00 - 10:00 WITA (Pagi)</option>
-                      <option>11:00 - 13:00 WITA (Siang)</option>
-                      <option>15:00 - 17:00 WITA (Sore)</option>
+                      <option>08:00 - 10:00 WITA (Morning)</option>
+                      <option>11:00 - 13:00 WITA (Noon)</option>
+                      <option>15:00 - 17:00 WITA (Afternoon)</option>
                     </select>
                   </div>
                 </div>
 
                 <div>
                   <label className="block text-xs font-bold text-[#2C1E18]">
-                    Catatan Khusus untuk Kurir (Opsional)
+                    Special Courier Notes (Optional)
                   </label>
                   <input
                     type="text"
                     value={pickupNotes}
                     onChange={(e) => setPickupNotes(e.target.value)}
-                    placeholder="misal: Tong ampas warna biru di dekat mesin peras"
+                    placeholder="e.g., Blue storage drum near the pressing machine"
                     className="mt-1 w-full rounded-xl border border-[#E5DEC9] bg-[#FAF8F5] p-3 text-xs text-[#2C1E18] focus:border-[#3B5B3D] focus:bg-white focus:outline-none"
                   />
                 </div>
@@ -556,7 +556,7 @@ export default function CoconutPickupPage() {
                   type="submit"
                   className="w-full rounded-full bg-[#3B5B3D] py-3.5 text-xs font-bold text-white shadow-sm hover:bg-[#2F4A31] transition"
                 >
-                  Kirim Permintaan Penjemputan Ampas
+                  Submit Residue Pickup Request
                 </button>
               </form>
             </div>
@@ -571,11 +571,11 @@ export default function CoconutPickupPage() {
                 </span>
                 <div>
                   <h3 className="font-serif text-2xl font-bold text-[#2C1E18]">
-                    Daftar Menjadi Mitra Pemasok Resmi
+                    Register as an Official Supplier Partner
                   </h3>
                   <p className="text-xs text-[#6E5C52]">
-                    Dapatkan jadwal penjemputan berkala tanpa repot, kompensasi
-                    finansial tambahan, dan sertifikat kemitraan sirkular.
+                    Enjoy hassle-free recurring pickups, supplemental financial revenue,
+                    and circular supplier partner certification.
                   </p>
                 </div>
               </div>
@@ -591,28 +591,28 @@ export default function CoconutPickupPage() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-xs font-bold text-[#2C1E18]">
-                      Nama Pemilik / Penanggung Jawab *
+                      Owner / Contact Person *
                     </label>
                     <input
                       type="text"
                       required
                       value={regName}
                       onChange={(e) => setRegName(e.target.value)}
-                      placeholder="misal: Pak Wayan / Bu Dewi"
+                      placeholder="e.g., Pak Wayan / Bu Dewi"
                       className="mt-1 w-full rounded-xl border border-[#E5DEC9] bg-[#FAF8F5] p-3 text-xs text-[#2C1E18] focus:border-[#3B5B3D] focus:bg-white focus:outline-none"
                     />
                   </div>
 
                   <div>
                     <label className="block text-xs font-bold text-[#2C1E18]">
-                      Nomor WhatsApp Aktif *
+                      Active WhatsApp Number *
                     </label>
                     <input
                       type="tel"
                       required
                       value={regPhone}
                       onChange={(e) => setRegPhone(e.target.value)}
-                      placeholder="081234567890"
+                      placeholder="+62 812-3456-7890"
                       className="mt-1 w-full rounded-xl border border-[#E5DEC9] bg-[#FAF8F5] p-3 text-xs text-[#2C1E18] focus:border-[#3B5B3D] focus:bg-white focus:outline-none"
                     />
                   </div>
@@ -620,14 +620,14 @@ export default function CoconutPickupPage() {
 
                 <div>
                   <label className="block text-xs font-bold text-[#2C1E18]">
-                    Alamat Lengkap Kios / Pabrik Usaha *
+                    Stall / Facility Location Address *
                   </label>
                   <textarea
                     rows={2}
                     required
                     value={regLocation}
                     onChange={(e) => setRegLocation(e.target.value)}
-                    placeholder="misal: Pasar Kumbasari Kios No. 12, Jl. Gajah Mada, Denpasar"
+                    placeholder="e.g., Kumbasari Traditional Market Stall No. 12, Gajah Mada St, Denpasar"
                     className="mt-1 w-full rounded-xl border border-[#E5DEC9] bg-[#FAF8F5] p-3 text-xs text-[#2C1E18] focus:border-[#3B5B3D] focus:bg-white focus:outline-none"
                   />
                 </div>
@@ -635,24 +635,24 @@ export default function CoconutPickupPage() {
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                   <div>
                     <label className="block text-xs font-bold text-[#2C1E18]">
-                      Jenis Usaha
+                      Business Type
                     </label>
                     <select
                       value={regBusinessType}
                       onChange={(e) => setRegBusinessType(e.target.value)}
                       className="mt-1 w-full rounded-xl border border-[#E5DEC9] bg-[#FAF8F5] p-3 text-xs text-[#2C1E18] focus:border-[#3B5B3D] focus:bg-white focus:outline-none"
                     >
-                      <option>Kios Santan Pasar</option>
-                      <option>Pengolahan Kelapa Parut</option>
-                      <option>Industri Kue &amp; Santan</option>
-                      <option>Rumah Makan / Katering</option>
-                      <option>Kedai Kopi / Kafe</option>
+                      <option>Traditional Coconut Milk Stall</option>
+                      <option>Grated Coconut Processing</option>
+                      <option>Bakery &amp; Coconut Confectionery</option>
+                      <option>Restaurant / Catering</option>
+                      <option>Coffee Shop / Cafe</option>
                     </select>
                   </div>
 
                   <div>
                     <label className="block text-xs font-bold text-[#2C1E18]">
-                      Estimasi Ampas (kg/minggu) *
+                      Estimated Residue (kg/week) *
                     </label>
                     <input
                       type="number"
@@ -660,24 +660,24 @@ export default function CoconutPickupPage() {
                       min={10}
                       value={regEstimatedKg}
                       onChange={(e) => setRegEstimatedKg(e.target.value)}
-                      placeholder="misal: 80"
+                      placeholder="e.g., 80"
                       className="mt-1 w-full rounded-xl border border-[#E5DEC9] bg-[#FAF8F5] p-3 text-xs text-[#2C1E18] focus:border-[#3B5B3D] focus:bg-white focus:outline-none"
                     />
                   </div>
 
                   <div>
                     <label className="block text-xs font-bold text-[#2C1E18]">
-                      Frekuensi Produksi
+                      Production Frequency
                     </label>
                     <select
                       value={regFrequency}
                       onChange={(e) => setRegFrequency(e.target.value)}
                       className="mt-1 w-full rounded-xl border border-[#E5DEC9] bg-[#FAF8F5] p-3 text-xs text-[#2C1E18] focus:border-[#3B5B3D] focus:bg-white focus:outline-none"
                     >
-                      <option>Setiap Hari</option>
-                      <option>3-4x Seminggu</option>
-                      <option>1-2x Seminggu</option>
-                      <option>Berdasarkan Pesanan</option>
+                      <option>Daily</option>
+                      <option>3-4x a Week</option>
+                      <option>1-2x a Week</option>
+                      <option>On-Demand / By Order</option>
                     </select>
                   </div>
                 </div>
@@ -686,7 +686,7 @@ export default function CoconutPickupPage() {
                   type="submit"
                   className="w-full rounded-full bg-[#4E9A34] py-3.5 text-xs font-bold text-white shadow-sm hover:bg-[#3F8129] transition"
                 >
-                  Daftarkan Usaha Sebagai Mitra Pemasok
+                  Register Business as Supplier Partner
                 </button>
               </form>
             </div>
@@ -699,35 +699,35 @@ export default function CoconutPickupPage() {
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div className="rounded-2xl bg-white p-5 border border-[#E5DEC9] shadow-2xs">
                   <span className="text-[11px] font-bold text-[#3B5B3D] uppercase">
-                    Mitra Terdaftar
+                    Registered Partners
                   </span>
                   <p className="mt-2 font-serif text-3xl font-bold text-[#2C1E18]">
                     {suppliers.length}{' '}
                     <span className="text-xs font-normal text-[#6E5C52]">
-                      kios/usaha
+                      stalls/businesses
                     </span>
                   </p>
                   <p className="mt-1 text-[11px] text-[#8C7A6B]">
-                    Aktif bermitra dalam jaringan CORA
+                    Active across CORA circular network
                   </p>
                 </div>
 
                 <div className="rounded-2xl bg-white p-5 border border-[#E5DEC9] shadow-2xs">
                   <span className="text-[11px] font-bold text-[#3B5B3D] uppercase">
-                    Total Ampas Diserahkan
+                    Total Residue Collected
                   </span>
                   <p className="mt-2 font-serif text-3xl font-bold text-[#2C1E18]">
                     {totalCompletedKg + 280}{' '}
                     <span className="text-xs font-normal text-[#6E5C52]">kg</span>
                   </p>
                   <p className="mt-1 text-[11px] text-[#8C7A6B]">
-                    Telah dijemput dan diproses jadi tepung
+                    Collected &amp; upcycled into flour
                   </p>
                 </div>
 
                 <div className="rounded-2xl bg-white p-5 border border-[#E5DEC9] shadow-2xs">
                   <span className="text-[11px] font-bold text-[#3B5B3D] uppercase">
-                    Pengurangan Emisi Karbon
+                    Carbon Emission Reduction
                   </span>
                   <p className="mt-2 font-serif text-3xl font-bold text-[#2C1E18]">
                     ~{((totalCompletedKg + 280) * 2.38).toFixed(0)}{' '}
@@ -736,7 +736,7 @@ export default function CoconutPickupPage() {
                     </span>
                   </p>
                   <p className="mt-1 text-[11px] text-[#8C7A6B]">
-                    Mitigasi gas metana dari TPA
+                    Methane gas diverted from landfills
                   </p>
                 </div>
               </div>
@@ -746,11 +746,10 @@ export default function CoconutPickupPage() {
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[#F0EAE0] pb-3">
                   <div>
                     <h4 className="font-serif text-xl font-bold text-[#2C1E18]">
-                      Pelacakan Status 5 Tahap (Pickup Workflow)
+                      5-Stage Pickup Workflow Tracking
                     </h4>
                     <p className="text-xs text-[#6E5C52]">
-                      Setiap permintaan dipantau transparan dari pengajuan awal
-                      hingga selesai diolah.
+                      Every request is tracked transparently from initial dispatch to completed upcycling.
                     </p>
                   </div>
                 </div>
@@ -758,23 +757,23 @@ export default function CoconutPickupPage() {
                 <div className="grid grid-cols-2 sm:grid-cols-5 gap-2 text-center text-xs">
                   <div className="rounded-xl bg-amber-50 p-2.5 border border-amber-200">
                     <p className="font-bold text-amber-900">1. Submitted</p>
-                    <p className="text-[10px] text-amber-700">Pengajuan Masuk</p>
+                    <p className="text-[10px] text-amber-700">Request Logged</p>
                   </div>
                   <div className="rounded-xl bg-sky-50 p-2.5 border border-sky-200">
                     <p className="font-bold text-sky-900">2. Confirmed</p>
-                    <p className="text-[10px] text-sky-700">Jadwal Disetujui</p>
+                    <p className="text-[10px] text-sky-700">Schedule Approved</p>
                   </div>
                   <div className="rounded-xl bg-purple-50 p-2.5 border border-purple-200">
                     <p className="font-bold text-purple-900">3. On the Way</p>
-                    <p className="text-[10px] text-purple-700">Driver Menuju Lokasi</p>
+                    <p className="text-[10px] text-purple-700">Driver En Route</p>
                   </div>
                   <div className="rounded-xl bg-teal-50 p-2.5 border border-teal-200">
                     <p className="font-bold text-teal-900">4. Picked Up</p>
-                    <p className="text-[10px] text-teal-700">Ampas Diambil</p>
+                    <p className="text-[10px] text-teal-700">Residue Collected</p>
                   </div>
                   <div className="rounded-xl bg-emerald-50 p-2.5 border border-emerald-200 col-span-2 sm:col-span-1">
                     <p className="font-bold text-emerald-900">5. Completed</p>
-                    <p className="text-[10px] text-emerald-700">Diolah Jadi Tepung</p>
+                    <p className="text-[10px] text-emerald-700">Milled into Flour</p>
                   </div>
                 </div>
 
@@ -802,8 +801,8 @@ export default function CoconutPickupPage() {
                             📍 {req.location} • 📞 {req.phone}
                           </p>
                           <p className="text-[11px] text-[#8C7A6B]">
-                            Jadwal: {req.preferredDate} (
-                            {req.preferredTime || 'Pagi'}) • Estimasi:{' '}
+                            Schedule: {req.preferredDate} (
+                            {req.preferredTime || 'Morning'}) • Estimate:{' '}
                             <strong>{req.estimatedKg} kg</strong>
                           </p>
                           {req.notes && (
@@ -835,11 +834,11 @@ export default function CoconutPickupPage() {
                 </span>
                 <div>
                   <h3 className="font-serif text-2xl font-bold text-[#2C1E18]">
-                    Panduan &amp; Standar Mutu Ampas Kelapa
+                    Coconut Residue Quality &amp; Hygiene Guidelines
                   </h3>
                   <p className="text-xs text-[#6E5C52]">
-                    Kriteria kelayakan ampas kelapa agar dapat diolah menjadi tepung
-                    berkualitas tinggi dan higienis.
+                    Eligibility criteria to ensure residue can be safely processed into
+                    high-nutrition, food-grade flour for human consumption.
                   </p>
                 </div>
               </div>
@@ -847,28 +846,28 @@ export default function CoconutPickupPage() {
               <div className="space-y-4">
                 <div className="rounded-2xl border border-emerald-200 bg-emerald-50/60 p-4">
                   <h4 className="text-xs font-bold uppercase tracking-wider text-emerald-800">
-                    Kriteria Ampas Diterima (Disetujui ✓)
+                    Accepted Residue Criteria (Approved ✓)
                   </h4>
                   <ul className="mt-2.5 space-y-2 text-xs text-emerald-900">
                     <li className="flex items-start gap-2">
                       <Check className="h-4 w-4 shrink-0 mt-0.5 text-emerald-700" />
                       <span>
-                        <strong>Ampas Kelapa Segar:</strong> Dihasilkan maksimal
-                        24 jam sebelum jadwal penjemputan kurir.
+                        <strong>Fresh Coconut Residue:</strong> Produced within 24 hours
+                        prior to scheduled courier pickup.
                       </span>
                     </li>
                     <li className="flex items-start gap-2">
                       <Check className="h-4 w-4 shrink-0 mt-0.5 text-emerald-700" />
                       <span>
-                        <strong>Perasan Murni:</strong> Hanya berasal dari proses
-                        pemerasan santan segar tanpa campuran kimia, garam, atau pengawet.
+                        <strong>Pure Extraction:</strong> Sourced purely from fresh coconut milk
+                        pressing without added chemicals, table salt, or artificial preservatives.
                       </span>
                     </li>
                     <li className="flex items-start gap-2">
                       <Check className="h-4 w-4 shrink-0 mt-0.5 text-emerald-700" />
                       <span>
-                        <strong>Wadah Bersih &amp; Kering:</strong> Disimpan pada
-                        tong atau karung plastik bersih yang tidak terkena kotoran tanah atau hewan.
+                        <strong>Clean &amp; Sealed Containers:</strong> Kept in clean food-grade
+                        plastic drums or sacks protected from pests, soil, and dust.
                       </span>
                     </li>
                   </ul>
@@ -876,31 +875,31 @@ export default function CoconutPickupPage() {
 
                 <div className="rounded-2xl border border-rose-200 bg-rose-50/60 p-4">
                   <h4 className="text-xs font-bold uppercase tracking-wider text-rose-800">
-                    Kriteria yang Ditolak (Tidak Layak ✕)
+                    Rejected Criteria (Not Eligible ✕)
                   </h4>
                   <ul className="mt-2.5 space-y-2 text-xs text-rose-900">
                     <li className="flex items-start gap-2">
                       <span className="text-rose-600 font-bold mt-0.5">•</span>
-                      <span>Ampas berbau asam, tengik, berjamur, atau berubah warna.</span>
+                      <span>Sour odor, rancid smell, visible mold growth, or unusual discoloration.</span>
                     </li>
                     <li className="flex items-start gap-2">
                       <span className="text-rose-600 font-bold mt-0.5">•</span>
-                      <span>Terkontaminasi sabun pembersih, minyak hewani, atau sisa makanan lain.</span>
+                      <span>Contaminated with dishwashing soap, chemical cleaners, animal fat, or food scraps.</span>
                     </li>
                     <li className="flex items-start gap-2">
                       <span className="text-rose-600 font-bold mt-0.5">•</span>
-                      <span>Ampas basah yang telah mengendap lebih dari 36 jam di udara terbuka.</span>
+                      <span>Wet residue sitting out open in ambient temperature for more than 36 hours.</span>
                     </li>
                   </ul>
                 </div>
 
                 <div className="rounded-2xl border border-[#E5DEC9] bg-[#FAF8F5] p-4 text-xs text-[#5C4B42] space-y-1">
                   <p className="font-bold text-[#2C1E18]">
-                    💡 Tips Penyimpanan di Kios:
+                    💡 Stall Storage Tip:
                   </p>
                   <p>
-                    Setelah santan diperas, tiriskan ampas dan segera simpan dalam wadah
-                    tertutup di tempat yang sejuk dan terlindung dari sinar matahari langsung.
+                    After pressing coconut milk, promptly drain excess water and seal the residue
+                    in a clean container stored in a shaded, well-ventilated area away from direct sunlight.
                   </p>
                 </div>
               </div>
@@ -915,23 +914,23 @@ export default function CoconutPickupPage() {
           <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 text-center space-y-4">
             <span className="inline-flex items-center gap-1.5 rounded-full bg-[#3B5B3D]/10 px-3 py-1 text-xs font-semibold text-[#3B5B3D]">
               <Phone className="h-3.5 w-3.5" />
-              Layanan Hotline Logistik
+              Logistics Hotline Support
             </span>
             <h3 className="font-serif text-2xl font-bold text-[#2C1E18]">
-              Ada Pertanyaan Seputar Jadwal Penjemputan di Wilayah Anda?
+              Have Questions About Residue Pickup in Your Area?
             </h3>
             <p className="text-xs sm:text-sm text-[#6E5C52] max-w-xl mx-auto">
-              Tim logistik CORA siap membantu koordinasi rute jemput, penyediaan
-              tong penampung ampas, dan skema kemitraan UMKM.
+              CORA logistics team is ready to coordinate pickup routes, provide storage drums,
+              and assist with supplier partner compensation terms.
             </p>
             <div className="pt-2">
               <a
-                href="https://wa.me/6285858687329?text=Halo%20Tim%20Logistik%20CORA,%20saya%20ingin%20berkonsultasi%20mengenai%20penjemputan%20ampas%20kelapa."
+                href="https://wa.me/6285858687329?text=Hello%20CORA%20Logistics%20Team,%20I%20would%20like%20to%20inquire%20about%20coconut%20residue%20pickup%20partnership."
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 rounded-full bg-[#3B5B3D] px-6 py-3 text-xs font-bold text-white shadow-sm transition hover:bg-[#2F4A31]"
               >
-                <span>Hubungi via WhatsApp</span>
+                <span>Contact via WhatsApp</span>
                 <ExternalLink className="h-3.5 w-3.5" />
               </a>
             </div>

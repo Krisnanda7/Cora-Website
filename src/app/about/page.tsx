@@ -25,27 +25,27 @@ interface TeamMember {
 
 const TEAM_MEMBERS: TeamMember[] = [
   {
-    name: 'Anggota 1',
+    name: 'Member 1',
     role: 'Founder & Innovation Lead',
-    responsibility: 'Mengembangkan strategi sirkular, arsitektur produk, dan visi teknologi ekosistem CORA.',
+    responsibility: 'Spearheading circular strategy, product architecture, and CORA ecosystem technology vision.',
     image: '/images/hero/anggota1.jpg',
   },
   {
-    name: 'Anggota 2',
+    name: 'Member 2',
     role: 'Food Tech & R&D Specialist',
-    responsibility: 'Formulasi higienis tepung ampas kelapa, uji proksimat nutrisi, dan rekayasa pangan bebas gluten.',
+    responsibility: 'Formulating hygienic coconut pulp flour, proximate nutrient testing, and gluten-free food engineering.',
     image: '/images/products/anggota2.jpg',
   },
   {
-    name: 'Anggota 3',
+    name: 'Member 3',
     role: 'Supply Chain & Community Lead',
-    responsibility: 'Mengelola jaringan logistik penjemputan residu kelapa dan kemitraan UMKM pedagang santan.',
+    responsibility: 'Managing coconut residue pickup logistics, micro-routes, and coconut vendor MSME partnerships.',
     image: '/images/products/anggota.jpg',
   },
   {
-    name: 'Anggota 4',
+    name: 'Member 4',
     role: 'Sustainability & Impact Officer',
-    responsibility: 'Memantau metrik pengurangan sampah, jejak karbon, dan kepatuhan standar SDGs perusahaan.',
+    responsibility: 'Monitoring waste reduction metrics, carbon footprint prevention, and corporate SDGs compliance standards.',
     image: '/images/products/anggota.jpg',
   },
 ];
@@ -59,51 +59,51 @@ interface FAQItem {
 const FAQ_LIST: FAQItem[] = [
   {
     category: 'product',
-    question: 'Apa itu produk pangan sirkular CORA?',
+    question: 'What are CORA circular food products?',
     answer:
-      'Produk CORA diolah dari ampas kelapa hasil sampingan produksi santan segar yang biasanya dibuang. Kami mengeringkannya secara higienis dengan suhu terkontrol dan menggilingnya menjadi tepung kelapa bernutrisi tinggi, brownies fudgy, dan cookies kaya serat.',
+      'CORA products are crafted from upcycled coconut pulp—a natural byproduct of fresh coconut milk extraction that is typically discarded. We hygienically dehydrate it under controlled temperatures and mill it into nutrient-dense coconut flour, fudgy brownies, and fiber-rich cookies.',
   },
   {
     category: 'product',
-    question: 'Apakah produk CORA bebas gluten (gluten-free)?',
+    question: 'Are CORA products gluten-free?',
     answer:
-      'Ya! Tepung ampas kelapa murni dan semua olahan camilan CORA secara alami 100% bebas gluten (gluten-free), tinggi serat pangan, dan aman untuk penderita celiac maupun pelaku pola makan sehat.',
+      'Yes! Pure coconut pulp flour and all CORA snacks are naturally 100% gluten-free, rich in prebiotic dietary fiber, and safe for celiac diets and healthy lifestyle choices.',
   },
   {
     category: 'purchase',
-    question: 'Bagaimana cara melakukan pembelian di website CORA?',
+    question: 'How do I place an order on the CORA website?',
     answer:
-      'Pilih produk di menu Our Product, tentukan jumlah dan varian, lalu klik Tambah ke Keranjang. Buka keranjang belanja dan lanjutkan ke Checkout. Anda dapat mengisi data pengiriman dan melakukan simulasi pembayaran transfer bank.',
+      'Browse items under Our Products, select quantity and variants, then click Add to Cart. Open your cart and proceed to Checkout. Complete your delivery address and make a demo bank transfer verification.',
   },
   {
     category: 'purchase',
-    question: 'Apakah transaksi saat ini adalah transaksi riil?',
+    question: 'Are current transactions live or simulated demo orders?',
     answer:
-      'Saat ini website CORA berjalan sebagai Interactive Prototype / Demo. Anda dapat mencoba seluruh alur belanja, upload bukti transfer demo, dan pelacakan pesanan secara gratis tanpa pemotongan saldo nyata.',
+      'Currently, the CORA website operates as an Interactive Prototype / Demo. You can experience the complete shopping journey, upload demo transfer receipts, and track live order stages freely with no real monetary deduction.',
   },
   {
     category: 'shipping',
-    question: 'Berapa lama estimasi pengiriman pesanan?',
+    question: 'What is the estimated delivery timeframe?',
     answer:
-      'Pengiriman pesanan menggunakan kurir rekanan reguler (2-3 hari kerja) atau express/next day (1 hari kerja). Anda dapat melacak posisi pesanan secara berkala melalui menu Lacak Pesanan.',
+      'Orders are shipped via partner courier services with regular (2-3 business days) or express/next day (1 business day) delivery. You can monitor your shipment anytime via the Track Order page.',
   },
   {
     category: 'usage',
-    question: 'Bagaimana cara menggunakan tepung kelapa CORA untuk baking?',
+    question: 'How do I use CORA coconut flour in home baking?',
     answer:
-      'Gunakan takaran 1/4 hingga 1/3 dari resep tepung terigu biasa (misal: 100g terigu diganti 30g tepung kelapa CORA). Tambahkan 1 butir telur ekstra dan diamkan adonan selama 3 menit agar serat menyerap cairan secara sempurna.',
+      'Substitute 1/4 to 1/3 the amount of conventional wheat flour (e.g., replace 100g wheat flour with 30g CORA coconut flour). Add 1 extra egg and let batter rest for 3 minutes so the fibers can absorb moisture thoroughly.',
   },
   {
     category: 'pickup',
-    question: 'Siapa saja yang dapat bergabung dalam program Coconut Pickup?',
+    question: 'Who is eligible to join the Coconut Pickup program?',
     answer:
-      'Pedagang kelapa parut pasar tradisional, kios santan murni, pabrik pengolahan kelapa, hingga katering/rumah makan yang menghasilkan limbah ampas kelapa minimal 10 kg per penjemputan.',
+      'Traditional market coconut vendors, fresh coconut milk stalls, food processing facilities, and caterers or restaurants producing at least 10 kg of clean coconut residue per scheduled collection.',
   },
   {
     category: 'pickup',
-    question: 'Apakah mitra pemasok kelapa mendapatkan imbalan biaya?',
+    question: 'Do supplier partners receive financial compensation?',
     answer:
-      'Ya! Setiap kilogram ampas kelapa bersih yang memenuhi standar mutu akan dihargai dengan kompensasi ekonomi kompetitif dan dijemput langsung oleh armada logistik CORA tanpa biaya penjemputan.',
+      'Yes! Every kilogram of clean coconut residue meeting quality standards receives competitive monetary compensation and direct free collection by the CORA logistics team.',
   },
 ];
 
@@ -114,7 +114,7 @@ export default function AboutPage() {
   // Contact Form State
   const [contactName, setContactName] = useState('');
   const [contactEmail, setContactEmail] = useState('');
-  const [contactSubject, setContactSubject] = useState('Pertanyaan Umum');
+  const [contactSubject, setContactSubject] = useState('General Inquiry & Product Consultation');
   const [contactMessage, setContactMessage] = useState('');
   const [contactSuccess, setContactSuccess] = useState(false);
 
@@ -164,7 +164,7 @@ export default function AboutPage() {
                 About CORA (Circular Food Innovation)
               </h1>
               <p className="text-sm leading-relaxed text-[#E2DACF] sm:text-base">
-                Menghidupkan kembali ampas kelapa menjadi bahan pangan bernutrisi tinggi, memberdayakan UMKM kelapa lokal, dan mewujudkan masa depan pangan bebas sampah.
+                Revitalizing coconut pulp into nutrient-dense food ingredients, empowering local coconut MSMEs, and pioneering a zero-waste food future.
               </p>
             </div>
           </div>
@@ -179,19 +179,19 @@ export default function AboutPage() {
                   Our Story
                 </span>
                 <h2 className="mt-2 font-serif text-3xl font-bold text-[#2C1E18] sm:text-4xl">
-                  Dari Limbah Terabaikan Menjadi Peluang Baru
+                  From Overlooked Residue to Sustainable Opportunity
                 </h2>
               </div>
 
               <div className="space-y-4 text-xs sm:text-sm text-[#5C4B42] leading-relaxed">
                 <p>
-                  <strong className="text-[#2C1E18]">Latar Belakang:</strong> Indonesia merupakan salah satu negara produsen kelapa terbesar di dunia. Setiap hari, ribuan pasar tradisional dan industri santan memproses jutaan butir kelapa untuk diambil santan dan minyaknya.
+                  <strong className="text-[#2C1E18]">Background:</strong> Indonesia is one of the world&apos;s largest coconut producers. Every day, thousands of traditional markets and coconut milk producers press millions of coconuts for culinary milk and oil extraction.
                 </p>
                 <p>
-                  <strong className="text-[#2C1E18]">Permasalahan Limbah:</strong> Namun, proses pemerasan santan tersebut meninggalkan gunungan ampas kelapa basah yang kerap dianggap sebagai limbah tak bernilai. Diperkirakan ribuan ton ampas kelapa berakhir membusuk di TPA setiap bulan, melepaskan gas metana berbahaya dan mencemari lingkungan.
+                  <strong className="text-[#2C1E18]">The Waste Crisis:</strong> However, fresh pressing leaves behind mountains of wet coconut pulp often discarded as valueless waste. Thousands of tons rot in landfills every month, releasing harmful methane gas and polluting local ecosystems.
                 </p>
                 <p>
-                  <strong className="text-[#2C1E18]">Ide Inovasi CORA:</strong> Di sinilah CORA hadir. Kami memandang ampas kelapa bukan sebagai sampah, melainkan komoditas pangan bernutrisi tinggi yang belum teroptimalkan. Melalui proses pengeringan higienis berstandar pangan dan penggilingan ultra-halus, kami mengubah ampas tersebut menjadi <em>Tepung Ampas Kelapa</em> tinggi serat pangan, artisanal brownies cokelat, serta cookies renyah bergizi.
+                  <strong className="text-[#2C1E18]">The CORA Innovation:</strong> This is where CORA steps in. We view coconut pulp not as waste, but as an undervalued superfood ingredient. Through food-grade hygienic dehydration and ultra-fine milling, we transform residue into fiber-packed <em>Upcycled Coconut Flour</em>, artisanal chocolate brownies, and crunchy nutrient-dense cookies.
                 </p>
               </div>
 
@@ -215,7 +215,7 @@ export default function AboutPage() {
               <div className="relative aspect-[4/3] rounded-3xl overflow-hidden border border-[#E5DEC9] shadow-lg">
                 <Image
                   src="/images/hero/hero.jpg"
-                  alt="Perjalanan Inovasi CORA"
+                  alt="CORA Innovation Journey"
                   fill
                   className="object-cover object-center"
                 />
@@ -225,7 +225,7 @@ export default function AboutPage() {
                     Circular Food Revolution
                   </p>
                   <p className="font-serif text-xl font-bold">
-                    Mengubah Residu Menjadi Sumber Pangan Berkelanjutan
+                    Transforming Residue into Sustainable Nutrition
                   </p>
                 </div>
               </div>
@@ -255,15 +255,15 @@ export default function AboutPage() {
                     </span>
                     <div>
                       <p className="text-[11px] font-bold uppercase tracking-wider text-[#3B5B3D]">
-                        Visi Kami
+                        Our Vision
                       </p>
                       <h3 className="text-xl font-bold text-[#2C1E18]">
-                        Pelopor Pangan Sirkular Terdepan
+                        Leading Circular Food Pioneer
                       </h3>
                     </div>
                   </div>
                   <p className="text-sm leading-relaxed text-[#5C4B42]">
-                    Menjadi pionir inovasi pangan sirkular di Asia Tenggara yang mentransformasikan hasil samping pertanian kelapa menjadi sumber pangan bernilai nutrisi tinggi, ramah iklim, dan berdaya saing global demi tercapainya sistem pangan tanpa limbah (zero food waste).
+                    To be the premier pioneer of circular food innovation across Southeast Asia, transforming agricultural coconut byproducts into high-nutrition, climate-positive, and globally competitive food systems for a zero food waste future.
                   </p>
                 </div>
                 <div className="mt-6 pt-4 border-t border-[#F0EAE0] text-xs font-semibold text-[#3B5B3D]">
@@ -280,25 +280,25 @@ export default function AboutPage() {
                     </span>
                     <div>
                       <p className="text-[11px] font-bold uppercase tracking-wider text-[#4E9A34]">
-                        Misi Kami
+                        Our Mission
                       </p>
                       <h3 className="text-xl font-bold text-[#2C1E18]">
-                        Tiga Langkah Nyata Berkelanjutan
+                        Three Meaningful Sustainable Pillars
                       </h3>
                     </div>
                   </div>
                   <ul className="space-y-3 text-xs sm:text-sm text-[#5C4B42]">
                     <li className="flex items-start gap-2.5">
                       <CheckCircle2 className="h-4 w-4 shrink-0 text-[#3B5B3D] mt-0.5" />
-                      <span><strong>Higiene &amp; Nilai Tambah:</strong> Menyelamatkan ampas kelapa dengan teknologi pengeringan higienis menjadi tepung fungsional bermutu tinggi.</span>
+                      <span><strong>Hygiene &amp; Value Addition:</strong> Rescuing coconut pulp with food-grade controlled dehydration into premium functional flour.</span>
                     </li>
                     <li className="flex items-start gap-2.5">
                       <CheckCircle2 className="h-4 w-4 shrink-0 text-[#3B5B3D] mt-0.5" />
-                      <span><strong>Diversifikasi Sehat:</strong> Menyediakan alternatif bahan pangan bebas gluten yang kaya serat dan lezat bagi masyarakat.</span>
+                      <span><strong>Nutritional Diversity:</strong> Providing delicious, fiber-rich, gluten-free food alternatives that empower healthy lifestyles.</span>
                     </li>
                     <li className="flex items-start gap-2.5">
                       <CheckCircle2 className="h-4 w-4 shrink-0 text-[#3B5B3D] mt-0.5" />
-                      <span><strong>Kemitraan UMKM:</strong> Memberdayakan pedagang kelapa parut dan petani lokal lewat kemitraan sirkular dan pendapatan tambahan pasti.</span>
+                      <span><strong>MSME Empowerment:</strong> Uplifting local coconut vendors and smallholders through circular partnerships and reliable supplementary income.</span>
                     </li>
                   </ul>
                 </div>
@@ -320,7 +320,7 @@ export default function AboutPage() {
               Meet Our Team
             </h2>
             <p className="text-xs sm:text-sm text-[#6E5C52]">
-              Para inovator muda yang berdedikasi menciptakan dampak positif bagi ekosistem pangan dan lingkungan.
+              Passionate innovators committed to driving positive impact for food systems and our environment.
             </p>
           </div>
 
@@ -365,18 +365,18 @@ export default function AboutPage() {
                 Frequently Asked Questions (FAQ)
               </h2>
               <p className="text-xs sm:text-sm text-[#6E5C52]">
-                Jawaban atas pertanyaan umum mengenai produk, cara pembelian, pengiriman, penggunaan tepung, dan penjemputan kelapa.
+                Answers to common inquiries regarding our products, purchasing, shipping, baking tips, and coconut pickup logistics.
               </p>
             </div>
 
             {/* Filter Buttons */}
             <div className="mt-6 flex flex-wrap justify-center gap-2">
               {[
-                { id: 'all', label: 'Semua Pertanyaan' },
-                { id: 'product', label: 'Produk & Nutrisi' },
-                { id: 'purchase', label: 'Pembelian & Demo' },
-                { id: 'shipping', label: 'Pengiriman' },
-                { id: 'usage', label: 'Cara Pakai Tepung' },
+                { id: 'all', label: 'All Questions' },
+                { id: 'product', label: 'Products & Nutrition' },
+                { id: 'purchase', label: 'Purchasing & Demo' },
+                { id: 'shipping', label: 'Shipping & Delivery' },
+                { id: 'usage', label: 'Baking & Usage' },
                 { id: 'pickup', label: 'Coconut Pickup' },
               ].map((btn) => (
                 <button
@@ -438,10 +438,10 @@ export default function AboutPage() {
                     Get in Touch
                   </span>
                   <h2 className="mt-2 font-serif text-3xl font-bold text-[#2C1E18]">
-                    Hubungi &amp; Bermitra dengan CORA
+                    Contact &amp; Partner with CORA
                   </h2>
                   <p className="mt-2 text-xs sm:text-sm text-[#6E5C52] leading-relaxed">
-                    Kami sangat terbuka untuk kemitraan pengadaan bahan baku, riset pangan sirkular, pemesanan katering/B2B, maupun kolaborasi keberlanjutan.
+                    We welcome partnerships in raw material sourcing, circular food research, wholesale/B2B catering orders, and sustainability initiatives.
                   </p>
                 </div>
 
@@ -451,7 +451,7 @@ export default function AboutPage() {
                       <MapPin className="h-4 w-4" />
                     </span>
                     <div>
-                      <strong className="block text-[#2C1E18]">Alamat Operasional:</strong>
+                      <strong className="block text-[#2C1E18]">Operational Address:</strong>
                       <span>Jl. Tukad Balian No. 88, Renon, Denpasar, Bali 80226</span>
                     </div>
                   </div>
@@ -461,7 +461,7 @@ export default function AboutPage() {
                       <Mail className="h-4 w-4" />
                     </span>
                     <div>
-                      <strong className="block text-[#2C1E18]">Email Resmi:</strong>
+                      <strong className="block text-[#2C1E18]">Official Email:</strong>
                       <span>cora@gmail.com</span>
                     </div>
                   </div>
@@ -471,7 +471,7 @@ export default function AboutPage() {
                       <Phone className="h-4 w-4" />
                     </span>
                     <div>
-                      <strong className="block text-[#2C1E18]">Nomor WhatsApp:</strong>
+                      <strong className="block text-[#2C1E18]">WhatsApp:</strong>
                       <span>+62 858-5868-7329</span>
                     </div>
                   </div>
@@ -496,16 +496,16 @@ export default function AboutPage() {
               <div className="lg:col-span-7">
                 <div className="rounded-3xl border border-[#E5DEC9] bg-[#FAF8F5] p-6 sm:p-8 shadow-xs">
                   <h3 className="font-serif text-xl font-bold text-[#2C1E18]">
-                    Formulir Pertanyaan &amp; Kerja Sama
+                    Inquiry &amp; Collaboration Form
                   </h3>
                   <p className="mt-1 text-xs text-[#6E5C52]">
-                    Kirimkan pesan atau proposal kolaborasi Anda. Tim kami akan merespons dalam waktu 1x24 jam.
+                    Send your message or collaboration proposal. Our team will respond within 24 hours.
                   </p>
 
                   {contactSuccess && (
                     <div className="mt-4 rounded-2xl bg-[#4E9A34]/15 border border-[#4E9A34]/30 p-4 text-xs font-medium text-[#2F611F] flex items-center gap-2">
                       <CheckCircle2 className="h-4 w-4 shrink-0" />
-                      <span>Terima kasih! Pesan dan formulir kerja sama Anda berhasil dikirim ke tim CORA.</span>
+                      <span>Thank you! Your message and collaboration inquiry have been successfully sent to the CORA team.</span>
                     </div>
                   )}
 
@@ -513,28 +513,28 @@ export default function AboutPage() {
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <div>
                         <label className="block text-xs font-bold text-[#2C1E18]">
-                          Nama Lengkap
+                          Full Name
                         </label>
                         <input
                           type="text"
                           required
                           value={contactName}
                           onChange={(e) => setContactName(e.target.value)}
-                          placeholder="Nama Anda / Perusahaan"
+                          placeholder="Your Name / Organization"
                           className="mt-1 w-full rounded-xl border border-[#D6CCBA] bg-white p-3 text-xs text-[#2C1E18] focus:border-[#3B5B3D] focus:outline-none"
                         />
                       </div>
 
                       <div>
                         <label className="block text-xs font-bold text-[#2C1E18]">
-                          Email atau No. WhatsApp
+                          Email or WhatsApp No.
                         </label>
                         <input
                           type="text"
                           required
                           value={contactEmail}
                           onChange={(e) => setContactEmail(e.target.value)}
-                          placeholder="email@contoh.com / 0812..."
+                          placeholder="name@example.com / +62..."
                           className="mt-1 w-full rounded-xl border border-[#D6CCBA] bg-white p-3 text-xs text-[#2C1E18] focus:border-[#3B5B3D] focus:outline-none"
                         />
                       </div>
@@ -542,30 +542,30 @@ export default function AboutPage() {
 
                     <div>
                       <label className="block text-xs font-bold text-[#2C1E18]">
-                        Subjek / Topik Kemitraan
+                        Subject / Partnership Topic
                       </label>
                       <select
                         value={contactSubject}
                         onChange={(e) => setContactSubject(e.target.value)}
                         className="mt-1 w-full rounded-xl border border-[#D6CCBA] bg-white p-3 text-xs text-[#2C1E18] focus:border-[#3B5B3D] focus:outline-none"
                       >
-                        <option>Pertanyaan Umum &amp; Konsultasi Produk</option>
-                        <option>Kemitraan Pemasok Ampas Kelapa</option>
-                        <option>Pemesanan Grosir / B2B Katering</option>
-                        <option>Kolaborasi Riset &amp; Publikasi</option>
+                        <option>General Inquiry &amp; Product Consultation</option>
+                        <option>Coconut Pulp Supplier Partnership</option>
+                        <option>Wholesale / B2B Catering Orders</option>
+                        <option>Research &amp; Sustainability Collaboration</option>
                       </select>
                     </div>
 
                     <div>
                       <label className="block text-xs font-bold text-[#2C1E18]">
-                        Pesan Anda
+                        Your Message
                       </label>
                       <textarea
                         rows={4}
                         required
                         value={contactMessage}
                         onChange={(e) => setContactMessage(e.target.value)}
-                        placeholder="Tuliskan detail pertanyaan atau rencana kerja sama Anda..."
+                        placeholder="Describe your inquiry, project, or collaboration ideas..."
                         className="mt-1 w-full rounded-xl border border-[#D6CCBA] bg-white p-3 text-xs text-[#2C1E18] focus:border-[#3B5B3D] focus:outline-none"
                       />
                     </div>
@@ -575,7 +575,7 @@ export default function AboutPage() {
                       className="inline-flex items-center justify-center gap-2 rounded-full bg-[#3B5B3D] px-6 py-3 text-xs font-bold text-white shadow-xs hover:bg-[#2F4A31] transition"
                     >
                       <Send className="h-3.5 w-3.5" />
-                      <span>Kirim Pesan</span>
+                      <span>Send Message</span>
                     </button>
                   </form>
                 </div>

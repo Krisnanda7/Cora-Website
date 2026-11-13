@@ -504,7 +504,7 @@ export default function HomePage() {
                 Three Pillars of CORA Impact
               </h3>
               <p className="text-xs sm:text-sm text-[#6E5C52]">
-                Menciptakan ekosistem berkelanjutan dari hulu ke hilir yang menyeimbangkan lingkungan, ekonomi lokal, dan kesejahteraan masyarakat.
+                Building a sustainable end-to-end ecosystem that balances environmental stewardship, local economic vitality, and community welfare.
               </p>
             </div>
 
@@ -523,15 +523,15 @@ export default function HomePage() {
                   <ul className="space-y-2.5 text-xs text-[#5C4B42]">
                     <li className="flex items-start gap-2">
                       <Check className="h-4 w-4 shrink-0 text-[#3B5B3D] mt-0.5" />
-                      <span>Mengurangi limbah ampas kelapa dari produksi santan harian.</span>
+                      <span>Diverting coconut milk residue from daily production away from landfills.</span>
                     </li>
                     <li className="flex items-start gap-2">
                       <Check className="h-4 w-4 shrink-0 text-[#3B5B3D] mt-0.5" />
-                      <span>Mengoptimalkan pemanfaatan hasil samping pengolahan kelapa menjadi produk bernilai pangan.</span>
+                      <span>Transforming coconut processing by-products into high-value functional food ingredients.</span>
                     </li>
                     <li className="flex items-start gap-2">
                       <Check className="h-4 w-4 shrink-0 text-[#3B5B3D] mt-0.5" />
-                      <span>Mendukung konsep zero waste dan ekonomi sirkular ramah bumi.</span>
+                      <span>Advancing zero-waste principles and an earth-friendly circular food economy.</span>
                     </li>
                   </ul>
                 </div>
@@ -554,15 +554,15 @@ export default function HomePage() {
                   <ul className="space-y-2.5 text-xs text-[#5C4B42]">
                     <li className="flex items-start gap-2">
                       <Check className="h-4 w-4 shrink-0 text-[#3B5B3D] mt-0.5" />
-                      <span>Memberikan nilai tambah pada ampas kelapa yang semula tidak bernilai.</span>
+                      <span>Unlocking tangible economic value from previously discarded coconut residue.</span>
                     </li>
                     <li className="flex items-start gap-2">
                       <Check className="h-4 w-4 shrink-0 text-[#3B5B3D] mt-0.5" />
-                      <span>Membuka peluang usaha inovatif dari produk olahan kelapa (tepung, brownies, cookies).</span>
+                      <span>Opening innovative market opportunities for upcycled products (flour, brownies, cookies).</span>
                     </li>
                     <li className="flex items-start gap-2">
                       <Check className="h-4 w-4 shrink-0 text-[#3B5B3D] mt-0.5" />
-                      <span>Menciptakan nilai ekonomi dan pendapatan tambahan bagi pemasok kelapa lokal.</span>
+                      <span>Generating sustainable supplemental income streams for local coconut stall partners.</span>
                     </li>
                   </ul>
                 </div>
@@ -585,15 +585,15 @@ export default function HomePage() {
                   <ul className="space-y-2.5 text-xs text-[#5C4B42]">
                     <li className="flex items-start gap-2">
                       <Check className="h-4 w-4 shrink-0 text-[#3B5B3D] mt-0.5" />
-                      <span>Memberdayakan petani, UMKM, dan pedagang kelapa parut lokal.</span>
+                      <span>Empowering local smallholders, micro-enterprises, and grated coconut vendors.</span>
                     </li>
                     <li className="flex items-start gap-2">
                       <Check className="h-4 w-4 shrink-0 text-[#3B5B3D] mt-0.5" />
-                      <span>Membuka peluang kemitraan penjemputan berkala yang teratur.</span>
+                      <span>Providing structured, reliable scheduled residue collection partnerships.</span>
                     </li>
                     <li className="flex items-start gap-2">
                       <Check className="h-4 w-4 shrink-0 text-[#3B5B3D] mt-0.5" />
-                      <span>Mendorong keterlibatan aktif masyarakat dalam pengelolaan limbah pangan.</span>
+                      <span>Fostering active community participation in responsible circular waste management.</span>
                     </li>
                   </ul>
                 </div>
@@ -616,7 +616,7 @@ export default function HomePage() {
                 </h4>
               </div>
               <p className="text-[11px] text-[#8A776C] italic">
-                {impactSettings?.impactNote || '*Catatan: angka menggunakan data aktual setelah operasional berjalan.'}
+                {impactSettings?.impactNote || '*Note: figures reflect real-time verified data across active circular operations.'}
               </p>
             </div>
 
@@ -626,31 +626,31 @@ export default function HomePage() {
                 : [
                     {
                       id: 'stat-residue',
-                      label: 'Ampas Dimanfaatkan',
+                      label: 'Residue Upcycled',
                       value: impactStats.totalResidueUtilizedKg,
                       unit: 'kg',
-                      description: 'Total ampas kelapa berhasil dimanfaatkan',
+                      description: 'Total coconut residue diverted & processed',
                     },
                     {
                       id: 'stat-flour',
-                      label: 'Tepung Diproduksi',
+                      label: 'Flour Produced',
                       value: impactStats.totalFlourProducedKg,
                       unit: 'kg',
-                      description: 'Total tepung kelapa yang diproduksi',
+                      description: 'Total nutrient-rich coconut flour milled',
                     },
                     {
                       id: 'stat-supplier',
-                      label: 'Mitra Pemasok',
+                      label: 'Partner Suppliers',
                       value: String(impactStats.supplierCount),
-                      unit: 'mitra',
-                      description: 'Jumlah mitra pemasok kelapa',
+                      unit: 'partners',
+                      description: 'Active coconut suppliers in network',
                     },
                     {
                       id: 'stat-product',
-                      label: 'Produk Dipasarkan',
+                      label: 'Products Sold',
                       value: String(impactStats.totalProductsMarketed),
                       unit: 'pcs',
-                      description: 'Jumlah produk yang berhasil dipasarkan',
+                      description: 'Circular food products delivered to customers',
                     },
                   ]
               ).map((item) => {
@@ -705,7 +705,7 @@ export default function HomePage() {
                 Our Sustainability Goals
               </h4>
               <p className="text-xs sm:text-sm text-[#D6CEBF] leading-relaxed">
-                Inovasi produk dan operasional CORA secara nyata mendukung agenda Tujuan Pembangunan Berkelanjutan (SDGs):
+                CORA product innovation and operations directly advance key United Nations Sustainable Development Goals (SDGs):
               </p>
             </div>
 
@@ -721,7 +721,7 @@ export default function HomePage() {
                   </div>
                 </div>
                 <p className="mt-3 text-xs leading-relaxed text-[#D6CEBF]">
-                  Mendukung efisiensi sumber daya dan pengurangan limbah pangan (food waste) melalui pengolahan ampas kelapa secara higienis menjadi tepung fungsional.
+                  Driving resource efficiency and food waste reduction by transforming coconut residue into functional food ingredients.
                 </p>
               </div>
 
@@ -736,7 +736,7 @@ export default function HomePage() {
                   </div>
                 </div>
                 <p className="mt-3 text-xs leading-relaxed text-[#D6CEBF]">
-                  Memberdayakan para pemasok kelapa lokal dan pelaku UMKM dengan membuka sumber pendapatan baru melalui kemitraan sirkular yang adil.
+                  Empowering local coconut suppliers and micro-enterprises with new revenue streams through fair circular partnerships.
                 </p>
               </div>
 
@@ -751,7 +751,7 @@ export default function HomePage() {
                   </div>
                 </div>
                 <p className="mt-3 text-xs leading-relaxed text-[#D6CEBF]">
-                  Menurunkan jejak karbon dan gas rumah kaca metana yang umumnya dihasilkan dari pembusukan ampas kelapa basah di tempat pembuangan akhir (TPA).
+                  Mitigating carbon footprints and methane greenhouse emissions caused by decomposing organic coconut waste in landfills.
                 </p>
               </div>
             </div>

@@ -35,26 +35,26 @@ const ORDER_STAGES: {
 }[] = [
   {
     key: 'received',
-    label: 'Pesanan Diterima',
-    description: 'Pesanan berhasil masuk ke sistem & menunggu verifikasi pembayaran.',
+    label: 'Order Received',
+    description: 'Order logged into system & awaiting payment verification.',
     orderStatus: ['WAITING_VERIFICATION'],
   },
   {
     key: 'processing',
-    label: 'Pesanan Diproses',
-    description: 'Pembayaran diverifikasi. Produk sedang disiapkan dan dikemas higienis.',
+    label: 'Order Processing',
+    description: 'Payment verified. Items are being hygienically prepared and packaged.',
     orderStatus: ['PROCESSING'],
   },
   {
     key: 'shipped',
-    label: 'Pesanan Dikirim',
-    description: 'Paket telah diserahkan ke jasa kurir dengan nomor resi pelacakan.',
+    label: 'Order Shipped',
+    description: 'Package handed over to partner courier with tracking code.',
     orderStatus: ['SHIPPED'],
   },
   {
     key: 'completed',
-    label: 'Pesanan Selesai',
-    description: 'Produk telah sampai di alamat tujuan dan diterima dengan baik.',
+    label: 'Order Completed',
+    description: 'Package successfully delivered to destination address.',
     orderStatus: ['COMPLETED'],
   },
 ];
@@ -116,7 +116,7 @@ export default function TrackOrderPage() {
               className="inline-flex items-center gap-1 hover:underline"
             >
               <ArrowLeft className="h-3.5 w-3.5" />
-              Kembali ke Katalog Produk
+              Back to Product Catalog
             </Link>
           </div>
 
@@ -126,10 +126,10 @@ export default function TrackOrderPage() {
               Live Order Tracking
             </span>
             <h1 className="font-serif text-3xl font-bold tracking-tight text-[#2C1E18] sm:text-4xl">
-              Lacak Status Pesanan CORA
+              Track Your CORA Order
             </h1>
             <p className="text-sm leading-relaxed text-[#6E5C52]">
-              Pantau perjalanan pesanan produk sirkular Anda mulai dari konfirmasi pembayaran, pengemasan, pengiriman, hingga tiba di rumah.
+              Track the journey of your circular coconut treats from payment confirmation and hygienic packaging to courier transit and doorstep delivery.
             </p>
           </div>
 
@@ -144,7 +144,7 @@ export default function TrackOrderPage() {
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Masukkan Nomor Pesanan (misal: CORA-20261112-001)"
+                placeholder="Enter Order Number (e.g., CORA-20261112-001)"
                 className="w-full rounded-2xl border border-[#D6CCBA] bg-white py-3 pr-4 pl-10 text-sm text-[#2C1E18] placeholder-[#9C8A7B] shadow-2xs focus:border-[#3B5B3D] focus:ring-2 focus:ring-[#3B5B3D]/20 focus:outline-none"
               />
             </div>
@@ -153,13 +153,13 @@ export default function TrackOrderPage() {
               className="inline-flex items-center justify-center gap-2 rounded-2xl bg-[#3B5B3D] px-6 py-3 text-sm font-semibold text-white shadow-xs transition hover:bg-[#2F4A31]"
             >
               <Search className="h-4 w-4" />
-              <span>Lacak Pesanan</span>
+              <span>Track Order</span>
             </button>
           </form>
 
           {/* Quick Order Sample Pills */}
           <div className="mt-4 flex flex-wrap items-center gap-2 text-xs">
-            <span className="text-[#6E5C52]">Contoh Pesanan Demo:</span>
+            <span className="text-[#6E5C52]">Sample Demo Orders:</span>
             {orders.slice(0, 3).map((o) => (
               <button
                 key={o.id}
@@ -187,7 +187,7 @@ export default function TrackOrderPage() {
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#F0EAE0] pb-5">
                   <div>
                     <span className="text-xs font-semibold text-[#8C7A6B]">
-                      Nomor Pesanan
+                      Order Number
                     </span>
                     <h2 className="text-lg font-bold text-[#2C1E18]">
                       #{matchedOrder.orderNumber}
@@ -288,15 +288,15 @@ export default function TrackOrderPage() {
                       <Truck className="h-5 w-5 text-[#3B5B3D]" />
                       <div>
                         <p className="text-xs font-bold text-[#2C1E18]">
-                          Kurir: {matchedOrder.courier || 'JNE Regular'}
+                          Courier: {matchedOrder.courier || 'JNE Regular'}
                         </p>
                         <p className="text-[11px] text-[#6E5C52]">
-                          Nomor Resi: <strong className="text-[#3B5B3D]">{matchedOrder.trackingNumber}</strong>
+                          Tracking Number: <strong className="text-[#3B5B3D]">{matchedOrder.trackingNumber}</strong>
                         </p>
                       </div>
                     </div>
                     <span className="text-[11px] font-semibold text-[#3B5B3D] bg-[#3B5B3D]/10 px-2.5 py-1 rounded-full">
-                      Dalam Pengiriman
+                      In Transit
                     </span>
                   </div>
                 )}
@@ -305,7 +305,7 @@ export default function TrackOrderPage() {
               {/* Order Detail Summary */}
               <div className="rounded-3xl border border-[#E5DEC9] bg-white p-6 sm:p-8 shadow-xs space-y-6">
                 <h3 className="font-serif text-xl font-bold text-[#2C1E18]">
-                  Ringkasan Pesanan
+                  Order Summary
                 </h3>
 
                 <div className="divide-y divide-[#F0EAE0]">
@@ -329,7 +329,7 @@ export default function TrackOrderPage() {
                           </p>
                           <p className="text-xs text-[#6E5C52]">
                             {item.qty} × {formatRupiah(item.price)}
-                            {item.variant ? ` • Varian: ${item.variant}` : ''}
+                            {item.variant ? ` • Variant: ${item.variant}` : ''}
                           </p>
                         </div>
                       </div>
@@ -342,25 +342,25 @@ export default function TrackOrderPage() {
 
                 <div className="border-t border-[#E5DEC9] pt-4 space-y-2 text-xs text-[#5C4B42]">
                   <div className="flex justify-between">
-                    <span>Penerima</span>
+                    <span>Recipient</span>
                     <span className="font-semibold text-[#2C1E18]">{matchedOrder.customerName} ({matchedOrder.customerPhone})</span>
                   </div>
                   <div className="flex justify-between">
-                    <span>Alamat Pengiriman</span>
+                    <span>Shipping Address</span>
                     <span className="font-semibold text-[#2C1E18] max-w-xs text-right">{matchedOrder.shippingAddress}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span>Metode Pembayaran</span>
+                    <span>Payment Method</span>
                     <span className="font-semibold text-[#2C1E18]">{matchedOrder.bankAccountUsed}</span>
                   </div>
                   {matchedOrder.notes && (
                     <div className="flex justify-between">
-                      <span>Catatan Pesanan</span>
+                      <span>Order Notes</span>
                       <span className="italic text-[#6E5C52]">{matchedOrder.notes}</span>
                     </div>
                   )}
                   <div className="flex justify-between border-t border-[#F0EAE0] pt-3 text-sm font-bold text-[#2C1E18]">
-                    <span>Total Pembayaran</span>
+                    <span>Total Amount</span>
                     <span className="text-base text-[#3B5B3D]">{formatRupiah(matchedOrder.totalAmount)}</span>
                   </div>
                 </div>
@@ -370,10 +370,10 @@ export default function TrackOrderPage() {
             <div className="mt-8 rounded-3xl border border-[#E5DEC9] bg-white p-10 text-center shadow-xs">
               <PackageCheck className="mx-auto h-12 w-12 text-[#8C7A6B]/50" />
               <h3 className="mt-4 font-serif text-xl font-bold text-[#2C1E18]">
-                Pesanan Tidak Ditemukan
+                Order Not Found
               </h3>
               <p className="mt-1 text-sm text-[#6E5C52]">
-                Pastikan nomor pesanan yang Anda masukkan sudah benar (contoh: <code>CORA-20261112-001</code>).
+                Please verify that your order number is correct (e.g., <code>CORA-20261112-001</code>).
               </p>
             </div>
           )}

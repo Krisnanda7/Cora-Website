@@ -142,14 +142,14 @@ export default function ProductsPage() {
                   className="inline-flex items-center gap-2 rounded-full border border-white/30 bg-white/10 px-4 py-2.5 text-xs font-semibold text-[#FAF8F5] backdrop-blur-md transition hover:bg-white/20"
                 >
                   <Truck className="h-4 w-4 text-[#86C975]" />
-                  <span>Lacak Pesanan</span>
+                  <span>Track Order</span>
                 </Link>
 
                 {cartCount > 0 && (
                   <div className="flex items-center gap-3 rounded-2xl border border-white/20 bg-white/10 px-4 py-2.5 shadow-md backdrop-blur-md">
                     <div>
                       <p className="text-[11px] font-medium tabular-nums text-[#E2DACF]">
-                        {cartCount} item di keranjang
+                        {cartCount} {cartCount === 1 ? 'item' : 'items'} in cart
                       </p>
                       <p
                         suppressHydrationWarning
@@ -230,10 +230,10 @@ export default function ProductsPage() {
             <div className="rounded-2xl border border-[#E5DEC9] bg-white px-6 py-16 text-center shadow-2xs">
               <PackageCheck className="mx-auto h-10 w-10 text-[#3B5B3D]/60" />
               <h2 className="mt-4 font-serif text-xl font-bold text-[#2C1E18]">
-                Tidak ada produk ditemukan
+                No Products Found
               </h2>
               <p className="mt-1.5 text-sm text-[#6E5C52]">
-                Coba sesuaikan kata kunci pencarian atau pilih kategori lain.
+                Try adjusting your search keyword or selecting another category.
               </p>
               <button
                 type="button"
@@ -243,7 +243,7 @@ export default function ProductsPage() {
                 }}
                 className="mt-5 rounded-full bg-[#3B5B3D] px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-[#2F4A31]"
               >
-                Reset Filter
+                Reset Filters
               </button>
             </div>
           ) : (
@@ -329,8 +329,8 @@ export default function ProductsPage() {
                               }`}
                             >
                               {isOutOfStock
-                                ? 'Habis'
-                                : `Stok: ${product.stock}`}
+                                ? 'Out of Stock'
+                                : `Stock: ${product.stock}`}
                             </span>
                           </div>
 
@@ -356,12 +356,12 @@ export default function ProductsPage() {
                               {isAdded ? (
                                 <>
                                   <Check className="h-4 w-4" />
-                                  Ditambahkan!
+                                  Added!
                                 </>
                               ) : (
                                 <>
                                   <ShoppingBag className="h-4 w-4" />
-                                  + Keranjang
+                                  Add to Cart
                                 </>
                               )}
                             </button>
@@ -387,7 +387,7 @@ export default function ProductsPage() {
                 Product Benefits &amp; Nutrition Values
               </h2>
               <p className="text-xs sm:text-sm text-[#6E5C52]">
-                Setiap gigitan dan olahan produk CORA memberikan kebaikan untuk tubuh sekaligus menyelamatkan bumi.
+                Every bite and creation of CORA products delivers wholesome nutrition while restoring our planet.
               </p>
             </div>
 
@@ -397,10 +397,10 @@ export default function ProductsPage() {
                   <Leaf className="h-5 w-5" />
                 </div>
                 <h3 className="mt-4 font-bold text-[#2C1E18] text-base">
-                  Tepung Berbahan Ampas Kelapa
+                  Upcycled Coconut Flour
                 </h3>
                 <p className="mt-1.5 text-xs text-[#6E5C52] leading-relaxed">
-                  Kaya serat pangan alami (dietary fiber), bebas gluten (gluten-free), dan memiliki indeks glikemik rendah yang aman untuk diet sehat.
+                  Rich in dietary fiber, certified gluten-free, with a low glycemic index suited for health-conscious living.
                 </p>
               </div>
 
@@ -409,10 +409,10 @@ export default function ProductsPage() {
                   <Sparkles className="h-5 w-5" />
                 </div>
                 <h3 className="mt-4 font-bold text-[#2C1E18] text-base">
-                  Optimalkan Hasil Samping Santan
+                  Optimized Coconut By-Products
                 </h3>
                 <p className="mt-1.5 text-xs text-[#6E5C52] leading-relaxed">
-                  Mengubah residu parutan kelapa yang kerap dibuang menjadi bahan pangan premium higienis dengan proses pengeringan terkontrol.
+                  Transforming freshly pressed coconut residue into hygienic premium food ingredients via controlled drying.
                 </p>
               </div>
 
@@ -421,10 +421,10 @@ export default function ProductsPage() {
                   <ShieldCheck className="h-5 w-5" />
                 </div>
                 <h3 className="mt-4 font-bold text-[#2C1E18] text-base">
-                  Alternatif Pangan Inovatif
+                  Innovative Food Alternative
                 </h3>
                 <p className="mt-1.5 text-xs text-[#6E5C52] leading-relaxed">
-                  Menghadirkan solusi substitusi tepung terigu impor melalui diversifikasi pangan lokal berkelanjutan berdaya saing tinggi.
+                  Delivering a sustainable local alternative to imported wheat flour through circular food diversification.
                 </p>
               </div>
             </div>
@@ -444,7 +444,7 @@ export default function ProductsPage() {
             <button
               type="button"
               onClick={() => setDetailProduct(null)}
-              aria-label="Tutup detail produk"
+              aria-label="Close product details"
               className="absolute top-5 right-5 flex h-9 w-9 items-center justify-center rounded-full bg-white border border-[#E5DEC9] text-[#2C1E18] hover:bg-[#EAE4D6] transition"
             >
               <X className="h-4 w-4" />
@@ -491,8 +491,8 @@ export default function ProductsPage() {
                     }`}
                   >
                     {detailProduct.stock > 0
-                      ? `Tersedia (${detailProduct.stock} stok)`
-                      : 'Stok Habis'}
+                      ? `In Stock (${detailProduct.stock} available)`
+                      : 'Out of Stock'}
                   </span>
                 </div>
 
@@ -504,7 +504,7 @@ export default function ProductsPage() {
                 {detailProduct.variants && detailProduct.variants.length > 0 && (
                   <div>
                     <label className="block text-xs font-bold text-[#2C1E18]">
-                      Pilihan Varian:
+                      Select Variant:
                     </label>
                     <div className="mt-2 flex flex-wrap gap-2">
                       {detailProduct.variants.map((v) => (
@@ -564,12 +564,12 @@ export default function ProductsPage() {
                     {modalAddedFeedback ? (
                       <>
                         <Check className="h-4 w-4" />
-                        Ditambahkan!
+                        Added!
                       </>
                     ) : (
                       <>
                         <ShoppingBag className="h-4 w-4" />
-                        + Keranjang
+                        Add to Cart
                       </>
                     )}
                   </button>
@@ -583,7 +583,7 @@ export default function ProductsPage() {
               <div className="rounded-2xl bg-white p-4 border border-[#E5DEC9]">
                 <h3 className="font-bold text-[#2C1E18] text-xs flex items-center gap-1.5">
                   <Info className="h-3.5 w-3.5 text-[#3B5B3D]" />
-                  Komposisi &amp; Bahan Baku
+                  Ingredients &amp; Sourcing
                 </h3>
                 <ul className="mt-2.5 space-y-1 text-xs">
                   {detailProduct.ingredients?.map((ing) => (
@@ -592,7 +592,7 @@ export default function ProductsPage() {
                       <span>{ing}</span>
                     </li>
                   )) || (
-                    <li>Tepung ampas kelapa pilihan, bahan alami lokal.</li>
+                    <li>Selected upcycled coconut flour, 100% natural local ingredients.</li>
                   )}
                 </ul>
               </div>
@@ -601,16 +601,16 @@ export default function ProductsPage() {
               <div className="rounded-2xl bg-white p-4 border border-[#E5DEC9]">
                 <h3 className="font-bold text-[#2C1E18] text-xs flex items-center gap-1.5">
                   <Clock className="h-3.5 w-3.5 text-[#3B5B3D]" />
-                  Penyimpanan &amp; Masa Simpan
+                  Storage &amp; Shelf Life
                 </h3>
                 <div className="mt-2.5 space-y-2 text-xs">
                   <div>
-                    <strong className="text-[#2C1E18]">Masa Simpan:</strong>{' '}
-                    <span>{detailProduct.shelfLife || '30 hari dalam wadah tertutup.'}</span>
+                    <strong className="text-[#2C1E18]">Shelf Life:</strong>{' '}
+                    <span>{detailProduct.shelfLife || '30–90 days in airtight container.'}</span>
                   </div>
                   <div>
-                    <strong className="text-[#2C1E18]">Cara Penyimpanan:</strong>{' '}
-                    <span>{detailProduct.storageInfo || 'Simpan di tempat sejuk dan kering.'}</span>
+                    <strong className="text-[#2C1E18]">Storage Instructions:</strong>{' '}
+                    <span>{detailProduct.storageInfo || 'Store in a cool, dry place away from sunlight.'}</span>
                   </div>
                 </div>
               </div>
