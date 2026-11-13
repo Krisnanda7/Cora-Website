@@ -145,6 +145,7 @@ export default function AboutPage() {
               alt="Natural raw coconut background"
               fill
               priority
+              sizes="100vw"
               className="object-cover object-center brightness-35 contrast-100"
             />
           </div>
@@ -217,6 +218,7 @@ export default function AboutPage() {
                   src="/images/hero/hero.jpg"
                   alt="CORA Innovation Journey"
                   fill
+                  sizes="(max-width: 1024px) 100vw, 50vw"
                   className="object-cover object-center"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
@@ -335,6 +337,7 @@ export default function AboutPage() {
                     src={member.image}
                     alt={member.name}
                     fill
+                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
                     className="object-cover object-center transition duration-500 group-hover:scale-105"
                   />
                 </div>

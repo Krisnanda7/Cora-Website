@@ -111,6 +111,7 @@ export default function ProductsPage() {
               alt="Natural raw coconut background"
               fill
               priority
+              sizes="100vw"
               className="object-cover object-center brightness-35 contrast-100"
             />
           </div>
@@ -264,7 +265,7 @@ export default function ProductsPage() {
                           src={product.image}
                           alt={product.name}
                           fill
-                          unoptimized
+                          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                           className="object-contain p-5 transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.04]"
                         />
                         <span className="absolute top-3.5 left-3.5 inline-flex items-center gap-1 rounded-full bg-[#3B5B3D] px-2.5 py-1 text-[10px] font-semibold tracking-wide text-white">
@@ -457,7 +458,7 @@ export default function ProductsPage() {
                   src={detailProduct.image}
                   alt={detailProduct.name}
                   fill
-                  unoptimized
+                  sizes="(max-width: 640px) 100vw, 400px"
                   className="object-contain p-4"
                 />
                 <span className="absolute top-3 left-3 rounded-full bg-[#3B5B3D] px-2.5 py-1 text-[10px] font-bold text-white">

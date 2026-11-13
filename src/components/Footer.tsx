@@ -34,9 +34,9 @@ export default function Footer() {
 
           {/* Navigation */}
           <div>
-            <h3 className="text-[11px] font-bold uppercase tracking-[0.14em] text-[#3B5B3D]">
+            <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-[#3B5B3D]">
               Navigation
-            </h3>
+            </p>
             <ul className="mt-4 space-y-2.5 text-sm text-[#5C4B42]">
               <li>
                 <Link href="/" className="transition hover:text-[#2C1E18]">
@@ -112,9 +112,9 @@ export default function Footer() {
 
           {/* Contact */}
           <div>
-            <h3 className="text-[11px] font-bold uppercase tracking-[0.14em] text-[#3B5B3D]">
+            <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-[#3B5B3D]">
               Contact Us
-            </h3>
+            </p>
             <ul className="mt-4 space-y-3 text-sm text-[#5C4B42]">
               <li className="flex items-start gap-2.5">
                 <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-[#3B5B3D]" />

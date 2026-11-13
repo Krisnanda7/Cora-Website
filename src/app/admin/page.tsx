@@ -1608,6 +1608,7 @@ export default function AdminDashboardPage() {
                                       src={product.image}
                                       alt={product.name}
                                       fill
+                                      sizes="48px"
                                       unoptimized
                                       className="object-contain p-1"
                                     />
@@ -2577,6 +2578,7 @@ export default function AdminDashboardPage() {
                                     src={recipe.image || RECIPE_IMAGE_PRESETS[0].value}
                                     alt={recipe.title}
                                     fill
+                                    sizes="48px"
                                     unoptimized
                                     className="object-cover"
                                   />
@@ -3461,6 +3463,7 @@ export default function AdminDashboardPage() {
                       src={prodImage || IMAGE_PRESETS[0].value}
                       alt={prodName || 'Product preview'}
                       fill
+                      sizes="112px"
                       unoptimized
                       className="object-contain p-2"
                     />
@@ -3707,6 +3710,7 @@ export default function AdminDashboardPage() {
                   src={proofModalOrder.proofImage}
                   alt={`Transfer proof #${proofModalOrder.orderNumber}`}
                   fill
+                  sizes="(max-width: 768px) 100vw, 600px"
                   unoptimized
                   className="object-contain p-2"
                 />

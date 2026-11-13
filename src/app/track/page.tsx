@@ -320,6 +320,7 @@ export default function TrackOrderPage() {
                             src={item.image}
                             alt={item.productName}
                             fill
+                            sizes="48px"
                             className="object-contain p-1"
                           />
                         </div>

@@ -299,6 +299,7 @@ export default function HomePage() {
               alt="Natural raw coconut background"
               fill
               priority
+              sizes="100vw"
               className="object-cover object-center brightness-35 contrast-100"
             />
           </div>
@@ -500,9 +501,9 @@ export default function HomePage() {
               <span className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#3B5B3D]">
                 Our Commitment
               </span>
-              <h3 className="font-serif text-2xl sm:text-3xl font-semibold text-[#2C1E18]">
+              <h2 className="font-serif text-2xl sm:text-3xl font-semibold text-[#2C1E18]">
                 Three Pillars of CORA Impact
-              </h3>
+              </h2>
               <p className="text-xs sm:text-sm text-[#6E5C52]">
                 Building a sustainable end-to-end ecosystem that balances environmental stewardship, local economic vitality, and community welfare.
               </p>
@@ -516,9 +517,9 @@ export default function HomePage() {
                     <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#3B5B3D]/10 text-[#3B5B3D]">
                       <Sprout className="h-5 w-5" />
                     </span>
-                    <h4 className="text-base font-bold text-[#2C1E18]">
+                    <h3 className="text-base font-bold text-[#2C1E18]">
                       Environmental Impact
-                    </h4>
+                    </h3>
                   </div>
                   <ul className="space-y-2.5 text-xs text-[#5C4B42]">
                     <li className="flex items-start gap-2">
@@ -547,9 +548,9 @@ export default function HomePage() {
                     <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#4E9A34]/15 text-[#4E9A34]">
                       <TrendingUp className="h-5 w-5" />
                     </span>
-                    <h4 className="text-base font-bold text-[#2C1E18]">
+                    <h3 className="text-base font-bold text-[#2C1E18]">
                       Economic Impact
-                    </h4>
+                    </h3>
                   </div>
                   <ul className="space-y-2.5 text-xs text-[#5C4B42]">
                     <li className="flex items-start gap-2">
@@ -578,9 +579,9 @@ export default function HomePage() {
                     <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#6E5C52]/15 text-[#6E5C52]">
                       <Handshake className="h-5 w-5" />
                     </span>
-                    <h4 className="text-base font-bold text-[#2C1E18]">
+                    <h3 className="text-base font-bold text-[#2C1E18]">
                       Social Impact
-                    </h4>
+                    </h3>
                   </div>
                   <ul className="space-y-2.5 text-xs text-[#5C4B42]">
                     <li className="flex items-start gap-2">
@@ -611,11 +612,11 @@ export default function HomePage() {
                 <span className="text-[11px] font-bold uppercase tracking-[0.16em] text-[#3B5B3D]">
                   Real-time Indicators
                 </span>
-                <h4 className="font-serif text-2xl font-bold text-[#2C1E18]">
+                <h2 className="font-serif text-2xl font-bold text-[#2C1E18]">
                   Our Impact Statistics
-                </h4>
+                </h2>
               </div>
-              <p className="text-[11px] text-[#8A776C] italic">
+              <p className="text-[11px] text-[#6E5C52] italic">
                 {impactSettings?.impactNote || '*Note: figures reflect real-time verified data across active circular operations.'}
               </p>
             </div>
@@ -685,7 +686,7 @@ export default function HomePage() {
                         {item.unit}
                       </span>
                     </p>
-                    <p className="mt-1 text-[11px] text-[#8A776C]">
+                    <p className="mt-1 text-[11px] text-[#6E5C52]">
                       {item.description}
                     </p>
                   </div>
@@ -701,9 +702,9 @@ export default function HomePage() {
                 <Globe2 className="h-3.5 w-3.5" />
                 Global Sustainability Framework
               </span>
-              <h4 className="font-serif text-2xl sm:text-3xl font-semibold tracking-tight text-white">
+              <h2 className="font-serif text-2xl sm:text-3xl font-semibold tracking-tight text-white">
                 Our Sustainability Goals
-              </h4>
+              </h2>
               <p className="text-xs sm:text-sm text-[#D6CEBF] leading-relaxed">
                 CORA product innovation and operations directly advance key United Nations Sustainable Development Goals (SDGs):
               </p>
@@ -717,7 +718,7 @@ export default function HomePage() {
                   </span>
                   <div>
                     <p className="text-[10px] uppercase font-bold tracking-wider text-[#EAD092]">SDGs 12</p>
-                    <h5 className="text-sm font-bold text-white">Responsible Consumption &amp; Production</h5>
+                    <h3 className="text-sm font-bold text-white">Responsible Consumption &amp; Production</h3>
                   </div>
                 </div>
                 <p className="mt-3 text-xs leading-relaxed text-[#D6CEBF]">
@@ -732,7 +733,7 @@ export default function HomePage() {
                   </span>
                   <div>
                     <p className="text-[10px] uppercase font-bold tracking-wider text-[#F294AE]">SDGs 8</p>
-                    <h5 className="text-sm font-bold text-white">Decent Work &amp; Economic Growth</h5>
+                    <h3 className="text-sm font-bold text-white">Decent Work &amp; Economic Growth</h3>
                   </div>
                 </div>
                 <p className="mt-3 text-xs leading-relaxed text-[#D6CEBF]">
@@ -747,7 +748,7 @@ export default function HomePage() {
                   </span>
                   <div>
                     <p className="text-[10px] uppercase font-bold tracking-wider text-[#98D89C]">SDGs 13</p>
-                    <h5 className="text-sm font-bold text-white">Climate Action</h5>
+                    <h3 className="text-sm font-bold text-white">Climate Action</h3>
                   </div>
                 </div>
                 <p className="mt-3 text-xs leading-relaxed text-[#D6CEBF]">
@@ -798,7 +799,7 @@ export default function HomePage() {
                           src={product.image}
                           alt={product.name}
                           fill
-                          unoptimized
+                          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
                           className="object-contain p-5 transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.04]"
                         />
                         <span className="absolute top-3.5 left-3.5 rounded-full bg-[#3B5B3D] px-2.5 py-1 text-[10px] font-semibold tracking-wide text-white">
@@ -813,7 +814,7 @@ export default function HomePage() {
                               <Leaf className="h-3 w-3" />
                               Saves {product.residueSavedGram}g residue
                             </span>
-                            <span className="text-[#8A776C]">
+                            <span className="text-[#6E5C52]">
                               {product.weightGram}g
                             </span>
                           </div>

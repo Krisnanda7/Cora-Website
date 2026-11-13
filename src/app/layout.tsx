@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
 import { Analytics } from "@vercel/analytics/react";
 import { CoraProvider } from "@/context/CoraContext";
@@ -16,10 +16,65 @@ const plusJakartaSans = localFont({
   display: "swap",
 });
 
+export const viewport: Viewport = {
+  themeColor: "#FAF8F5",
+  width: "device-width",
+  initialScale: 1,
+};
+
 export const metadata: Metadata = {
-  title: "CORA — Circular Food Innovation",
+  metadataBase: new URL("https://corasite-five.vercel.app"),
+  title: {
+    default: "CORA — Circular Food Innovation",
+    template: "%s | CORA",
+  },
   description:
-    "Turning coconut residues into nutritious food products, AI-assisted recipes, and a circular community marketplace.",
+    "Transforming coconut residues into nutritious food products, artisanal gluten-free coconut flour, cookies, brownies, and an empowered circular ecosystem in Bali.",
+  keywords: [
+    "CORA",
+    "coconut residue",
+    "coconut flour",
+    "food upcycling",
+    "circular economy",
+    "gluten free",
+    "Bali food tech",
+    "zero waste",
+    "SDGs",
+  ],
+  authors: [{ name: "CORA Innovation Team" }],
+  creator: "CORA",
+  publisher: "CORA Circular Food Innovation",
+  formatDetection: {
+    email: false,
+    address: false,
+    telephone: false,
+  },
+  openGraph: {
+    title: "CORA — Circular Food Innovation",
+    description:
+      "Turning coconut milk residues into nutritious food products, AI-assisted recipes, and a circular community marketplace in Bali.",
+    url: "https://corasite-five.vercel.app",
+    siteName: "CORA",
+    locale: "en_US",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "CORA — Circular Food Innovation",
+    description:
+      "Turning coconut milk residues into nutritious food products, AI-assisted recipes, and a circular community marketplace.",
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
 };
 
 export default function RootLayout({

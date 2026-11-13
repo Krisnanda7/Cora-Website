@@ -34,19 +34,21 @@ export default function Reveal({
           }
         }
       },
-      { threshold: 0.1, rootMargin: '0px 0px -20px 0px' }
+      { threshold: 0.05, rootMargin: '0px 0px -10px 0px' }
     );
 
     observer.observe(el);
     return () => observer.disconnect();
   }, []);
 
+  const safeDelay = Math.min(delayMs, 200);
+
   return (
     <div
       ref={ref}
-      style={{ transitionDelay: `${delayMs}ms` }}
-      className={`transition-[opacity,transform] transform-gpu will-change-[opacity,transform] duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none motion-reduce:opacity-100 motion-reduce:translate-y-0 ${
-        visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-3.5'
+      style={{ transitionDelay: `${safeDelay}ms` }}
+      className={`transition-[opacity,transform] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none motion-reduce:opacity-100 motion-reduce:translate-y-0 ${
+        visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2'
       } ${className}`}
     >
       {children}

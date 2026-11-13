@@ -497,7 +497,7 @@ export default function CheckoutPage() {
                             src={item.image}
                             alt={item.productName}
                             fill
-                            unoptimized
+                            sizes="56px"
                             className="object-contain p-1.5"
                           />
                         </div>
@@ -685,6 +685,7 @@ export default function CheckoutPage() {
                             src={proofImage}
                             alt="Transfer proof preview"
                             fill
+                            sizes="(max-width: 768px) 100vw, 400px"
                             unoptimized
                             className="object-contain"
                           />

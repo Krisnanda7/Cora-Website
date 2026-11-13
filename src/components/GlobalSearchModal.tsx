@@ -162,21 +162,22 @@ export default function GlobalSearchModal({
       <div className="relative w-full max-w-xl overflow-hidden rounded-3xl bg-white border border-[#E5DEC9] shadow-2xl">
         {/* Search Input Bar */}
         <div className="flex items-center gap-3 border-b border-[#F0EAE0] px-4 py-3.5">
-          <Search className="h-5 w-5 text-[#8C7A6B] shrink-0" />
+          <Search className="h-5 w-5 text-[#6E5C52] shrink-0" />
           <input
             type="text"
             autoFocus
+            aria-label="Search CORA products, recipes, educational guides, or topics"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             placeholder="Search CORA products, recipes, educational guides, or topics..."
-            className="flex-1 bg-transparent text-sm text-[#2C1E18] placeholder-[#9C8A7B] focus:outline-none"
+            className="flex-1 bg-transparent text-sm text-[#2C1E18] placeholder-[#7A675D] focus:outline-none"
           />
           {searchTerm && (
             <button
               type="button"
               onClick={() => setSearchTerm('')}
               aria-label="Clear search input"
-              className="p-1 rounded-full text-[#8C7A6B] hover:bg-[#FAF8F5]"
+              className="p-1 rounded-full text-[#6E5C52] hover:bg-[#FAF8F5]"
             >
               <X className="h-4 w-4" />
             </button>
@@ -184,6 +185,7 @@ export default function GlobalSearchModal({
           <button
             type="button"
             onClick={onClose}
+            aria-label="Close search dialog"
             className="rounded-lg bg-[#FAF8F5] px-2 py-1 text-xs font-semibold text-[#6E5C52] border border-[#E5DEC9] hover:bg-[#EAE4D6]"
           >
             Esc

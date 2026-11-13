@@ -298,6 +298,7 @@ export default function EcosystemPage() {
               alt="Natural raw coconut background"
               fill
               priority
+              sizes="100vw"
               className="object-cover object-center brightness-35 contrast-100"
             />
           </div>
