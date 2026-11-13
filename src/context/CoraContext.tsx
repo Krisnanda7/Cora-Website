@@ -435,8 +435,8 @@ export const INITIAL_SUPPLIERS: Supplier[] = [
 
 export const INITIAL_USER_PROFILE: UserProfile = {
   id: 'usr-demo-01',
-  name: 'Krisna Pratama',
-  email: 'krisna@cora.id',
+  name: 'Usertesting',
+  email: 'user@gmail.com',
   phone: '081234567890',
   address: 'Jl. Tukad Balian No. 88, Renon, Denpasar, Bali 80226',
   favoriteRecipeIds: ['rec-brownies', 'rec-cookies'],

@@ -77,7 +77,7 @@ export default function Footer() {
               </li>
               <li>
                 <Link
-                  href="/ecosystem#pickup"
+                  href="/pickup"
                   className="transition hover:text-[#2C1E18]"
                 >
                   Coconut Pickup

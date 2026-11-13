@@ -2,17 +2,16 @@
 
 import React, { useMemo, useState } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 import {
   ArrowRight,
   BookOpen,
   Bot,
   Check,
-  CheckCircle2,
   ChefHat,
   Clock,
   Flame,
   Heart,
-  Info,
   Loader2,
   MessageSquare,
   Scale,
@@ -28,7 +27,6 @@ import Footer from '@/components/Footer';
 import Reveal from '@/components/Reveal';
 import { useCora } from '@/context/CoraContext';
 import type {
-  PickupRequestStatus,
   Recipe,
   RecipeCategory,
 } from '@/types/cora';
@@ -101,52 +99,12 @@ const FAQ_KNOWLEDGE_BASE: Record<string, string> = {
     'CORA mengolah ampas kelapa hasil sampingan produksi santan segar menjadi tepung serbaguna higienis, artisanal brownies, dan cookies renyah dengan kemasan kedap udara. Setiap produk secara langsung menyelamatkan limbah organik dan memberdayakan pedagang kelapa lokal.',
 };
 
-export function getPickupBadge(status: PickupRequestStatus): {
-  label: string;
-  className: string;
-} {
-  switch (status) {
-    case 'REQUEST_SUBMITTED':
-    case 'PENDING':
-      return {
-        label: 'Request Submitted',
-        className: 'bg-amber-50 text-amber-800 ring-1 ring-amber-200',
-      };
-    case 'REQUEST_CONFIRMED':
-    case 'SCHEDULED':
-      return {
-        label: 'Request Confirmed',
-        className: 'bg-sky-50 text-sky-800 ring-1 ring-sky-200',
-      };
-    case 'ON_THE_WAY':
-      return {
-        label: 'On the Way',
-        className: 'bg-purple-50 text-purple-800 ring-1 ring-purple-200',
-      };
-    case 'PICKED_UP':
-      return {
-        label: 'Picked Up',
-        className: 'bg-teal-50 text-teal-800 ring-1 ring-teal-200',
-      };
-    case 'COMPLETED':
-    default:
-      return {
-        label: 'Completed',
-        className: 'bg-[#3B5B3D]/12 text-[#3B5B3D] ring-1 ring-[#3B5B3D]/25',
-      };
-  }
-}
-
 export default function EcosystemPage() {
   const {
     products,
     recipes,
-    suppliers,
-    pickupRequests,
     userProfile,
     addToCart,
-    submitPickupRequest,
-    registerSupplier,
     toggleFavoriteRecipe,
   } = useCora();
 
@@ -187,33 +145,6 @@ export default function EcosystemPage() {
   const [activeRecipeModal, setActiveRecipeModal] = useState<Recipe | null>(
     null
   );
-
-  // Coconut Pickup State
-  const [activePickupTab, setActivePickupTab] = useState<
-    'request' | 'register' | 'tracking' | 'guidelines'
-  >('request');
-
-  // Request Form
-  const [pickupLocation, setPickupLocation] = useState('');
-  const [pickupKg, setPickupKg] = useState('');
-  const [pickupDate, setPickupDate] = useState('');
-  const [pickupTime, setPickupTime] = useState('08:00 - 10:00 WITA (Pagi)');
-  const [pickupNotes, setPickupNotes] = useState('');
-  const [pickupSupplierName, setPickupSupplierName] = useState(
-    userProfile.name || ''
-  );
-  const [pickupPhone, setPickupPhone] = useState(userProfile.phone || '');
-  const [pickupSuccessMsg, setPickupSuccessMsg] = useState<string | null>(null);
-
-  // Register Supplier Form
-  const [regName, setRegName] = useState('');
-  const [regPhone, setRegPhone] = useState('');
-  const [regLocation, setRegLocation] = useState('');
-  const [regBusinessType, setRegBusinessType] =
-    useState('Kios Santan Tradisional');
-  const [regEstimatedKg, setRegEstimatedKg] = useState('');
-  const [regFrequency, setRegFrequency] = useState('Setiap Hari');
-  const [regSuccessMsg, setRegSuccessMsg] = useState<string | null>(null);
 
   const coconutFlourProduct = useMemo(
     () =>
@@ -354,62 +285,6 @@ export default function EcosystemPage() {
     }, 600);
   };
 
-  const handlePickupSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    const weightNum = Number(pickupKg);
-    if (
-      !pickupSupplierName.trim() ||
-      !pickupPhone.trim() ||
-      !pickupLocation.trim() ||
-      !pickupDate ||
-      !Number.isFinite(weightNum) ||
-      weightNum <= 0
-    ) {
-      return;
-    }
-
-    const created = submitPickupRequest({
-      supplierName: pickupSupplierName.trim(),
-      phone: pickupPhone.trim(),
-      location: pickupLocation.trim(),
-      estimatedKg: weightNum,
-      preferredDate: pickupDate,
-      preferredTime: pickupTime,
-      notes: pickupNotes.trim() || undefined,
-    });
-
-    setPickupSuccessMsg(
-      `Permintaan penjemputan dari ${created.supplierName} (${created.estimatedKg} kg) berhasil diajukan dengan status Request Submitted!`
-    );
-    setPickupKg('');
-    setPickupNotes('');
-  };
-
-  const handleRegisterSupplierSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    const kg = Number(regEstimatedKg);
-    if (!regName.trim() || !regPhone.trim() || !regLocation.trim() || kg <= 0) {
-      return;
-    }
-
-    registerSupplier({
-      name: regName.trim(),
-      phone: regPhone.trim(),
-      businessLocation: regLocation.trim(),
-      businessType: regBusinessType,
-      estimatedKg: kg,
-      productionFrequency: regFrequency,
-    });
-
-    setRegSuccessMsg(
-      `Selamat datang, Mitra ${regName}! Pendaftaran Anda berhasil disimpan di sistem CORA.`
-    );
-    setRegName('');
-    setRegPhone('');
-    setRegLocation('');
-    setRegEstimatedKg('');
-  };
-
   return (
     <div className="flex min-h-screen flex-col bg-[#FAF8F5] text-[#2C1E18]">
       <Navbar />
@@ -436,13 +311,13 @@ export default function EcosystemPage() {
             <div className="animate-cora-fade-up max-w-3xl space-y-3">
               <span className="inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.18em] text-[#86C975]">
                 <Sparkles className="h-3.5 w-3.5" />
-                CORA Digital Circular Ecosystem
+                CORA Culinary &amp; AI Innovation
               </span>
               <h1 className="font-serif text-3xl font-semibold tracking-tight text-[#FAF8F5] sm:text-4xl lg:text-5xl drop-shadow-sm">
-                RecipeHub, CoraBlendAI &amp; Coconut Pickup
+                RecipeHub &amp; CoraBlendAI™
               </h1>
               <p className="text-sm leading-relaxed text-[#E2DACF] sm:text-base">
-                Koleksi inspirasi resep olahan tepung ampas kelapa, asisten AI interaktif untuk menyesuaikan resep dapur Anda, serta sistem penjemputan ampas kelapa terintegrasi bagi mitra UMKM.
+                Koleksi inspirasi resep olahan tepung ampas kelapa bebas gluten dan asisten AI interaktif untuk menyesuaikan rasio resep dapur Anda secara otomatis.
               </p>
             </div>
           </div>
@@ -961,456 +836,39 @@ export default function EcosystemPage() {
         </section>
 
         {/* =========================================================================
-            SECTION 3: COCONUT PICKUP (About, Guidelines, Request, Supplier Register, Tracking)
+            SECTION 3: COCONUT PICKUP CALLOUT
            ========================================================================= */}
         <section id="pickup" className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
-          <div className="text-center max-w-2xl mx-auto space-y-2">
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-[#3B5B3D]/10 px-3.5 py-1 text-xs font-semibold text-[#3B5B3D]">
-              <Truck className="h-3.5 w-3.5" />
-              Sistem Penjemputan Ampas Kelapa
-            </span>
-            <h2 className="font-serif text-3xl font-bold text-[#2C1E18] sm:text-4xl">
-              Coconut Pickup &amp; Supplier Ecosystem
-            </h2>
-            <p className="text-xs sm:text-sm text-[#6E5C52]">
-              Solusi logistik sirkular terpadu untuk produsen santan dan pedagang kelapa parut lokal dalam mendistribusikan residu kelapa secara higienis dan bernilai ekonomis.
-            </p>
-          </div>
-
-          {/* Pickup Navigation Tabs */}
-          <div className="mt-8 flex flex-wrap justify-center gap-2">
-            {[
-              { id: 'request', label: 'Ajukan Penjemputan' },
-              { id: 'register', label: 'Daftar Mitra Pemasok' },
-              { id: 'tracking', label: 'Status & Dashboard Pemasok' },
-              { id: 'guidelines', label: 'Panduan & Standar Mutu' },
-            ].map((tab) => (
-              <button
-                key={tab.id}
-                type="button"
-                onClick={() =>
-                  setActivePickupTab(
-                    tab.id as 'request' | 'register' | 'tracking' | 'guidelines'
-                  )
-                }
-                className={`rounded-full px-5 py-2.5 text-xs font-bold transition ${
-                  activePickupTab === tab.id
-                    ? 'bg-[#3B5B3D] text-white shadow-xs'
-                    : 'bg-white border border-[#D6CCBA] text-[#5C4B42] hover:bg-[#FAF8F5]'
-                }`}
-              >
-                {tab.label}
-              </button>
-            ))}
-          </div>
-
-          {/* TAB 1: PICKUP REQUEST FORM */}
-          {activePickupTab === 'request' && (
-            <div className="mt-8 rounded-3xl border border-[#E5DEC9] bg-white p-6 sm:p-10 shadow-xs max-w-2xl mx-auto">
-              <h3 className="font-serif text-2xl font-bold text-[#2C1E18]">
-                Formulir Permintaan Penjemputan (Pickup Request)
-              </h3>
-              <p className="mt-1 text-xs text-[#6E5C52]">
-                Ajukan permintaan jadwal penjemputan ampas kelapa. Tim logistik CORA akan melakukan konfirmasi dan tiba di lokasi Anda.
+          <div className="relative overflow-hidden rounded-3xl border border-[#E5DEC9] bg-[#121B13] p-8 sm:p-12 text-[#FAF8F5] shadow-md">
+            <div className="pointer-events-none absolute -right-16 -top-16 h-72 w-72 rounded-full bg-[#3B5B3D]/30 blur-3xl" />
+            <div className="relative z-10 max-w-2xl space-y-4">
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-[#86C975]/20 px-3.5 py-1 text-xs font-semibold text-[#86C975]">
+                <Truck className="h-3.5 w-3.5" />
+                Layanan Penjemputan Ampas Kelapa
+              </span>
+              <h2 className="font-serif text-2xl sm:text-3xl lg:text-4xl font-bold">
+                Coconut Pickup &amp; Supplier Ecosystem Kini Hadir di Halaman Khusus
+              </h2>
+              <p className="text-xs sm:text-sm text-[#E2DACF] leading-relaxed">
+                Khusus bagi produsen santan dan pedagang kelapa parut lokal: jadwalkan penjemputan armada higienis tanpa biaya, pantau status penjemputan secara real-time, atau daftarkan usaha Anda sebagai Mitra Pemasok Resmi CORA untuk mendapatkan insentif ekonomi bernilai tinggi.
               </p>
-
-              {pickupSuccessMsg && (
-                <div className="mt-4 rounded-2xl bg-[#4E9A34]/10 border border-[#4E9A34]/30 p-4 text-xs font-medium text-[#2F611F] flex items-center gap-2">
-                  <CheckCircle2 className="h-4 w-4 shrink-0" />
-                  <span>{pickupSuccessMsg}</span>
-                </div>
-              )}
-
-              <form onSubmit={handlePickupSubmit} className="mt-6 space-y-4">
-                <div>
-                  <label className="block text-xs font-bold text-[#2C1E18]">
-                    Nama Pemasok / Usaha
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    value={pickupSupplierName}
-                    onChange={(e) => setPickupSupplierName(e.target.value)}
-                    placeholder="misal: Kelapa Segar Barokah"
-                    className="mt-1 w-full rounded-xl border border-[#D6CCBA] bg-[#FAF8F5] p-3 text-xs text-[#2C1E18] focus:border-[#3B5B3D] focus:bg-white focus:outline-none"
-                  />
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-xs font-bold text-[#2C1E18]">
-                      Nomor WhatsApp
-                    </label>
-                    <input
-                      type="tel"
-                      required
-                      value={pickupPhone}
-                      onChange={(e) => setPickupPhone(e.target.value)}
-                      placeholder="misal: 08123456789"
-                      className="mt-1 w-full rounded-xl border border-[#D6CCBA] bg-[#FAF8F5] p-3 text-xs text-[#2C1E18] focus:border-[#3B5B3D] focus:bg-white focus:outline-none"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-xs font-bold text-[#2C1E18]">
-                      Jumlah Ampas Kelapa (kg)
-                    </label>
-                    <input
-                      type="number"
-                      required
-                      min={10}
-                      value={pickupKg}
-                      onChange={(e) => setPickupKg(e.target.value)}
-                      placeholder="Minimal 10 kg"
-                      className="mt-1 w-full rounded-xl border border-[#D6CCBA] bg-[#FAF8F5] p-3 text-xs text-[#2C1E18] focus:border-[#3B5B3D] focus:bg-white focus:outline-none"
-                    />
-                  </div>
-                </div>
-
-                <div>
-                  <label className="block text-xs font-bold text-[#2C1E18]">
-                    Lokasi / Alamat Penjemputan
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    value={pickupLocation}
-                    onChange={(e) => setPickupLocation(e.target.value)}
-                    placeholder="Alamat lengkap kios/pabrik santan Anda"
-                    className="mt-1 w-full rounded-xl border border-[#D6CCBA] bg-[#FAF8F5] p-3 text-xs text-[#2C1E18] focus:border-[#3B5B3D] focus:bg-white focus:outline-none"
-                  />
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-xs font-bold text-[#2C1E18]">
-                      Tanggal Penjemputan
-                    </label>
-                    <input
-                      type="date"
-                      required
-                      value={pickupDate}
-                      onChange={(e) => setPickupDate(e.target.value)}
-                      className="mt-1 w-full rounded-xl border border-[#D6CCBA] bg-[#FAF8F5] p-3 text-xs text-[#2C1E18] focus:border-[#3B5B3D] focus:bg-white focus:outline-none"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-xs font-bold text-[#2C1E18]">
-                      Waktu Penjemputan
-                    </label>
-                    <select
-                      value={pickupTime}
-                      onChange={(e) => setPickupTime(e.target.value)}
-                      className="mt-1 w-full rounded-xl border border-[#D6CCBA] bg-[#FAF8F5] p-3 text-xs text-[#2C1E18] focus:border-[#3B5B3D] focus:bg-white focus:outline-none"
-                    >
-                      <option>08:00 - 10:00 WITA (Pagi)</option>
-                      <option>11:00 - 13:00 WITA (Siang)</option>
-                      <option>15:00 - 17:00 WITA (Sore)</option>
-                    </select>
-                  </div>
-                </div>
-
-                <div>
-                  <label className="block text-xs font-bold text-[#2C1E18]">
-                    Catatan Tambahan (Opsional)
-                  </label>
-                  <textarea
-                    rows={2}
-                    value={pickupNotes}
-                    onChange={(e) => setPickupNotes(e.target.value)}
-                    placeholder="misal: Ampas disimpan di tong bersih biru samping kios"
-                    className="mt-1 w-full rounded-xl border border-[#D6CCBA] bg-[#FAF8F5] p-3 text-xs text-[#2C1E18] focus:border-[#3B5B3D] focus:bg-white focus:outline-none"
-                  />
-                </div>
-
-                <button
-                  type="submit"
-                  className="w-full rounded-full bg-[#3B5B3D] py-3.5 text-xs font-bold text-white shadow-sm hover:bg-[#2F4A31] transition"
+              <div className="pt-2 flex flex-wrap gap-3">
+                <Link
+                  href="/pickup"
+                  className="inline-flex items-center gap-2 rounded-full bg-[#3B5B3D] px-6 py-3 text-xs font-bold text-white transition hover:bg-[#2F4A31]"
                 >
-                  Kirim Permintaan Penjemputan
-                </button>
-              </form>
-            </div>
-          )}
-
-          {/* TAB 2: BECOME OUR SUPPLIER FORM */}
-          {activePickupTab === 'register' && (
-            <div className="mt-8 rounded-3xl border border-[#E5DEC9] bg-white p-6 sm:p-10 shadow-xs max-w-2xl mx-auto">
-              <h3 className="font-serif text-2xl font-bold text-[#2C1E18]">
-                Daftar Menjadi Mitra Pemasok (Become Our Supplier)
-              </h3>
-              <p className="mt-1 text-xs text-[#6E5C52]">
-                Bergabunglah sebagai pemasok ampas kelapa resmi CORA untuk mendapatkan pendapatan tambahan, jadwal pickup rutin, dan sertifikat mitra sirkular.
-              </p>
-
-              {regSuccessMsg && (
-                <div className="mt-4 rounded-2xl bg-[#4E9A34]/10 border border-[#4E9A34]/30 p-4 text-xs font-medium text-[#2F611F] flex items-center gap-2">
-                  <CheckCircle2 className="h-4 w-4 shrink-0" />
-                  <span>{regSuccessMsg}</span>
-                </div>
-              )}
-
-              <form onSubmit={handleRegisterSupplierSubmit} className="mt-6 space-y-4">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-xs font-bold text-[#2C1E18]">
-                      Nama Pemasok / Pemilik
-                    </label>
-                    <input
-                      type="text"
-                      required
-                      value={regName}
-                      onChange={(e) => setRegName(e.target.value)}
-                      placeholder="misal: Pak Wayan / Santan Jaya"
-                      className="mt-1 w-full rounded-xl border border-[#D6CCBA] bg-[#FAF8F5] p-3 text-xs text-[#2C1E18] focus:border-[#3B5B3D] focus:bg-white focus:outline-none"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-xs font-bold text-[#2C1E18]">
-                      Nomor WhatsApp
-                    </label>
-                    <input
-                      type="tel"
-                      required
-                      value={regPhone}
-                      onChange={(e) => setRegPhone(e.target.value)}
-                      placeholder="misal: 08123456789"
-                      className="mt-1 w-full rounded-xl border border-[#D6CCBA] bg-[#FAF8F5] p-3 text-xs text-[#2C1E18] focus:border-[#3B5B3D] focus:bg-white focus:outline-none"
-                    />
-                  </div>
-                </div>
-
-                <div>
-                  <label className="block text-xs font-bold text-[#2C1E18]">
-                    Alamat atau Lokasi Usaha
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    value={regLocation}
-                    onChange={(e) => setRegLocation(e.target.value)}
-                    placeholder="misal: Pasar Kumbasari Kios No. 12, Denpasar"
-                    className="mt-1 w-full rounded-xl border border-[#D6CCBA] bg-[#FAF8F5] p-3 text-xs text-[#2C1E18] focus:border-[#3B5B3D] focus:bg-white focus:outline-none"
-                  />
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                  <div>
-                    <label className="block text-xs font-bold text-[#2C1E18]">
-                      Jenis Usaha
-                    </label>
-                    <select
-                      value={regBusinessType}
-                      onChange={(e) => setRegBusinessType(e.target.value)}
-                      className="mt-1 w-full rounded-xl border border-[#D6CCBA] bg-[#FAF8F5] p-3 text-xs text-[#2C1E18] focus:border-[#3B5B3D] focus:bg-white focus:outline-none"
-                    >
-                      <option>Kios Santan Pasar</option>
-                      <option>Pengolahan Kelapa Parut</option>
-                      <option>Industri Kue &amp; Santan</option>
-                      <option>Rumah Makan / Katering</option>
-                    </select>
-                  </div>
-
-                  <div>
-                    <label className="block text-xs font-bold text-[#2C1E18]">
-                      Estimasi Ampas (kg/minggu)
-                    </label>
-                    <input
-                      type="number"
-                      required
-                      min={10}
-                      value={regEstimatedKg}
-                      onChange={(e) => setRegEstimatedKg(e.target.value)}
-                      placeholder="misal: 80"
-                      className="mt-1 w-full rounded-xl border border-[#D6CCBA] bg-[#FAF8F5] p-3 text-xs text-[#2C1E18] focus:border-[#3B5B3D] focus:bg-white focus:outline-none"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-xs font-bold text-[#2C1E18]">
-                      Frekuensi Produksi
-                    </label>
-                    <select
-                      value={regFrequency}
-                      onChange={(e) => setRegFrequency(e.target.value)}
-                      className="mt-1 w-full rounded-xl border border-[#D6CCBA] bg-[#FAF8F5] p-3 text-xs text-[#2C1E18] focus:border-[#3B5B3D] focus:bg-white focus:outline-none"
-                    >
-                      <option>Setiap Hari</option>
-                      <option>3x Seminggu</option>
-                      <option>Mingguan</option>
-                    </select>
-                  </div>
-                </div>
-
-                <button
-                  type="submit"
-                  className="w-full rounded-full bg-[#4E9A34] py-3.5 text-xs font-bold text-white shadow-sm hover:bg-[#3F8129] transition"
+                  <span>Buka Halaman Coconut Pickup</span>
+                  <ArrowRight className="h-4 w-4" />
+                </Link>
+                <Link
+                  href="/pickup#tracking"
+                  className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-5 py-3 text-xs font-bold text-white transition hover:bg-white/20"
                 >
-                  Daftarkan Usaha Sebagai Mitra Pemasok
-                </button>
-              </form>
-            </div>
-          )}
-
-          {/* TAB 3: SUPPLIER DASHBOARD & LIVE TRACKING */}
-          {activePickupTab === 'tracking' && (
-            <div className="mt-8 space-y-6 max-w-4xl mx-auto">
-              {/* Dashboard Metrics */}
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                <div className="rounded-2xl bg-white p-5 border border-[#E5DEC9] shadow-2xs">
-                  <span className="text-[11px] font-bold text-[#3B5B3D] uppercase">
-                    Mitra Terdaftar
-                  </span>
-                  <p className="mt-2 font-serif text-3xl font-bold text-[#2C1E18]">
-                    {suppliers.length} <span className="text-xs font-normal text-[#6E5C52]">kios/usaha</span>
-                  </p>
-                  <p className="mt-1 text-[11px] text-[#8C7A6B]">
-                    Aktif bermitra dalam jaringan CORA
-                  </p>
-                </div>
-
-                <div className="rounded-2xl bg-white p-5 border border-[#E5DEC9] shadow-2xs">
-                  <span className="text-[11px] font-bold text-[#3B5B3D] uppercase">
-                    Total Ampas Diserahkan
-                  </span>
-                  <p className="mt-2 font-serif text-3xl font-bold text-[#2C1E18]">
-                    {pickupRequests
-                      .filter((r) => r.status === 'COMPLETED')
-                      .reduce((sum, r) => sum + r.estimatedKg, 0)}{' '}
-                    <span className="text-xs font-normal text-[#6E5C52]">kg</span>
-                  </p>
-                  <p className="mt-1 text-[11px] text-[#8C7A6B]">
-                    Telah dijemput dan diproses jadi tepung
-                  </p>
-                </div>
-
-                <div className="rounded-2xl bg-white p-5 border border-[#E5DEC9] shadow-2xs">
-                  <span className="text-[11px] font-bold text-[#3B5B3D] uppercase">
-                    Pengurangan Emisi Karbon
-                  </span>
-                  <p className="mt-2 font-serif text-3xl font-bold text-[#2C1E18]">
-                    ~{(
-                      pickupRequests
-                        .filter((r) => r.status === 'COMPLETED')
-                        .reduce((sum, r) => sum + r.estimatedKg, 0) * 1.8
-                    ).toFixed(0)}{' '}
-                    <span className="text-xs font-normal text-[#6E5C52]">kg CO₂e</span>
-                  </p>
-                  <p className="mt-1 text-[11px] text-[#8C7A6B]">
-                    Akumulasi kontribusi lingkungan
-                  </p>
-                </div>
-              </div>
-
-              {/* Status List */}
-              <div className="rounded-3xl border border-[#E5DEC9] bg-white p-6 sm:p-8 shadow-xs">
-                <h4 className="font-serif text-xl font-bold text-[#2C1E18]">
-                  Riwayat &amp; Pelacakan Status Penjemputan (Pickup Tracking)
-                </h4>
-                <p className="mt-1 text-xs text-[#6E5C52]">
-                  Status tahapan: <strong>Request Submitted → Request Confirmed → On the Way → Picked Up → Completed</strong>.
-                </p>
-
-                <div className="mt-6 divide-y divide-[#F0EAE0]">
-                  {pickupRequests.map((req) => {
-                    const badge = getPickupBadge(req.status);
-                    return (
-                      <div
-                        key={req.id}
-                        className="py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3"
-                      >
-                        <div className="space-y-1">
-                          <div className="flex items-center gap-2">
-                            <h5 className="text-sm font-bold text-[#2C1E18]">
-                              {req.supplierName}
-                            </h5>
-                            <span
-                              className={`rounded-full px-2.5 py-0.5 text-[10px] font-bold ${badge.className}`}
-                            >
-                              {badge.label}
-                            </span>
-                          </div>
-                          <p className="text-xs text-[#6E5C52]">
-                            📍 {req.location} • 📞 {req.phone}
-                          </p>
-                          <p className="text-[11px] text-[#8C7A6B]">
-                            Jadwal: {req.preferredDate} ({req.preferredTime || 'Pagi'}) • Estimasi: <strong>{req.estimatedKg} kg</strong>
-                          </p>
-                          {req.notes && (
-                            <p className="text-[11px] italic text-[#6E5C52]">
-                              &ldquo;{req.notes}&rdquo;
-                            </p>
-                          )}
-                        </div>
-
-                        <div className="flex items-center gap-2 text-xs font-semibold">
-                          <span className="rounded-lg bg-[#FAF8F5] border border-[#E5DEC9] px-3 py-1.5 text-[#3B5B3D]">
-                            ID: #{req.id}
-                          </span>
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
+                  <span>Lacak Status Pickup</span>
+                </Link>
               </div>
             </div>
-          )}
-
-          {/* TAB 4: GUIDELINES & STANDAR MUTU */}
-          {activePickupTab === 'guidelines' && (
-            <div className="mt-8 rounded-3xl border border-[#E5DEC9] bg-white p-6 sm:p-10 shadow-xs max-w-3xl mx-auto space-y-6">
-              <div>
-                <h3 className="font-serif text-2xl font-bold text-[#2C1E18]">
-                  Supplier Guidelines &amp; Standar Mutu Ampas Kelapa
-                </h3>
-                <p className="mt-1 text-xs text-[#6E5C52]">
-                  Untuk menjaga kualitas tepung pangan higienis CORA, pastikan ampas kelapa yang diserahkan memenuhi kriteria berikut:
-                </p>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs">
-                <div className="rounded-2xl bg-[#FAF8F5] p-5 border border-[#E5DEC9]">
-                  <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#3B5B3D]/10 text-[#3B5B3D] font-bold">
-                    1
-                  </span>
-                  <h4 className="mt-3 font-bold text-[#2C1E18]">Kebersihan Bahan</h4>
-                  <p className="mt-1 text-[#6E5C52] leading-relaxed">
-                    Ampas kelapa harus bersih dari serabut kasar, tempurung kelapa hitam, atau benda asing lainnya.
-                  </p>
-                </div>
-
-                <div className="rounded-2xl bg-[#FAF8F5] p-5 border border-[#E5DEC9]">
-                  <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#3B5B3D]/10 text-[#3B5B3D] font-bold">
-                    2
-                  </span>
-                  <h4 className="mt-3 font-bold text-[#2C1E18]">Kondisi Bahan Segar</h4>
-                  <p className="mt-1 text-[#6E5C52] leading-relaxed">
-                    Hasil parutan santan hari yang sama (&lt;12 jam), tidak berlendir, tidak berbau asam/tengik, dan tidak berjamur.
-                  </p>
-                </div>
-
-                <div className="rounded-2xl bg-[#FAF8F5] p-5 border border-[#E5DEC9]">
-                  <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#3B5B3D]/10 text-[#3B5B3D] font-bold">
-                    3
-                  </span>
-                  <h4 className="mt-3 font-bold text-[#2C1E18]">Ketentuan Penyimpanan</h4>
-                  <p className="mt-1 text-[#6E5C52] leading-relaxed">
-                    Disimpan dalam wadah plastik atau tong bersih tertutup, di tempat teduh dan sejuk sebelum dijemput armada CORA.
-                  </p>
-                </div>
-              </div>
-
-              <div className="rounded-2xl bg-[#4E9A34]/10 p-4 border border-[#4E9A34]/20 text-xs text-[#2F611F] flex items-start gap-3">
-                <Info className="h-5 w-5 shrink-0 mt-0.5" />
-                <div>
-                  <strong className="block font-bold">Mengapa standar ini penting?</strong>
-                  Ampas kelapa yang Anda serahkan akan langsung diolah menjadi tepung pangan bernilai tinggi (konsumsi manusia). Menjaga higienitas adalah kunci kesuksesan bersama.
-                </div>
-              </div>
-            </div>
-          )}
+          </div>
         </section>
       </main>
 

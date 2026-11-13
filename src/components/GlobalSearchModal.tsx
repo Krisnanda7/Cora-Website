@@ -66,7 +66,7 @@ const STATIC_INFO_ITEMS: SearchResultItem[] = [
     title: 'Coconut Pickup: Layanan Penjemputan Ampas',
     subtitle: 'Alur penjemputan gratis dan kompensasi ekonomis bagi pedagang santan pasar.',
     category: 'Informasi CORA',
-    href: '/ecosystem#pickup',
+    href: '/pickup',
   },
 ];
 

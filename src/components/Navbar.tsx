@@ -13,7 +13,7 @@ const NAV_LINKS = [
   { label: 'Our Impact', href: '/#impact' },
   { label: 'Our Product', href: '/products' },
   { label: 'Recipe & AI', href: '/ecosystem' },
-  { label: 'Coconut Pickup', href: '/ecosystem#pickup' },
+  { label: 'Coconut Pickup', href: '/pickup' },
   { label: 'About Us', href: '/about' },
 ] as const;
 

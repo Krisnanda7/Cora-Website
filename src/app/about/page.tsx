@@ -25,7 +25,7 @@ interface TeamMember {
 
 const TEAM_MEMBERS: TeamMember[] = [
   {
-    name: 'Bagus Krisna',
+    name: 'Diandra',
     role: 'Founder & Innovation Lead',
     responsibility: 'Mengembangkan strategi sirkular, arsitektur produk, dan visi teknologi ekosistem CORA.',
     image: '/images/hero/hero.jpg',
