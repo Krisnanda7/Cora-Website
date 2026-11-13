@@ -181,10 +181,30 @@ export interface SubmitPickupInput {
 }
 
 export interface RegisterSupplierInput {
+  id?: string;
   name: string;
   phone: string;
   businessLocation: string;
   businessType: string;
   estimatedKg: number;
   productionFrequency: string;
+}
+
+export interface ImpactStatItem {
+  id: string;
+  label: string;
+  value: string;
+  unit: string;
+  description: string;
+}
+
+export interface ImpactSettings {
+  useCustomStats: boolean;
+  customResidueKg: number;
+  customFlourKg: number;
+  customSuppliersCount: number;
+  customProductsMarketed: number;
+  customCo2AvoidedKg: number;
+  impactNote: string;
+  indicators: ImpactStatItem[];
 }

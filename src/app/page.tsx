@@ -207,10 +207,26 @@ function JourneyCircleVisual({ step }: { step: number }) {
 }
 
 export default function HomePage() {
-  const { products, orders, suppliers, pickupRequests, addToCart } = useCora();
+  const { products, orders, suppliers, pickupRequests, addToCart, impactSettings } = useCora();
   const [addedProductId, setAddedProductId] = useState<string | null>(null);
 
   const impactStats = useMemo(() => {
+    if (impactSettings?.useCustomStats) {
+      return {
+        totalKgFromTransactions: String(impactSettings.customResidueKg),
+        verifiedOrderCount: orders.filter(
+          (o) =>
+            o.status === 'PROCESSING' ||
+            o.status === 'SHIPPED' ||
+            o.status === 'COMPLETED'
+        ).length,
+        totalResidueUtilizedKg: String(impactSettings.customResidueKg),
+        totalFlourProducedKg: String(impactSettings.customFlourKg),
+        supplierCount: impactSettings.customSuppliersCount,
+        totalProductsMarketed: impactSettings.customProductsMarketed,
+      };
+    }
+
     const productMap = new Map<string, Product>(
       products.map((p) => [p.id, p])
     );
@@ -258,7 +274,7 @@ export default function HomePage() {
       supplierCount: suppliers.length,
       totalProductsMarketed,
     };
-  }, [orders, products, suppliers, pickupRequests]);
+  }, [orders, products, suppliers, pickupRequests, impactSettings]);
 
   const featuredProducts = useMemo(() => products.slice(0, 4), [products]);
 
@@ -600,62 +616,81 @@ export default function HomePage() {
                 </h4>
               </div>
               <p className="text-[11px] text-[#8A776C] italic">
-                *Catatan: angka menggunakan data aktual setelah operasional berjalan.
+                {impactSettings?.impactNote || '*Catatan: angka menggunakan data aktual setelah operasional berjalan.'}
               </p>
             </div>
 
             <div className="mt-6 grid grid-cols-2 lg:grid-cols-4 gap-4">
-              <div className="rounded-2xl bg-[#FAF8F5] p-5 border border-[#E5DEC9]/80 shadow-2xs">
-                <div className="flex items-center gap-2 text-xs font-semibold text-[#3B5B3D]">
-                  <Scale className="h-4 w-4" />
-                  <span>Ampas Dimanfaatkan</span>
-                </div>
-                <p className="mt-3 font-serif text-3xl font-bold tabular-nums text-[#2C1E18]">
-                  {impactStats.totalResidueUtilizedKg} <span className="text-sm font-sans font-medium text-[#6E5C52]">kg</span>
-                </p>
-                <p className="mt-1 text-[11px] text-[#8A776C]">
-                  Total ampas kelapa berhasil dimanfaatkan
-                </p>
-              </div>
+              {(impactSettings?.indicators && impactSettings.indicators.length > 0
+                ? impactSettings.indicators
+                : [
+                    {
+                      id: 'stat-residue',
+                      label: 'Ampas Dimanfaatkan',
+                      value: impactStats.totalResidueUtilizedKg,
+                      unit: 'kg',
+                      description: 'Total ampas kelapa berhasil dimanfaatkan',
+                    },
+                    {
+                      id: 'stat-flour',
+                      label: 'Tepung Diproduksi',
+                      value: impactStats.totalFlourProducedKg,
+                      unit: 'kg',
+                      description: 'Total tepung kelapa yang diproduksi',
+                    },
+                    {
+                      id: 'stat-supplier',
+                      label: 'Mitra Pemasok',
+                      value: String(impactStats.supplierCount),
+                      unit: 'mitra',
+                      description: 'Jumlah mitra pemasok kelapa',
+                    },
+                    {
+                      id: 'stat-product',
+                      label: 'Produk Dipasarkan',
+                      value: String(impactStats.totalProductsMarketed),
+                      unit: 'pcs',
+                      description: 'Jumlah produk yang berhasil dipasarkan',
+                    },
+                  ]
+              ).map((item) => {
+                let displayVal = item.value;
+                if (!impactSettings?.useCustomStats) {
+                  if (item.id === 'stat-residue') displayVal = impactStats.totalResidueUtilizedKg;
+                  else if (item.id === 'stat-flour') displayVal = impactStats.totalFlourProducedKg;
+                  else if (item.id === 'stat-supplier') displayVal = String(impactStats.supplierCount);
+                  else if (item.id === 'stat-product') displayVal = String(impactStats.totalProductsMarketed);
+                }
 
-              <div className="rounded-2xl bg-[#FAF8F5] p-5 border border-[#E5DEC9]/80 shadow-2xs">
-                <div className="flex items-center gap-2 text-xs font-semibold text-[#3B5B3D]">
-                  <Package className="h-4 w-4" />
-                  <span>Tepung Diproduksi</span>
-                </div>
-                <p className="mt-3 font-serif text-3xl font-bold tabular-nums text-[#2C1E18]">
-                  {impactStats.totalFlourProducedKg} <span className="text-sm font-sans font-medium text-[#6E5C52]">kg</span>
-                </p>
-                <p className="mt-1 text-[11px] text-[#8A776C]">
-                  Total tepung kelapa yang diproduksi
-                </p>
-              </div>
-
-              <div className="rounded-2xl bg-[#FAF8F5] p-5 border border-[#E5DEC9]/80 shadow-2xs">
-                <div className="flex items-center gap-2 text-xs font-semibold text-[#3B5B3D]">
-                  <Users className="h-4 w-4" />
-                  <span>Mitra Pemasok</span>
-                </div>
-                <p className="mt-3 font-serif text-3xl font-bold tabular-nums text-[#2C1E18]">
-                  {impactStats.supplierCount} <span className="text-sm font-sans font-medium text-[#6E5C52]">mitra</span>
-                </p>
-                <p className="mt-1 text-[11px] text-[#8A776C]">
-                  Jumlah mitra pemasok kelapa
-                </p>
-              </div>
-
-              <div className="rounded-2xl bg-[#FAF8F5] p-5 border border-[#E5DEC9]/80 shadow-2xs">
-                <div className="flex items-center gap-2 text-xs font-semibold text-[#3B5B3D]">
-                  <ShoppingBag className="h-4 w-4" />
-                  <span>Produk Dipasarkan</span>
-                </div>
-                <p className="mt-3 font-serif text-3xl font-bold tabular-nums text-[#2C1E18]">
-                  {impactStats.totalProductsMarketed} <span className="text-sm font-sans font-medium text-[#6E5C52]">pcs</span>
-                </p>
-                <p className="mt-1 text-[11px] text-[#8A776C]">
-                  Jumlah produk yang berhasil dipasarkan
-                </p>
-              </div>
+                return (
+                  <div
+                    key={item.id}
+                    className="rounded-2xl bg-[#FAF8F5] p-5 border border-[#E5DEC9]/80 shadow-2xs"
+                  >
+                    <div className="flex items-center gap-2 text-xs font-semibold text-[#3B5B3D]">
+                      {item.id.includes('residue') || item.id.includes('ampas') ? (
+                        <Scale className="h-4 w-4" />
+                      ) : item.id.includes('flour') || item.id.includes('tepung') ? (
+                        <Package className="h-4 w-4" />
+                      ) : item.id.includes('supplier') || item.id.includes('mitra') ? (
+                        <Users className="h-4 w-4" />
+                      ) : (
+                        <ShoppingBag className="h-4 w-4" />
+                      )}
+                      <span>{item.label}</span>
+                    </div>
+                    <p className="mt-3 font-serif text-3xl font-bold tabular-nums text-[#2C1E18]">
+                      {displayVal}{' '}
+                      <span className="text-sm font-sans font-medium text-[#6E5C52]">
+                        {item.unit}
+                      </span>
+                    </p>
+                    <p className="mt-1 text-[11px] text-[#8A776C]">
+                      {item.description}
+                    </p>
+                  </div>
+                );
+              })}
             </div>
           </div>
 

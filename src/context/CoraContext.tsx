@@ -14,6 +14,8 @@ import type {
   CartItem,
   CreateOrderInput,
   FinancialRecord,
+  ImpactSettings,
+  ImpactStatItem,
   Order,
   OrderStatus,
   PickupRequest,
@@ -39,6 +41,7 @@ interface CoraStoreState {
   suppliers: Supplier[];
   recipes: Recipe[];
   userProfile: UserProfile;
+  impactSettings: ImpactSettings;
   cart: CartItem[];
 }
 
@@ -68,6 +71,11 @@ interface CoraContextValue extends CoraStoreState {
   submitPickupRequest: (request: SubmitPickupInput) => PickupRequest;
   updatePickupStatus: (requestId: string, status: PickupRequestStatus) => void;
   registerSupplier: (input: RegisterSupplierInput) => Supplier;
+  saveSupplier: (supplier: Supplier) => void;
+  deleteSupplier: (supplierId: string) => void;
+  updateImpactSettings: (settings: Partial<ImpactSettings>) => void;
+  saveImpactIndicator: (indicator: ImpactStatItem) => void;
+  deleteImpactIndicator: (id: string) => void;
   toggleFavoriteRecipe: (recipeId: string) => void;
   updateUserProfile: (profile: Partial<UserProfile>) => void;
   saveRecipe: (recipe: Recipe) => void;
@@ -434,6 +442,48 @@ export const INITIAL_USER_PROFILE: UserProfile = {
   favoriteRecipeIds: ['rec-brownies', 'rec-cookies'],
 };
 
+export const INITIAL_IMPACT_INDICATORS: ImpactStatItem[] = [
+  {
+    id: 'stat-residue',
+    label: 'Ampas Dimanfaatkan',
+    value: '2.36',
+    unit: 'kg',
+    description: 'Total ampas kelapa berhasil dimanfaatkan',
+  },
+  {
+    id: 'stat-flour',
+    label: 'Tepung Diproduksi',
+    value: '1.06',
+    unit: 'kg',
+    description: 'Total tepung kelapa yang diproduksi',
+  },
+  {
+    id: 'stat-supplier',
+    label: 'Mitra Pemasok',
+    value: '3',
+    unit: 'mitra',
+    description: 'Jumlah mitra pemasok kelapa',
+  },
+  {
+    id: 'stat-product',
+    label: 'Produk Dipasarkan',
+    value: '3',
+    unit: 'pcs',
+    description: 'Total produk olahan berhasil dipasarkan',
+  },
+];
+
+export const INITIAL_IMPACT_SETTINGS: ImpactSettings = {
+  useCustomStats: false,
+  customResidueKg: 485.4,
+  customFlourKg: 203.8,
+  customSuppliersCount: 3,
+  customProductsMarketed: 24,
+  customCo2AvoidedKg: 1155.2,
+  impactNote: '*Catatan: angka menggunakan data aktual setelah operasional berjalan.',
+  indicators: INITIAL_IMPACT_INDICATORS,
+};
+
 export const INITIAL_BANK_ACCOUNTS: BankAccount[] = [
   {
     id: 'bank-bca',
@@ -643,6 +693,7 @@ function getInitialStoreState(): CoraStoreState {
     suppliers: INITIAL_SUPPLIERS.map((s) => ({ ...s })),
     recipes: INITIAL_RECIPES.map((r) => ({ ...r })),
     userProfile: { ...INITIAL_USER_PROFILE },
+    impactSettings: { ...INITIAL_IMPACT_SETTINGS },
     cart: [],
   };
 }
@@ -687,6 +738,17 @@ function parseStoredState(raw: string | null): CoraStoreState | null {
         ? parsed.recipes
         : INITIAL_RECIPES,
       userProfile: parsed.userProfile ?? INITIAL_USER_PROFILE,
+      impactSettings: parsed.impactSettings
+        ? {
+            ...INITIAL_IMPACT_SETTINGS,
+            ...parsed.impactSettings,
+            indicators:
+              Array.isArray(parsed.impactSettings.indicators) &&
+              parsed.impactSettings.indicators.length > 0
+                ? parsed.impactSettings.indicators
+                : INITIAL_IMPACT_INDICATORS,
+          }
+        : INITIAL_IMPACT_SETTINGS,
       cart: parsed.cart,
     };
   } catch {
@@ -1147,23 +1209,122 @@ export function CoraProvider({ children }: { children: React.ReactNode }) {
 
   const registerSupplier = useCallback(
     (input: RegisterSupplierInput): Supplier => {
-      const newSupplier: Supplier = {
-        id: generateId('sup'),
-        name: input.name.trim(),
-        phone: input.phone.trim(),
-        businessLocation: input.businessLocation.trim(),
-        businessType: input.businessType.trim(),
-        estimatedKg: Math.max(0, Number(input.estimatedKg)),
-        productionFrequency: input.productionFrequency.trim(),
-        createdAt: new Date().toISOString(),
-      };
+      let savedSupplier: Supplier;
 
+      updateStore((prev) => {
+        if (input.id) {
+          savedSupplier = {
+            id: input.id,
+            name: input.name.trim(),
+            phone: input.phone.trim(),
+            businessLocation: input.businessLocation.trim(),
+            businessType: input.businessType.trim(),
+            estimatedKg: Math.max(0, Number(input.estimatedKg)),
+            productionFrequency: input.productionFrequency.trim(),
+            createdAt:
+              prev.suppliers.find((s) => s.id === input.id)?.createdAt ||
+              new Date().toISOString(),
+          };
+          return {
+            ...prev,
+            suppliers: prev.suppliers.map((s) =>
+              s.id === input.id ? savedSupplier : s
+            ),
+          };
+        }
+
+        savedSupplier = {
+          id: generateId('sup'),
+          name: input.name.trim(),
+          phone: input.phone.trim(),
+          businessLocation: input.businessLocation.trim(),
+          businessType: input.businessType.trim(),
+          estimatedKg: Math.max(0, Number(input.estimatedKg)),
+          productionFrequency: input.productionFrequency.trim(),
+          createdAt: new Date().toISOString(),
+        };
+
+        return {
+          ...prev,
+          suppliers: [savedSupplier, ...prev.suppliers],
+        };
+      });
+
+      return savedSupplier!;
+    },
+    [updateStore]
+  );
+
+  const saveSupplier = useCallback(
+    (supplier: Supplier) => {
+      updateStore((prev) => {
+        const exists = prev.suppliers.some((s) => s.id === supplier.id);
+        const updated = exists
+          ? prev.suppliers.map((s) => (s.id === supplier.id ? supplier : s))
+          : [supplier, ...prev.suppliers];
+        return { ...prev, suppliers: updated };
+      });
+    },
+    [updateStore]
+  );
+
+  const deleteSupplier = useCallback(
+    (supplierId: string) => {
       updateStore((prev) => ({
         ...prev,
-        suppliers: [newSupplier, ...prev.suppliers],
+        suppliers: prev.suppliers.filter((s) => s.id !== supplierId),
       }));
+    },
+    [updateStore]
+  );
 
-      return newSupplier;
+  const updateImpactSettings = useCallback(
+    (settings: Partial<ImpactSettings>) => {
+      updateStore((prev) => ({
+        ...prev,
+        impactSettings: {
+          ...prev.impactSettings,
+          ...settings,
+        },
+      }));
+    },
+    [updateStore]
+  );
+
+  const saveImpactIndicator = useCallback(
+    (indicator: ImpactStatItem) => {
+      updateStore((prev) => {
+        const exists = prev.impactSettings.indicators.some(
+          (i) => i.id === indicator.id
+        );
+        const nextIndicators = exists
+          ? prev.impactSettings.indicators.map((i) =>
+              i.id === indicator.id ? indicator : i
+            )
+          : [...prev.impactSettings.indicators, indicator];
+        return {
+          ...prev,
+          impactSettings: {
+            ...prev.impactSettings,
+            indicators: nextIndicators,
+          },
+        };
+      });
+    },
+    [updateStore]
+  );
+
+  const deleteImpactIndicator = useCallback(
+    (indicatorId: string) => {
+      updateStore((prev) => ({
+        ...prev,
+        impactSettings: {
+          ...prev.impactSettings,
+          indicators: prev.impactSettings.indicators.filter(
+            (i) => i.id !== indicatorId
+          ),
+        },
+      }));
     },
     [updateStore]
   );
@@ -1273,6 +1434,11 @@ export function CoraProvider({ children }: { children: React.ReactNode }) {
       submitPickupRequest,
       updatePickupStatus,
       registerSupplier,
+      saveSupplier,
+      deleteSupplier,
+      updateImpactSettings,
+      saveImpactIndicator,
+      deleteImpactIndicator,
       toggleFavoriteRecipe,
       updateUserProfile,
       saveRecipe,
@@ -1299,6 +1465,11 @@ export function CoraProvider({ children }: { children: React.ReactNode }) {
       submitPickupRequest,
       updatePickupStatus,
       registerSupplier,
+      saveSupplier,
+      deleteSupplier,
+      updateImpactSettings,
+      saveImpactIndicator,
+      deleteImpactIndicator,
       toggleFavoriteRecipe,
       updateUserProfile,
       saveRecipe,

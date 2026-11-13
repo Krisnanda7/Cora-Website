@@ -25,6 +25,8 @@ import {
   Save,
   Scale,
   Search,
+  Sliders,
+  Sparkles,
   Trash2,
   TrendingDown,
   TrendingUp,
@@ -38,6 +40,7 @@ import {
 import { useCora } from '@/context/CoraContext';
 import type {
   BankAccount,
+  ImpactStatItem,
   Order,
   OrderStatus,
   PickupRequest,
@@ -46,14 +49,16 @@ import type {
   ProductCategory,
   Recipe,
   RecipeCategory,
+  Supplier,
 } from '@/types/cora';
 
 type AdminTab =
   | 'orders'
   | 'cms'
-  | 'pickup'
   | 'suppliers'
+  | 'pickup'
   | 'recipes'
+  | 'impact'
   | 'finance';
 type OrderFilter = 'ALL' | OrderStatus;
 type PickupFilter = 'ALL' | PickupRequestStatus;
@@ -220,6 +225,7 @@ export default function AdminDashboardPage() {
     recipes,
     suppliers,
     userProfile,
+    impactSettings,
     verifyOrderPayment,
     updateOrderStatus,
     saveProduct,
@@ -228,8 +234,13 @@ export default function AdminDashboardPage() {
     addManualExpense,
     updatePickupStatus,
     registerSupplier,
+    saveSupplier,
+    deleteSupplier,
     saveRecipe,
     deleteRecipe,
+    updateImpactSettings,
+    saveImpactIndicator,
+    deleteImpactIndicator,
     resetDemoData,
   } = useCora();
 
@@ -243,12 +254,9 @@ export default function AdminDashboardPage() {
     {}
   );
 
-  // Tab 2: Finance State
-  const [expDescription, setExpDescription] = useState('');
-  const [expCategory, setExpCategory] = useState('Raw Materials');
-  const [expAmount, setExpAmount] = useState('');
-
-  // Tab 3: CMS Products & Bank State
+  // Tab 2: CMS Products & Bank State (List View)
+  const [productSearch, setProductSearch] = useState('');
+  const [productCategoryFilter, setProductCategoryFilter] = useState<string>('ALL');
   const [quickEdits, setQuickEdits] = useState<
     Record<string, { price: string; stock: string }>
   >({});
@@ -272,12 +280,10 @@ export default function AdminDashboardPage() {
   );
   const [bankIsActive, setBankIsActive] = useState(true);
 
-  // Tab 4: Pickup State
-  const [pickupFilter, setPickupFilter] = useState<PickupFilter>('ALL');
-
-  // Tab 5: Supplier Network State
+  // Tab 3: Supplier Network State (Add, Edit, Delete)
   const [supplierSearch, setSupplierSearch] = useState('');
   const [showSupplierModal, setShowSupplierModal] = useState(false);
+  const [editingSupplierId, setEditingSupplierId] = useState<string | null>(null);
   const [supName, setSupName] = useState('');
   const [supPhone, setSupPhone] = useState('');
   const [supLocation, setSupLocation] = useState('');
@@ -285,7 +291,10 @@ export default function AdminDashboardPage() {
   const [supKg, setSupKg] = useState('25');
   const [supFreq, setSupFreq] = useState('Setiap Hari');
 
-  // Tab 6: RecipeHub CMS State
+  // Tab 4: Pickup State
+  const [pickupFilter, setPickupFilter] = useState<PickupFilter>('ALL');
+
+  // Tab 5: RecipeHub CMS State
   const [recipeFilterCategory, setRecipeFilterCategory] = useState<string>('ALL');
   const [showRecipeModal, setShowRecipeModal] = useState(false);
   const [editingRecipeId, setEditingRecipeId] = useState<string | null>(null);
@@ -305,6 +314,43 @@ export default function AdminDashboardPage() {
   const [recIngredientsText, setRecIngredientsText] = useState('');
   const [recStepsText, setRecStepsText] = useState('');
   const [recImage, setRecImage] = useState(RECIPE_IMAGE_PRESETS[0].value);
+
+  // Tab 6: Our Impact CMS State
+  const [impactUseCustom, setImpactUseCustom] = useState(
+    impactSettings?.useCustomStats ?? false
+  );
+  const [impactResidueKg, setImpactResidueKg] = useState(
+    String(impactSettings?.customResidueKg ?? 485.4)
+  );
+  const [impactFlourKg, setImpactFlourKg] = useState(
+    String(impactSettings?.customFlourKg ?? 203.8)
+  );
+  const [impactSuppliersCount, setImpactSuppliersCount] = useState(
+    String(impactSettings?.customSuppliersCount ?? 3)
+  );
+  const [impactProductsMarketed, setImpactProductsMarketed] = useState(
+    String(impactSettings?.customProductsMarketed ?? 24)
+  );
+  const [impactCo2Avoided, setImpactCo2Avoided] = useState(
+    String(impactSettings?.customCo2AvoidedKg ?? 1155.2)
+  );
+  const [impactNoteText, setImpactNoteText] = useState(
+    impactSettings?.impactNote ??
+      '*Catatan: angka menggunakan data aktual setelah operasional berjalan.'
+  );
+
+  // Indicator Modal
+  const [showIndicatorModal, setShowIndicatorModal] = useState(false);
+  const [editingIndicatorId, setEditingIndicatorId] = useState<string | null>(null);
+  const [indLabel, setIndLabel] = useState('');
+  const [indValue, setIndValue] = useState('');
+  const [indUnit, setIndUnit] = useState('kg');
+  const [indDesc, setIndDesc] = useState('');
+
+  // Tab 7: Finance State
+  const [expDescription, setExpDescription] = useState('');
+  const [expCategory, setExpCategory] = useState('Raw Materials');
+  const [expAmount, setExpAmount] = useState('');
 
   const showToast = (msg: string) => {
     setToastMessage(msg);
@@ -337,6 +383,21 @@ export default function AdminDashboardPage() {
     if (pickupFilter === 'ALL') return pickupRequests;
     return pickupRequests.filter((p) => p.status === pickupFilter);
   }, [pickupRequests, pickupFilter]);
+
+  // Filtered Products (List View)
+  const filteredProducts = useMemo(() => {
+    return products.filter((p) => {
+      const matchCat =
+        productCategoryFilter === 'ALL' || p.category === productCategoryFilter;
+      const q = productSearch.toLowerCase().trim();
+      const matchQuery =
+        !q ||
+        p.name.toLowerCase().includes(q) ||
+        p.subtitle.toLowerCase().includes(q) ||
+        p.description.toLowerCase().includes(q);
+      return matchCat && matchQuery;
+    });
+  }, [products, productCategoryFilter, productSearch]);
 
   // Filtered Suppliers
   const filteredSuppliers = useMemo(() => {
@@ -376,7 +437,6 @@ export default function AdminDashboardPage() {
     const incomePct = Math.round((grossRevenue / maxBar) * 100);
     const expensePct = Math.round((totalExpense / maxBar) * 100);
 
-    // Category breakdown
     const categoryTotals = financialRecords.reduce<
       Record<string, { income: number; expense: number }>
     >((acc, rec) => {
@@ -399,7 +459,7 @@ export default function AdminDashboardPage() {
     };
   }, [financialRecords, orders]);
 
-  // Environmental Impact Analytics
+  // Environmental Impact Auto Analytics
   const environmentalStats = useMemo(() => {
     const totalResidueFromOrdersKg =
       orders
@@ -424,7 +484,7 @@ export default function AdminDashboardPage() {
       totalResidueFromPickupsKg;
 
     const totalFlourProducedKg = totalUpcycledKg * 0.42;
-    const co2SavedKg = totalUpcycledKg * 2.38; // ~2.38 kg CO2e mitigated per kg coconut waste prevented from landfill
+    const co2SavedKg = totalUpcycledKg * 2.38;
 
     return {
       totalUpcycledKg: totalUpcycledKg.toFixed(1),
@@ -475,60 +535,7 @@ export default function AdminDashboardPage() {
     );
   };
 
-  // --- Tab 2 Handlers (Finance) ---
-  const handleAddExpense = (e: React.FormEvent) => {
-    e.preventDefault();
-    const numericAmount = Number(expAmount);
-    if (!expDescription.trim() || !Number.isFinite(numericAmount) || numericAmount <= 0) {
-      return;
-    }
-    addManualExpense({
-      description: expDescription.trim(),
-      category: expCategory,
-      amount: numericAmount,
-    });
-    setExpDescription('');
-    setExpAmount('');
-    showToast('Operational expense recorded in the cash book.');
-  };
-
-  const handleExportCsv = () => {
-    const headers = [
-      'Date',
-      'Order No.',
-      'Description',
-      'Category',
-      'Type',
-      'Amount (IDR)',
-    ];
-    const escapeCsv = (val: string | number) => {
-      const str = String(val ?? '');
-      return `"${str.replace(/"/g, '""')}"`;
-    };
-    const rows = financialRecords.map((rec) => [
-      escapeCsv(formatDateTime(rec.date)),
-      escapeCsv(rec.orderNumber || '-'),
-      escapeCsv(rec.description),
-      escapeCsv(rec.category),
-      escapeCsv(rec.type === 'INCOME' ? 'Income' : 'Expense'),
-      escapeCsv(rec.amount),
-    ]);
-    const csvContent =
-      '\uFEFF' + [headers.join(','), ...rows.map((r) => r.join(','))].join('\n');
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    const dateStamp = new Date().toISOString().slice(0, 10);
-    link.href = url;
-    link.setAttribute('download', `cora-financial-report-${dateStamp}.csv`);
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
-    showToast('Financial report downloaded successfully as CSV.');
-  };
-
-  // --- Tab 3 Handlers (CMS Products & Bank) ---
+  // --- Tab 2 Handlers (CMS Products & Bank) ---
   const openNewProductForm = () => {
     setEditingProductId(null);
     setProdName('');
@@ -662,6 +669,76 @@ export default function AdminDashboardPage() {
     showToast('CORA bank account settings saved successfully.');
   };
 
+  // --- Tab 3 Handlers (Supplier Network: Add, Edit, Delete) ---
+  const openAddSupplierModal = () => {
+    setEditingSupplierId(null);
+    setSupName('');
+    setSupPhone('');
+    setSupLocation('');
+    setSupType('Pabrik Pengolahan Santan');
+    setSupKg('25');
+    setSupFreq('Setiap Hari');
+    setShowSupplierModal(true);
+  };
+
+  const openEditSupplierModal = (sup: Supplier) => {
+    setEditingSupplierId(sup.id);
+    setSupName(sup.name);
+    setSupPhone(sup.phone);
+    setSupLocation(sup.businessLocation);
+    setSupType(sup.businessType);
+    setSupKg(String(sup.estimatedKg));
+    setSupFreq(sup.productionFrequency);
+    setShowSupplierModal(true);
+  };
+
+  const handleSaveSupplier = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!supName.trim() || !supPhone.trim() || !supLocation.trim()) {
+      showToast('Mohon lengkapi formulir mitra pemasok.');
+      return;
+    }
+
+    if (editingSupplierId) {
+      saveSupplier({
+        id: editingSupplierId,
+        name: supName.trim(),
+        phone: supPhone.trim(),
+        businessLocation: supLocation.trim(),
+        businessType: supType,
+        estimatedKg: Number(supKg) || 20,
+        productionFrequency: supFreq,
+        createdAt:
+          suppliers.find((s) => s.id === editingSupplierId)?.createdAt ||
+          new Date().toISOString(),
+      });
+      showToast(`Data mitra "${supName}" berhasil diperbarui.`);
+    } else {
+      registerSupplier({
+        name: supName.trim(),
+        phone: supPhone.trim(),
+        businessLocation: supLocation.trim(),
+        businessType: supType,
+        estimatedKg: Number(supKg) || 20,
+        productionFrequency: supFreq,
+      });
+      showToast('Mitra pemasok baru berhasil didaftarkan ke jaringan CORA.');
+    }
+
+    setShowSupplierModal(false);
+    setEditingSupplierId(null);
+    setSupName('');
+    setSupPhone('');
+    setSupLocation('');
+  };
+
+  const handleDeleteSupplier = (sup: Supplier) => {
+    if (confirm(`Hapus mitra pemasok "${sup.name}" dari sistem?`)) {
+      deleteSupplier(sup.id);
+      showToast(`Mitra "${sup.name}" berhasil dihapus.`);
+    }
+  };
+
   // --- Tab 4 Handlers (Pickup Alur) ---
   const advancePickupStatus = (
     req: PickupRequest,
@@ -672,29 +749,7 @@ export default function AdminDashboardPage() {
     showToast(`Status penjemputan ${req.supplierName} diperbarui ke ${badge.label}.`);
   };
 
-  // --- Tab 5 Handlers (Suppliers) ---
-  const handleSaveSupplier = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!supName.trim() || !supPhone.trim() || !supLocation.trim()) {
-      showToast('Mohon lengkapi formulir mitra pemasok.');
-      return;
-    }
-    registerSupplier({
-      name: supName.trim(),
-      phone: supPhone.trim(),
-      businessLocation: supLocation.trim(),
-      businessType: supType,
-      estimatedKg: Number(supKg) || 20,
-      productionFrequency: supFreq,
-    });
-    setShowSupplierModal(false);
-    setSupName('');
-    setSupPhone('');
-    setSupLocation('');
-    showToast('Mitra pemasok baru berhasil didaftarkan ke jaringan CORA.');
-  };
-
-  // --- Tab 6 Handlers (RecipeHub CMS) ---
+  // --- Tab 5 Handlers (RecipeHub CMS) ---
   const openNewRecipeForm = () => {
     setEditingRecipeId(null);
     setRecTitle('');
@@ -783,6 +838,121 @@ export default function AdminDashboardPage() {
     }
   };
 
+  // --- Tab 6 Handlers (Our Impact & SDGs CMS) ---
+  const handleSaveImpactSettings = (e: React.FormEvent) => {
+    e.preventDefault();
+    updateImpactSettings({
+      useCustomStats: impactUseCustom,
+      customResidueKg: Number(impactResidueKg) || 0,
+      customFlourKg: Number(impactFlourKg) || 0,
+      customSuppliersCount: Number(impactSuppliersCount) || 0,
+      customProductsMarketed: Number(impactProductsMarketed) || 0,
+      customCo2AvoidedKg: Number(impactCo2Avoided) || 0,
+      impactNote: impactNoteText.trim(),
+    });
+    showToast('Pengaturan Our Impact berhasil disimpan & disinkronkan ke halaman utama.');
+  };
+
+  const openNewIndicatorModal = () => {
+    setEditingIndicatorId(null);
+    setIndLabel('');
+    setIndValue('');
+    setIndUnit('kg');
+    setIndDesc('');
+    setShowIndicatorModal(true);
+  };
+
+  const openEditIndicatorModal = (item: ImpactStatItem) => {
+    setEditingIndicatorId(item.id);
+    setIndLabel(item.label);
+    setIndValue(item.value);
+    setIndUnit(item.unit);
+    setIndDesc(item.description);
+    setShowIndicatorModal(true);
+  };
+
+  const handleSaveIndicator = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!indLabel.trim() || !indValue.trim()) {
+      showToast('Label dan Nilai indikator harus diisi.');
+      return;
+    }
+    const indicator: ImpactStatItem = {
+      id: editingIndicatorId ?? `stat-${Date.now()}`,
+      label: indLabel.trim(),
+      value: indValue.trim(),
+      unit: indUnit.trim() || 'kg',
+      description: indDesc.trim() || 'Indikator dampak sirkular CORA',
+    };
+    saveImpactIndicator(indicator);
+    setShowIndicatorModal(false);
+    showToast(
+      editingIndicatorId
+        ? `Indikator "${indicator.label}" diperbarui.`
+        : `Indikator baru "${indicator.label}" ditambahkan.`
+    );
+  };
+
+  const handleDeleteIndicator = (id: string, label: string) => {
+    if (confirm(`Hapus indikator dampak "${label}"?`)) {
+      deleteImpactIndicator(id);
+      showToast(`Indikator "${label}" telah dihapus.`);
+    }
+  };
+
+  // --- Tab 7 Handlers (Finance) ---
+  const handleAddExpense = (e: React.FormEvent) => {
+    e.preventDefault();
+    const numericAmount = Number(expAmount);
+    if (!expDescription.trim() || !Number.isFinite(numericAmount) || numericAmount <= 0) {
+      return;
+    }
+    addManualExpense({
+      description: expDescription.trim(),
+      category: expCategory,
+      amount: numericAmount,
+    });
+    setExpDescription('');
+    setExpAmount('');
+    showToast('Operational expense recorded in the cash book.');
+  };
+
+  const handleExportCsv = () => {
+    const headers = [
+      'Date',
+      'Order No.',
+      'Description',
+      'Category',
+      'Type',
+      'Amount (IDR)',
+    ];
+    const escapeCsv = (val: string | number) => {
+      const str = String(val ?? '');
+      return `"${str.replace(/"/g, '""')}"`;
+    };
+    const rows = financialRecords.map((rec) => [
+      escapeCsv(formatDateTime(rec.date)),
+      escapeCsv(rec.orderNumber || '-'),
+      escapeCsv(rec.description),
+      escapeCsv(rec.category),
+      escapeCsv(rec.type === 'INCOME' ? 'Income' : 'Expense'),
+      escapeCsv(rec.amount),
+    ]);
+    const csvContent =
+      '\uFEFF' + [headers.join(','), ...rows.map((r) => r.join(','))].join('\n');
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    const dateStamp = new Date().toISOString().slice(0, 10);
+    link.href = url;
+    link.setAttribute('download', `cora-financial-report-${dateStamp}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+    showToast('Financial report downloaded successfully as CSV.');
+  };
+
   const NAV_TABS: {
     id: AdminTab;
     label: string;
@@ -797,14 +967,9 @@ export default function AdminDashboardPage() {
     },
     {
       id: 'cms',
-      label: 'Product & Pricing CMS',
+      label: 'Product Catalog (List View)',
       icon: Package,
-    },
-    {
-      id: 'pickup',
-      label: 'Coconut Pickup Workflow',
-      icon: Truck,
-      badge: pendingPickupsCount > 0 ? pendingPickupsCount : undefined,
+      badge: products.length,
     },
     {
       id: 'suppliers',
@@ -813,14 +978,25 @@ export default function AdminDashboardPage() {
       badge: suppliers.length > 0 ? suppliers.length : undefined,
     },
     {
+      id: 'pickup',
+      label: 'Coconut Pickup Workflow',
+      icon: Truck,
+      badge: pendingPickupsCount > 0 ? pendingPickupsCount : undefined,
+    },
+    {
       id: 'recipes',
       label: 'RecipeHub CMS',
       icon: ChefHat,
       badge: recipes.length > 0 ? recipes.length : undefined,
     },
     {
+      id: 'impact',
+      label: 'Our Impact & SDGs CMS',
+      icon: Leaf,
+    },
+    {
       id: 'finance',
-      label: 'Financial & Impact Reports',
+      label: 'Financial Cash Book & Reports',
       icon: Wallet,
     },
   ];
@@ -920,8 +1096,8 @@ export default function AdminDashboardPage() {
                   {activeTabTitle}
                 </h1>
                 <p className="text-xs text-[#6E5C52]">
-                  Central command for orders, suppliers, pickups, recipe CMS,
-                  and circular economy accounting.
+                  Central command for orders, products list, suppliers, pickups,
+                  recipes, impact metrics, and finance.
                 </p>
               </div>
             </div>
@@ -1192,173 +1368,284 @@ export default function AdminDashboardPage() {
           )}
 
           {/* ============================================================== */}
-          {/* TAB 2: PRODUCT & PRICING CMS + BANK ACCOUNTS                   */}
+          {/* TAB 2: PRODUCT CATALOG (PERFORMANT COMPACT LIST VIEW)          */}
           {/* ============================================================== */}
           {activeTab === 'cms' && (
-            <section className="animate-cora-fade-in space-y-10">
-              {/* Product Catalog Management */}
-              <div className="space-y-5">
-                <div className="flex flex-wrap items-center justify-between gap-3">
-                  <div>
-                    <h2 className="font-serif text-xl font-bold text-[#2C1E18]">
-                      Product Catalog &amp; Live Stock
-                    </h2>
-                    <p className="text-xs text-[#6E5C52]">
-                      Manage prices, live stock, variants, and high-resolution packaging
-                      photos.
-                    </p>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={openNewProductForm}
-                    className="inline-flex items-center gap-1.5 rounded-full bg-[#3B5B3D] px-5 py-2.5 text-xs font-semibold text-white transition hover:bg-[#2F4A31]"
-                  >
-                    <Plus className="h-4 w-4" />
-                    Add New Product
-                  </button>
+            <section className="animate-cora-fade-in space-y-8">
+              {/* Top Bar: Search, Category Filter, and Add Product */}
+              <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                <div>
+                  <h2 className="font-serif text-xl font-bold text-[#2C1E18]">
+                    Manajemen Katalog Produk (List View)
+                  </h2>
+                  <p className="text-xs text-[#6E5C52]">
+                    Tampilan daftar ringan dan cepat untuk mengelola harga, stok,
+                    dan foto produk dalam jumlah banyak.
+                  </p>
                 </div>
 
-                <div className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
-                  {products.map((product) => {
-                    const draft = quickEdits[product.id] ?? {
-                      price: String(product.price),
-                      stock: String(product.stock),
-                    };
-                    const isDirty =
-                      draft.price !== String(product.price) ||
-                      draft.stock !== String(product.stock);
+                <button
+                  type="button"
+                  onClick={openNewProductForm}
+                  className="inline-flex items-center gap-1.5 rounded-full bg-[#3B5B3D] px-5 py-2.5 text-xs font-semibold text-white transition hover:bg-[#2F4A31]"
+                >
+                  <Plus className="h-4 w-4" />
+                  Tambah Produk Baru
+                </button>
+              </div>
 
+              {/* Filter & Search Bar */}
+              <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-[#E5DEC9] bg-white p-3.5 shadow-2xs">
+                <div className="flex flex-wrap items-center gap-1.5">
+                  {['ALL', 'Brownies', 'Cookies', 'Coconut Flour'].map((cat) => {
+                    const active = productCategoryFilter === cat;
                     return (
-                      <div
-                        key={product.id}
-                        className="flex flex-col justify-between rounded-3xl border border-[#E5DEC9] bg-white p-5 shadow-xs transition hover:shadow-md"
+                      <button
+                        key={cat}
+                        type="button"
+                        onClick={() => setProductCategoryFilter(cat)}
+                        className={`rounded-full px-3.5 py-1.5 text-xs font-semibold transition ${
+                          active
+                            ? 'bg-[#3B5B3D] text-white'
+                            : 'bg-[#FAF8F5] text-[#5C4B42] hover:bg-[#EAE5D5]'
+                        }`}
                       >
-                        <div>
-                          {/* Photo & Quick Upload */}
-                          <div className="relative aspect-4/3 w-full overflow-hidden rounded-2xl border border-[#E5DEC9] bg-[#FAF8F5]">
-                            <Image
-                              src={product.image}
-                              alt={product.name}
-                              fill
-                              unoptimized
-                              className="object-contain p-3"
-                            />
-                            <label className="absolute right-3 bottom-3 inline-flex cursor-pointer items-center gap-1 rounded-full bg-[#2C1E18]/85 px-3 py-1.5 text-[11px] font-semibold text-white shadow-sm transition hover:bg-[#2C1E18]">
-                              <ImagePlus className="h-3.5 w-3.5" />
-                              Change Photo
-                              <input
-                                type="file"
-                                accept="image/*"
-                                onChange={(e) =>
-                                  handleQuickPhotoUpload(product, e)
-                                }
-                                className="sr-only"
-                              />
-                            </label>
-                          </div>
-
-                          <div className="mt-4">
-                            <span className="rounded-full bg-[#3B5B3D]/10 px-2.5 py-0.5 text-[10px] font-bold text-[#3B5B3D]">
-                              {product.category}
-                            </span>
-                            <h3 className="mt-1.5 font-serif text-lg font-bold text-[#2C1E18]">
-                              {product.name}
-                            </h3>
-                            <p className="line-clamp-2 text-xs text-[#6E5C52]">
-                              {product.description}
-                            </p>
-                          </div>
-
-                          {/* Quick Edit Price & Stock */}
-                          <div className="mt-4 grid grid-cols-2 gap-3 rounded-2xl bg-[#FAF8F5] p-3 text-xs ring-1 ring-[#E5DEC9]/70">
-                            <div>
-                              <label className="block text-[11px] font-medium text-[#6E5C52]">
-                                Price (IDR)
-                              </label>
-                              <input
-                                type="number"
-                                value={draft.price}
-                                onChange={(e) =>
-                                  setQuickEdits((prev) => ({
-                                    ...prev,
-                                    [product.id]: {
-                                      price: e.target.value,
-                                      stock: draft.stock,
-                                    },
-                                  }))
-                                }
-                                className="mt-1 w-full rounded-lg bg-white px-2.5 py-1 font-bold text-[#2C1E18] ring-1 ring-[#E5DEC9] focus:ring-2 focus:ring-[#3B5B3D] focus:outline-none"
-                              />
-                            </div>
-                            <div>
-                              <label className="block text-[11px] font-medium text-[#6E5C52]">
-                                Live Stock
-                              </label>
-                              <input
-                                type="number"
-                                value={draft.stock}
-                                onChange={(e) =>
-                                  setQuickEdits((prev) => ({
-                                    ...prev,
-                                    [product.id]: {
-                                      price: draft.price,
-                                      stock: e.target.value,
-                                    },
-                                  }))
-                                }
-                                className="mt-1 w-full rounded-lg bg-white px-2.5 py-1 font-bold text-[#2C1E18] ring-1 ring-[#E5DEC9] focus:ring-2 focus:ring-[#3B5B3D] focus:outline-none"
-                              />
-                            </div>
-                          </div>
-
-                          <p className="mt-2 text-[11px] text-[#3B5B3D] font-medium">
-                            ♻ Rescues {product.residueSavedGram}g coconut residue
-                          </p>
-                        </div>
-
-                        <div className="mt-5 flex items-center justify-between gap-2 border-t border-[#F0EAE0] pt-4">
-                          <button
-                            type="button"
-                            onClick={() => openEditProductForm(product)}
-                            className="inline-flex items-center gap-1 text-xs font-semibold text-[#3B5B3D] hover:underline"
-                          >
-                            <Edit3 className="h-3.5 w-3.5" />
-                            Full Edit
-                          </button>
-
-                          <div className="flex items-center gap-2">
-                            {isDirty && (
-                              <button
-                                type="button"
-                                onClick={() => handleQuickSaveProduct(product)}
-                                className="inline-flex items-center gap-1 rounded-full bg-[#3B5B3D] px-3.5 py-1.5 text-xs font-semibold text-white shadow-2xs hover:bg-[#2F4A31]"
-                              >
-                                <Save className="h-3 w-3" />
-                                Save
-                              </button>
-                            )}
-                            <button
-                              type="button"
-                              onClick={() => {
-                                if (
-                                  confirm(`Delete product ${product.name}?`)
-                                ) {
-                                  deleteProduct(product.id);
-                                  showToast(
-                                    `Product ${product.name} deleted.`
-                                  );
-                                }
-                              }}
-                              className="rounded-full p-1.5 text-red-600 hover:bg-red-50"
-                              title="Delete product"
-                            >
-                              <Trash2 className="h-4 w-4" />
-                            </button>
-                          </div>
-                        </div>
-                      </div>
+                        {cat === 'ALL' ? 'Semua Produk' : cat}
+                      </button>
                     );
                   })}
+                </div>
+
+                <div className="relative min-w-[220px] flex-1 sm:max-w-xs">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-[#8A776C]" />
+                  <input
+                    type="text"
+                    value={productSearch}
+                    onChange={(e) => setProductSearch(e.target.value)}
+                    placeholder="Cari produk..."
+                    className="w-full rounded-full bg-[#FAF8F5] py-1.5 pl-8 pr-3 text-xs text-[#2C1E18] ring-1 ring-[#E5DEC9] focus:bg-white focus:ring-2 focus:ring-[#3B5B3D] focus:outline-none"
+                  />
+                </div>
+              </div>
+
+              {/* COMPACT PRODUCT LIST TABLE */}
+              <div className="overflow-hidden rounded-3xl border border-[#E5DEC9] bg-white shadow-xs">
+                <div className="overflow-x-auto">
+                  <table className="w-full min-w-[850px] border-collapse text-left text-xs">
+                    <thead>
+                      <tr className="border-b border-[#E5DEC9] bg-[#FAF8F5] text-[11px] font-bold uppercase tracking-wider text-[#6E5C52]">
+                        <th className="px-4 py-3.5">Produk &amp; Foto</th>
+                        <th className="px-4 py-3.5">Kategori</th>
+                        <th className="px-4 py-3.5">Harga Satuan (IDR)</th>
+                        <th className="px-4 py-3.5">Stok Real-time</th>
+                        <th className="px-4 py-3.5">Berat &amp; Ampas Terselamatkan</th>
+                        <th className="px-4 py-3.5 text-right">Aksi</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-[#F0EAE0]">
+                      {filteredProducts.length === 0 ? (
+                        <tr>
+                          <td
+                            colSpan={6}
+                            className="px-6 py-12 text-center text-sm text-[#6E5C52]"
+                          >
+                            Tidak ada produk yang cocok dengan filter.
+                          </td>
+                        </tr>
+                      ) : (
+                        filteredProducts.map((product) => {
+                          const draft = quickEdits[product.id] ?? {
+                            price: String(product.price),
+                            stock: String(product.stock),
+                          };
+                          const isDirty =
+                            draft.price !== String(product.price) ||
+                            draft.stock !== String(product.stock);
+
+                          return (
+                            <tr
+                              key={product.id}
+                              className="transition hover:bg-[#FAF8F5]/60"
+                            >
+                              {/* Product Thumbnail & Title */}
+                              <td className="px-4 py-3.5">
+                                <div className="flex items-center gap-3">
+                                  <div className="group relative h-12 w-12 shrink-0 overflow-hidden rounded-xl border border-[#E5DEC9] bg-[#FAF8F5]">
+                                    <Image
+                                      src={product.image}
+                                      alt={product.name}
+                                      fill
+                                      unoptimized
+                                      className="object-contain p-1"
+                                    />
+                                    <label
+                                      className="absolute inset-0 flex cursor-pointer items-center justify-center bg-black/60 opacity-0 transition-opacity group-hover:opacity-100"
+                                      title="Ganti foto produk"
+                                    >
+                                      <ImagePlus className="h-4 w-4 text-white" />
+                                      <input
+                                        type="file"
+                                        accept="image/*"
+                                        onChange={(e) =>
+                                          handleQuickPhotoUpload(product, e)
+                                        }
+                                        className="sr-only"
+                                      />
+                                    </label>
+                                  </div>
+                                  <div className="min-w-0">
+                                    <p className="font-bold text-[#2C1E18] truncate max-w-[220px]">
+                                      {product.name}
+                                    </p>
+                                    <p className="text-[11px] text-[#6E5C52] truncate max-w-[220px]">
+                                      {product.subtitle}
+                                    </p>
+                                  </div>
+                                </div>
+                              </td>
+
+                              {/* Category */}
+                              <td className="px-4 py-3.5">
+                                <span className="inline-flex rounded-full bg-[#3B5B3D]/10 px-2.5 py-0.5 text-[11px] font-semibold text-[#3B5B3D]">
+                                  {product.category}
+                                </span>
+                              </td>
+
+                              {/* Price Quick Edit */}
+                              <td className="px-4 py-3.5">
+                                <div className="flex items-center gap-1.5">
+                                  <span className="text-[#8A776C] text-[11px]">
+                                    Rp
+                                  </span>
+                                  <input
+                                    type="number"
+                                    value={draft.price}
+                                    onChange={(e) =>
+                                      setQuickEdits((prev) => ({
+                                        ...prev,
+                                        [product.id]: {
+                                          price: e.target.value,
+                                          stock: draft.stock,
+                                        },
+                                      }))
+                                    }
+                                    className="w-24 rounded-lg bg-[#FAF8F5] px-2 py-1 font-bold text-[#2C1E18] ring-1 ring-[#E5DEC9] focus:bg-white focus:ring-2 focus:ring-[#3B5B3D] focus:outline-none"
+                                  />
+                                </div>
+                              </td>
+
+                              {/* Stock Quick Edit */}
+                              <td className="px-4 py-3.5">
+                                <div className="flex items-center gap-2">
+                                  <input
+                                    type="number"
+                                    value={draft.stock}
+                                    onChange={(e) =>
+                                      setQuickEdits((prev) => ({
+                                        ...prev,
+                                        [product.id]: {
+                                          price: draft.price,
+                                          stock: e.target.value,
+                                        },
+                                      }))
+                                    }
+                                    className="w-16 rounded-lg bg-[#FAF8F5] px-2 py-1 font-bold text-[#2C1E18] ring-1 ring-[#E5DEC9] focus:bg-white focus:ring-2 focus:ring-[#3B5B3D] focus:outline-none"
+                                  />
+                                  <span
+                                    className={`inline-block h-2.5 w-2.5 rounded-full ${
+                                      Number(draft.stock) > 20
+                                        ? 'bg-emerald-500'
+                                        : Number(draft.stock) > 0
+                                        ? 'bg-amber-500'
+                                        : 'bg-red-500'
+                                    }`}
+                                    title={
+                                      Number(draft.stock) > 20
+                                        ? 'Stok aman'
+                                        : Number(draft.stock) > 0
+                                        ? 'Stok menipis'
+                                        : 'Stok habis'
+                                    }
+                                  />
+                                </div>
+                              </td>
+
+                              {/* Weight & Saved Residue */}
+                              <td className="px-4 py-3.5 text-[#5C4B42]">
+                                <p>{product.weightGram}g</p>
+                                <p className="text-[11px] font-medium text-[#3B5B3D]">
+                                  ♻ {product.residueSavedGram}g ampas
+                                </p>
+                              </td>
+
+                              {/* Actions */}
+                              <td className="px-4 py-3.5 text-right">
+                                <div className="inline-flex items-center gap-2">
+                                  {isDirty && (
+                                    <button
+                                      type="button"
+                                      onClick={() =>
+                                        handleQuickSaveProduct(product)
+                                      }
+                                      className="inline-flex items-center gap-1 rounded-full bg-[#3B5B3D] px-2.5 py-1 text-[11px] font-semibold text-white shadow-2xs hover:bg-[#2F4A31]"
+                                      title="Simpan Perubahan Harga/Stok"
+                                    >
+                                      <Save className="h-3 w-3" />
+                                      Simpan
+                                    </button>
+                                  )}
+                                  <button
+                                    type="button"
+                                    onClick={() =>
+                                      openEditProductForm(product)
+                                    }
+                                    className="inline-flex items-center gap-1 rounded-full border border-[#3B5B3D]/30 bg-[#3B5B3D]/8 px-2.5 py-1 text-[11px] font-semibold text-[#3B5B3D] hover:bg-[#3B5B3D] hover:text-white"
+                                    title="Edit Detail Lengkap"
+                                  >
+                                    <Edit3 className="h-3 w-3" />
+                                    Edit
+                                  </button>
+                                  <button
+                                    type="button"
+                                    onClick={() => {
+                                      if (
+                                        confirm(
+                                          `Hapus produk ${product.name}?`
+                                        )
+                                      ) {
+                                        deleteProduct(product.id);
+                                        showToast(
+                                          `Produk ${product.name} telah dihapus.`
+                                        );
+                                      }
+                                    }}
+                                    className="rounded-full p-1.5 text-red-600 hover:bg-red-50"
+                                    title="Hapus Produk"
+                                  >
+                                    <Trash2 className="h-3.5 w-3.5" />
+                                  </button>
+                                </div>
+                              </td>
+                            </tr>
+                          );
+                        })
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+
+                {/* Table Summary Footer */}
+                <div className="flex flex-wrap items-center justify-between border-t border-[#E5DEC9] bg-[#FAF8F5] px-5 py-3 text-xs text-[#6E5C52]">
+                  <span>
+                    Total Produk: <strong>{products.length} item</strong> (
+                    {filteredProducts.length} ditampilkan)
+                  </span>
+                  <span>
+                    Total Stok Terkumpul:{' '}
+                    <strong>
+                      {products.reduce((s, p) => s + p.stock, 0)} unit
+                    </strong>
+                  </span>
                 </div>
               </div>
 
@@ -1366,11 +1653,11 @@ export default function AdminDashboardPage() {
               <div className="space-y-5 border-t border-[#E5DEC9] pt-8">
                 <div>
                   <h2 className="font-serif text-xl font-bold text-[#2C1E18]">
-                    CORA Destination Bank Accounts
+                    Rekening Bank Tujuan Pembayaran CORA
                   </h2>
                   <p className="text-xs text-[#6E5C52]">
-                    Accounts displayed to customers on the checkout page for
-                    manual bank transfer.
+                    Rekening yang tampil di halaman checkout saat pelanggan memilih
+                    metode transfer bank manual.
                   </p>
                 </div>
 
@@ -1426,14 +1713,14 @@ export default function AdminDashboardPage() {
                 >
                   <h3 className="font-serif text-base font-bold text-[#2C1E18]">
                     {editingBankId
-                      ? 'Edit Bank Account'
-                      : 'Add New Destination Bank Account'}
+                      ? 'Edit Rekening Bank'
+                      : 'Tambah Rekening Bank Baru'}
                   </h3>
 
                   <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
                     <div>
                       <label className="block text-xs font-semibold text-[#2C1E18]">
-                        Bank Name
+                        Nama Bank
                       </label>
                       <input
                         type="text"
@@ -1446,7 +1733,7 @@ export default function AdminDashboardPage() {
                     </div>
                     <div>
                       <label className="block text-xs font-semibold text-[#2C1E18]">
-                        Account Number
+                        Nomor Rekening
                       </label>
                       <input
                         type="text"
@@ -1459,7 +1746,7 @@ export default function AdminDashboardPage() {
                     </div>
                     <div>
                       <label className="block text-xs font-semibold text-[#2C1E18]">
-                        Account Holder
+                        Atas Nama (Holder)
                       </label>
                       <input
                         type="text"
@@ -1480,7 +1767,7 @@ export default function AdminDashboardPage() {
                         onChange={(e) => setBankIsActive(e.target.checked)}
                         className="h-4 w-4 rounded text-[#3B5B3D] focus:ring-[#3B5B3D]"
                       />
-                      Enable account on checkout page
+                      Aktifkan rekening pada opsi pembayaran
                     </label>
 
                     <div className="flex items-center gap-2">
@@ -1494,7 +1781,7 @@ export default function AdminDashboardPage() {
                           }}
                           className="rounded-full border border-[#E5DEC9] px-4 py-2 text-xs font-semibold text-[#5C4B42]"
                         >
-                          Cancel
+                          Batal
                         </button>
                       )}
                       <button
@@ -1502,7 +1789,7 @@ export default function AdminDashboardPage() {
                         className="inline-flex items-center gap-1.5 rounded-full bg-[#3B5B3D] px-5 py-2 text-xs font-semibold text-white hover:bg-[#2F4A31]"
                       >
                         <Save className="h-3.5 w-3.5" />
-                        {editingBankId ? 'Save Account' : 'Add Bank'}
+                        {editingBankId ? 'Simpan Rekening' : 'Tambah Rekening'}
                       </button>
                     </div>
                   </div>
@@ -1512,7 +1799,210 @@ export default function AdminDashboardPage() {
           )}
 
           {/* ============================================================== */}
-          {/* TAB 3: COCONUT PICKUP WORKFLOW (5-STAGE STATUS ALUR)           */}
+          {/* TAB 3: SUPPLIER NETWORK (FULL CRUD: ADD, EDIT, DELETE)         */}
+          {/* ============================================================== */}
+          {activeTab === 'suppliers' && (
+            <section className="animate-cora-fade-in space-y-6">
+              {/* Supplier Network KPIs */}
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+                <div className="rounded-3xl border border-[#E5DEC9] bg-white p-5 shadow-xs">
+                  <div className="flex items-center justify-between">
+                    <p className="text-xs font-semibold text-[#6E5C52]">
+                      Mitra Pemasok Terdaftar
+                    </p>
+                    <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#3B5B3D]/12 text-[#3B5B3D]">
+                      <Building2 className="h-4 w-4" />
+                    </span>
+                  </div>
+                  <p className="mt-2 text-2xl font-extrabold text-[#2C1E18]">
+                    {suppliers.length} Mitra
+                  </p>
+                  <p className="mt-1 text-[11px] text-[#3B5B3D]">
+                    UMKM &amp; Sentra Kelapa Aktif
+                  </p>
+                </div>
+
+                <div className="rounded-3xl border border-[#E5DEC9] bg-white p-5 shadow-xs">
+                  <div className="flex items-center justify-between">
+                    <p className="text-xs font-semibold text-[#6E5C52]">
+                      Potensi Pasokan Harian
+                    </p>
+                    <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-amber-50 text-amber-700">
+                      <Scale className="h-4 w-4" />
+                    </span>
+                  </div>
+                  <p className="mt-2 text-2xl font-extrabold text-[#2C1E18]">
+                    {suppliers.reduce((s, sup) => s + sup.estimatedKg, 0)} kg /
+                    hari
+                  </p>
+                  <p className="mt-1 text-[11px] text-[#6E5C52]">
+                    Kapasitas ampas segar terjadwal
+                  </p>
+                </div>
+
+                <div className="rounded-3xl border border-[#E5DEC9] bg-white p-5 shadow-xs">
+                  <div className="flex items-center justify-between">
+                    <p className="text-xs font-semibold text-[#6E5C52]">
+                      Zona Operasional Aktif
+                    </p>
+                    <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-sky-50 text-sky-700">
+                      <Truck className="h-4 w-4" />
+                    </span>
+                  </div>
+                  <p className="mt-2 text-2xl font-extrabold text-[#2C1E18]">
+                    Denpasar &amp; Badung
+                  </p>
+                  <p className="mt-1 text-[11px] text-sky-700">
+                    Jadwal rute penjemputan berkala
+                  </p>
+                </div>
+              </div>
+
+              {/* Action Bar & Search */}
+              <div className="flex flex-wrap items-center justify-between gap-3 rounded-3xl border border-[#E5DEC9] bg-white p-4 shadow-xs">
+                <div className="relative flex-1 min-w-[240px]">
+                  <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-[#8A776C]" />
+                  <input
+                    type="text"
+                    value={supplierSearch}
+                    onChange={(e) => setSupplierSearch(e.target.value)}
+                    placeholder="Cari nama mitra, jenis usaha, atau lokasi..."
+                    className="w-full rounded-full bg-[#FAF8F5] py-2 pl-10 pr-4 text-xs text-[#2C1E18] ring-1 ring-[#E5DEC9] focus:bg-white focus:ring-2 focus:ring-[#3B5B3D] focus:outline-none"
+                  />
+                </div>
+
+                <button
+                  type="button"
+                  onClick={openAddSupplierModal}
+                  className="inline-flex items-center gap-1.5 rounded-full bg-[#3B5B3D] px-5 py-2.5 text-xs font-semibold text-white transition hover:bg-[#2F4A31]"
+                >
+                  <Plus className="h-4 w-4" />
+                  Daftarkan Mitra Baru
+                </button>
+              </div>
+
+              {/* Supplier Table */}
+              <div className="overflow-hidden rounded-3xl border border-[#E5DEC9] bg-white shadow-xs">
+                <div className="overflow-x-auto">
+                  <table className="w-full min-w-[900px] border-collapse text-left text-xs">
+                    <thead>
+                      <tr className="border-b border-[#E5DEC9] bg-[#FAF8F5] text-[11px] font-bold uppercase tracking-wider text-[#6E5C52]">
+                        <th className="px-5 py-4">Nama Usaha / Mitra</th>
+                        <th className="px-5 py-4">Jenis Usaha</th>
+                        <th className="px-5 py-4">Alamat &amp; Kontak</th>
+                        <th className="px-5 py-4">Estimasi Harian</th>
+                        <th className="px-5 py-4">Frekuensi Produksi</th>
+                        <th className="px-5 py-4">Status &amp; Bergabung</th>
+                        <th className="px-5 py-4 text-right">Aksi Kelola</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-[#F0EAE0]">
+                      {filteredSuppliers.length === 0 ? (
+                        <tr>
+                          <td
+                            colSpan={7}
+                            className="px-6 py-12 text-center text-sm text-[#6E5C52]"
+                          >
+                            Tidak ada mitra pemasok yang cocok dengan pencarian.
+                          </td>
+                        </tr>
+                      ) : (
+                        filteredSuppliers.map((sup) => (
+                          <tr
+                            key={sup.id}
+                            className="transition hover:bg-[#FAF8F5]/60"
+                          >
+                            <td className="px-5 py-4">
+                              <p className="font-bold text-[#2C1E18]">
+                                {sup.name}
+                              </p>
+                              <p className="text-[11px] text-[#6E5C52]">
+                                ID: {sup.id}
+                              </p>
+                            </td>
+                            <td className="px-5 py-4">
+                              <span className="rounded-full bg-[#FAF8F5] px-2.5 py-1 text-[11px] font-medium text-[#5C4B42] ring-1 ring-[#E5DEC9]">
+                                {sup.businessType}
+                              </span>
+                            </td>
+                            <td className="px-5 py-4 max-w-xs">
+                              <p className="text-[#2C1E18]">
+                                {sup.businessLocation}
+                              </p>
+                              <a
+                                href={`https://wa.me/${sup.phone.replace(
+                                  /\D/g,
+                                  ''
+                                )}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="mt-0.5 inline-flex items-center gap-1 text-[11px] font-medium text-[#3B5B3D] hover:underline"
+                              >
+                                {sup.phone}
+                                <ExternalLink className="h-3 w-3" />
+                              </a>
+                            </td>
+                            <td className="px-5 py-4 font-bold text-[#2C1E18]">
+                              {sup.estimatedKg} kg / hari
+                            </td>
+                            <td className="px-5 py-4 text-[#5C4B42]">
+                              {sup.productionFrequency}
+                            </td>
+                            <td className="px-5 py-4">
+                              <span className="inline-flex rounded-full bg-[#3B5B3D]/12 px-2.5 py-0.5 text-[10px] font-bold text-[#3B5B3D]">
+                                Aktif Terverifikasi
+                              </span>
+                              <p className="mt-1 text-[11px] text-[#8A776C]">
+                                {formatDateTime(sup.createdAt)}
+                              </p>
+                            </td>
+                            <td className="px-5 py-4 text-right">
+                              <div className="inline-flex items-center gap-2">
+                                <a
+                                  href={`https://wa.me/${sup.phone.replace(
+                                    /\D/g,
+                                    ''
+                                  )}?text=Halo%20${encodeURIComponent(
+                                    sup.name
+                                  )},%20tim%20logistik%20CORA%20ingin%20mengonfirmasi%20jadwal%20penjemputan%20ampas%20kelapa.`}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="rounded-full bg-[#3B5B3D]/10 px-2.5 py-1 text-[11px] font-semibold text-[#3B5B3D] transition hover:bg-[#3B5B3D] hover:text-white"
+                                  title="Hubungi via WhatsApp"
+                                >
+                                  WA
+                                </a>
+                                <button
+                                  type="button"
+                                  onClick={() => openEditSupplierModal(sup)}
+                                  className="inline-flex items-center gap-1 rounded-full border border-[#3B5B3D]/30 bg-[#3B5B3D]/8 px-2.5 py-1 text-[11px] font-semibold text-[#3B5B3D] hover:bg-[#3B5B3D] hover:text-white"
+                                  title="Edit Data Mitra"
+                                >
+                                  <Edit3 className="h-3 w-3" />
+                                  Edit
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={() => handleDeleteSupplier(sup)}
+                                  className="rounded-full p-1.5 text-red-600 hover:bg-red-50"
+                                  title="Hapus Mitra"
+                                >
+                                  <Trash2 className="h-3.5 w-3.5" />
+                                </button>
+                              </div>
+                            </td>
+                          </tr>
+                        ))
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </section>
+          )}
+
+          {/* ============================================================== */}
+          {/* TAB 4: COCONUT PICKUP WORKFLOW (5-STAGE STATUS ALUR)           */}
           {/* ============================================================== */}
           {activeTab === 'pickup' && (
             <section className="animate-cora-fade-in space-y-6">
@@ -1773,189 +2263,6 @@ export default function AdminDashboardPage() {
           )}
 
           {/* ============================================================== */}
-          {/* TAB 4: SUPPLIER NETWORK MANAGEMENT                             */}
-          {/* ============================================================== */}
-          {activeTab === 'suppliers' && (
-            <section className="animate-cora-fade-in space-y-6">
-              {/* Supplier Network KPIs */}
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-                <div className="rounded-3xl border border-[#E5DEC9] bg-white p-5 shadow-xs">
-                  <div className="flex items-center justify-between">
-                    <p className="text-xs font-semibold text-[#6E5C52]">
-                      Mitra Pemasok Terdaftar
-                    </p>
-                    <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#3B5B3D]/12 text-[#3B5B3D]">
-                      <Building2 className="h-4 w-4" />
-                    </span>
-                  </div>
-                  <p className="mt-2 text-2xl font-extrabold text-[#2C1E18]">
-                    {suppliers.length} Mitra
-                  </p>
-                  <p className="mt-1 text-[11px] text-[#3B5B3D]">
-                    UMKM &amp; Sentra Kelapa Aktif
-                  </p>
-                </div>
-
-                <div className="rounded-3xl border border-[#E5DEC9] bg-white p-5 shadow-xs">
-                  <div className="flex items-center justify-between">
-                    <p className="text-xs font-semibold text-[#6E5C52]">
-                      Potensi Pasokan Harian
-                    </p>
-                    <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-amber-50 text-amber-700">
-                      <Scale className="h-4 w-4" />
-                    </span>
-                  </div>
-                  <p className="mt-2 text-2xl font-extrabold text-[#2C1E18]">
-                    {suppliers.reduce((s, sup) => s + sup.estimatedKg, 0)} kg /
-                    hari
-                  </p>
-                  <p className="mt-1 text-[11px] text-[#6E5C52]">
-                    Kapasitas ampas segar terjadwal
-                  </p>
-                </div>
-
-                <div className="rounded-3xl border border-[#E5DEC9] bg-white p-5 shadow-xs">
-                  <div className="flex items-center justify-between">
-                    <p className="text-xs font-semibold text-[#6E5C52]">
-                      Zona Operasional Aktif
-                    </p>
-                    <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-sky-50 text-sky-700">
-                      <Truck className="h-4 w-4" />
-                    </span>
-                  </div>
-                  <p className="mt-2 text-2xl font-extrabold text-[#2C1E18]">
-                    Denpasar &amp; Badung
-                  </p>
-                  <p className="mt-1 text-[11px] text-sky-700">
-                    Jadwal rute penjemputan berkala
-                  </p>
-                </div>
-              </div>
-
-              {/* Action Bar & Search */}
-              <div className="flex flex-wrap items-center justify-between gap-3 rounded-3xl border border-[#E5DEC9] bg-white p-4 shadow-xs">
-                <div className="relative flex-1 min-w-[240px]">
-                  <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-[#8A776C]" />
-                  <input
-                    type="text"
-                    value={supplierSearch}
-                    onChange={(e) => setSupplierSearch(e.target.value)}
-                    placeholder="Cari nama mitra, jenis usaha, atau lokasi..."
-                    className="w-full rounded-full bg-[#FAF8F5] py-2 pl-10 pr-4 text-xs text-[#2C1E18] ring-1 ring-[#E5DEC9] focus:bg-white focus:ring-2 focus:ring-[#3B5B3D] focus:outline-none"
-                  />
-                </div>
-
-                <button
-                  type="button"
-                  onClick={() => setShowSupplierModal(true)}
-                  className="inline-flex items-center gap-1.5 rounded-full bg-[#3B5B3D] px-5 py-2.5 text-xs font-semibold text-white transition hover:bg-[#2F4A31]"
-                >
-                  <Plus className="h-4 w-4" />
-                  Daftarkan Mitra Baru
-                </button>
-              </div>
-
-              {/* Supplier Table */}
-              <div className="overflow-hidden rounded-3xl border border-[#E5DEC9] bg-white shadow-xs">
-                <div className="overflow-x-auto">
-                  <table className="w-full min-w-[850px] border-collapse text-left text-xs">
-                    <thead>
-                      <tr className="border-b border-[#E5DEC9] bg-[#FAF8F5] text-[11px] font-bold uppercase tracking-wider text-[#6E5C52]">
-                        <th className="px-5 py-4">Nama Usaha / Mitra</th>
-                        <th className="px-5 py-4">Jenis Usaha</th>
-                        <th className="px-5 py-4">Alamat &amp; Kontak</th>
-                        <th className="px-5 py-4">Estimasi Harian</th>
-                        <th className="px-5 py-4">Frekuensi Produksi</th>
-                        <th className="px-5 py-4">Status &amp; Bergabung</th>
-                        <th className="px-5 py-4 text-right">Aksi</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-[#F0EAE0]">
-                      {filteredSuppliers.length === 0 ? (
-                        <tr>
-                          <td
-                            colSpan={7}
-                            className="px-6 py-12 text-center text-sm text-[#6E5C52]"
-                          >
-                            Tidak ada mitra pemasok yang cocok dengan pencarian.
-                          </td>
-                        </tr>
-                      ) : (
-                        filteredSuppliers.map((sup) => (
-                          <tr
-                            key={sup.id}
-                            className="transition hover:bg-[#FAF8F5]/60"
-                          >
-                            <td className="px-5 py-4">
-                              <p className="font-bold text-[#2C1E18]">
-                                {sup.name}
-                              </p>
-                              <p className="text-[11px] text-[#6E5C52]">
-                                ID: {sup.id}
-                              </p>
-                            </td>
-                            <td className="px-5 py-4">
-                              <span className="rounded-full bg-[#FAF8F5] px-2.5 py-1 text-[11px] font-medium text-[#5C4B42] ring-1 ring-[#E5DEC9]">
-                                {sup.businessType}
-                              </span>
-                            </td>
-                            <td className="px-5 py-4 max-w-xs">
-                              <p className="text-[#2C1E18]">
-                                {sup.businessLocation}
-                              </p>
-                              <a
-                                href={`https://wa.me/${sup.phone.replace(
-                                  /\D/g,
-                                  ''
-                                )}`}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="mt-0.5 inline-flex items-center gap-1 text-[11px] font-medium text-[#3B5B3D] hover:underline"
-                              >
-                                {sup.phone}
-                                <ExternalLink className="h-3 w-3" />
-                              </a>
-                            </td>
-                            <td className="px-5 py-4 font-bold text-[#2C1E18]">
-                              {sup.estimatedKg} kg / hari
-                            </td>
-                            <td className="px-5 py-4 text-[#5C4B42]">
-                              {sup.productionFrequency}
-                            </td>
-                            <td className="px-5 py-4">
-                              <span className="inline-flex rounded-full bg-[#3B5B3D]/12 px-2.5 py-0.5 text-[10px] font-bold text-[#3B5B3D]">
-                                Aktif Terverifikasi
-                              </span>
-                              <p className="mt-1 text-[11px] text-[#8A776C]">
-                                {formatDateTime(sup.createdAt)}
-                              </p>
-                            </td>
-                            <td className="px-5 py-4 text-right">
-                              <a
-                                href={`https://wa.me/${sup.phone.replace(
-                                  /\D/g,
-                                  ''
-                                )}?text=Halo%20${encodeURIComponent(
-                                  sup.name
-                                )},%20tim%20logistik%20CORA%20ingin%20mengonfirmasi%20jadwal%20penjemputan%20ampas%20kelapa.`}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="inline-flex items-center gap-1 rounded-full bg-[#3B5B3D]/10 px-3 py-1.5 text-[11px] font-semibold text-[#3B5B3D] transition hover:bg-[#3B5B3D] hover:text-white"
-                              >
-                                Kontak WA
-                              </a>
-                            </td>
-                          </tr>
-                        ))
-                      )}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            </section>
-          )}
-
-          {/* ============================================================== */}
           {/* TAB 5: RECIPEHUB CMS (MANAJEMEN RESEP)                         */}
           {/* ============================================================== */}
           {activeTab === 'recipes' && (
@@ -2118,7 +2425,303 @@ export default function AdminDashboardPage() {
           )}
 
           {/* ============================================================== */}
-          {/* TAB 6: LAPORAN KEUANGAN & DAMPAK SIRKULAR                      */}
+          {/* TAB 6: OUR IMPACT & SDGS CMS (CRUD INDIKATOR & STATISTIK)       */}
+          {/* ============================================================== */}
+          {activeTab === 'impact' && (
+            <section className="animate-cora-fade-in space-y-8">
+              {/* Header */}
+              <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                <div>
+                  <h2 className="font-serif text-xl font-bold text-[#2C1E18]">
+                    Kelola Our Impact &amp; Statistik Sirkular
+                  </h2>
+                  <p className="text-xs text-[#6E5C52]">
+                    Edit indikator dampak real-time, angka kalkulasi, dan
+                    keterangan dampak yang ditampilkan kepada pengunjung website.
+                  </p>
+                </div>
+              </div>
+
+              {/* Mode Kalkulasi & Custom Settings Card */}
+              <form
+                onSubmit={handleSaveImpactSettings}
+                className="rounded-3xl border border-[#E5DEC9] bg-white p-6 shadow-xs space-y-6"
+              >
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#F0EAE0] pb-5">
+                  <div className="flex items-center gap-3">
+                    <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-[#3B5B3D]/12 text-[#3B5B3D]">
+                      <Sliders className="h-5 w-5" />
+                    </span>
+                    <div>
+                      <h3 className="font-serif text-base font-bold text-[#2C1E18]">
+                        Mode Angka Statistik Dampak
+                      </h3>
+                      <p className="text-xs text-[#6E5C52]">
+                        Pilih apakah angka dihitung otomatis dari transaksi atau
+                        menggunakan angka kustom yang ditentukan admin.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="inline-flex rounded-full bg-[#FAF8F5] p-1 ring-1 ring-[#E5DEC9]">
+                    <button
+                      type="button"
+                      onClick={() => setImpactUseCustom(false)}
+                      className={`rounded-full px-4 py-1.5 text-xs font-semibold transition ${
+                        !impactUseCustom
+                          ? 'bg-[#3B5B3D] text-white shadow-2xs'
+                          : 'text-[#5C4B42] hover:text-[#2C1E18]'
+                      }`}
+                    >
+                      Kalkulasi Otomatis (Live)
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setImpactUseCustom(true)}
+                      className={`rounded-full px-4 py-1.5 text-xs font-semibold transition ${
+                        impactUseCustom
+                          ? 'bg-[#3B5B3D] text-white shadow-2xs'
+                          : 'text-[#5C4B42] hover:text-[#2C1E18]'
+                      }`}
+                    >
+                      Kustom Manual Admin
+                    </button>
+                  </div>
+                </div>
+
+                {/* Status Notice */}
+                {!impactUseCustom ? (
+                  <div className="rounded-2xl bg-[#3B5B3D]/8 border border-[#3B5B3D]/20 p-4 text-xs text-[#3B5B3D] flex items-start gap-2.5">
+                    <CheckCircle2 className="h-4 w-4 shrink-0 mt-0.5" />
+                    <div>
+                      <p className="font-bold">Mode Otomatis Aktif</p>
+                      <p className="mt-0.5 text-[#5C4B42]">
+                        Angka dihitung otomatis: Total Ampas Dimanfaatkan ={' '}
+                        <strong>{environmentalStats.totalUpcycledKg} kg</strong>,
+                        Tepung Diproduksi ={' '}
+                        <strong>{environmentalStats.totalFlourProducedKg} kg</strong>,
+                        Mitra Pemasok = <strong>{suppliers.length} mitra</strong>,
+                        dan Total Produk Terjual ={' '}
+                        <strong>
+                          {orders
+                            .filter((o) => o.status !== 'REJECTED')
+                            .reduce(
+                              (s, o) =>
+                                s +
+                                o.items.reduce(
+                                  (itemSum, item) => itemSum + item.qty,
+                                  0
+                                ),
+                              0
+                            )}{' '}
+                          pcs
+                        </strong>.
+                      </p>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="rounded-2xl bg-amber-50 border border-amber-200 p-4 text-xs text-amber-900 flex items-start gap-2.5">
+                    <Sparkles className="h-4 w-4 shrink-0 mt-0.5 text-amber-700" />
+                    <div>
+                      <p className="font-bold">Mode Kustom Manual Aktif</p>
+                      <p className="mt-0.5 text-amber-800">
+                        Website utama akan menampilkan angka manual yang Anda
+                        masukkan pada input di bawah ini.
+                      </p>
+                    </div>
+                  </div>
+                )}
+
+                {/* 5 Input Angka Utama */}
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                  <div>
+                    <label className="block text-xs font-semibold text-[#2C1E18]">
+                      Ampas Kelapa Diolah (kg)
+                    </label>
+                    <input
+                      type="number"
+                      step="any"
+                      min="0"
+                      value={impactResidueKg}
+                      onChange={(e) => setImpactResidueKg(e.target.value)}
+                      disabled={!impactUseCustom}
+                      className="mt-1.5 w-full rounded-xl bg-[#FAF8F5] px-3.5 py-2 text-xs font-bold text-[#2C1E18] ring-1 ring-[#E5DEC9] focus:bg-white focus:ring-2 focus:ring-[#3B5B3D] focus:outline-none disabled:opacity-50"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-semibold text-[#2C1E18]">
+                      Tepung Kelapa Diproduksi (kg)
+                    </label>
+                    <input
+                      type="number"
+                      step="any"
+                      min="0"
+                      value={impactFlourKg}
+                      onChange={(e) => setImpactFlourKg(e.target.value)}
+                      disabled={!impactUseCustom}
+                      className="mt-1.5 w-full rounded-xl bg-[#FAF8F5] px-3.5 py-2 text-xs font-bold text-[#2C1E18] ring-1 ring-[#E5DEC9] focus:bg-white focus:ring-2 focus:ring-[#3B5B3D] focus:outline-none disabled:opacity-50"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-semibold text-[#2C1E18]">
+                      Jumlah Mitra Pemasok
+                    </label>
+                    <input
+                      type="number"
+                      min="0"
+                      value={impactSuppliersCount}
+                      onChange={(e) => setImpactSuppliersCount(e.target.value)}
+                      disabled={!impactUseCustom}
+                      className="mt-1.5 w-full rounded-xl bg-[#FAF8F5] px-3.5 py-2 text-xs font-bold text-[#2C1E18] ring-1 ring-[#E5DEC9] focus:bg-white focus:ring-2 focus:ring-[#3B5B3D] focus:outline-none disabled:opacity-50"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-semibold text-[#2C1E18]">
+                      Jumlah Produk Dipasarkan (pcs)
+                    </label>
+                    <input
+                      type="number"
+                      min="0"
+                      value={impactProductsMarketed}
+                      onChange={(e) =>
+                        setImpactProductsMarketed(e.target.value)
+                      }
+                      disabled={!impactUseCustom}
+                      className="mt-1.5 w-full rounded-xl bg-[#FAF8F5] px-3.5 py-2 text-xs font-bold text-[#2C1E18] ring-1 ring-[#E5DEC9] focus:bg-white focus:ring-2 focus:ring-[#3B5B3D] focus:outline-none disabled:opacity-50"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-semibold text-[#2C1E18]">
+                      Emisi Karbon Ditekan (kg CO₂e)
+                    </label>
+                    <input
+                      type="number"
+                      step="any"
+                      min="0"
+                      value={impactCo2Avoided}
+                      onChange={(e) => setImpactCo2Avoided(e.target.value)}
+                      disabled={!impactUseCustom}
+                      className="mt-1.5 w-full rounded-xl bg-[#FAF8F5] px-3.5 py-2 text-xs font-bold text-[#2C1E18] ring-1 ring-[#E5DEC9] focus:bg-white focus:ring-2 focus:ring-[#3B5B3D] focus:outline-none disabled:opacity-50"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-semibold text-[#2C1E18]">
+                      Catatan Kaki (*Disclaimer)
+                    </label>
+                    <input
+                      type="text"
+                      value={impactNoteText}
+                      onChange={(e) => setImpactNoteText(e.target.value)}
+                      placeholder="*Catatan: angka menggunakan data aktual..."
+                      className="mt-1.5 w-full rounded-xl bg-[#FAF8F5] px-3.5 py-2 text-xs text-[#2C1E18] ring-1 ring-[#E5DEC9] focus:bg-white focus:ring-2 focus:ring-[#3B5B3D] focus:outline-none"
+                    />
+                  </div>
+                </div>
+
+                <div className="flex justify-end pt-2">
+                  <button
+                    type="submit"
+                    className="inline-flex items-center gap-1.5 rounded-full bg-[#3B5B3D] px-6 py-2.5 text-xs font-semibold text-white shadow-sm hover:bg-[#2F4A31]"
+                  >
+                    <Save className="h-4 w-4" />
+                    Simpan Pengaturan Angka Dampak
+                  </button>
+                </div>
+              </form>
+
+              {/* CRUD TABLE: INDIKATOR REAL-TIME */}
+              <div className="space-y-4">
+                <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                  <div>
+                    <h3 className="font-serif text-lg font-bold text-[#2C1E18]">
+                      Daftar Kartu Indikator Real-time
+                    </h3>
+                    <p className="text-xs text-[#6E5C52]">
+                      Kelola kartu indikator statistik yang muncul di halaman
+                      utama (Home) di bawah bagian Our Journey.
+                    </p>
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={openNewIndicatorModal}
+                    className="inline-flex items-center gap-1.5 rounded-full bg-[#3B5B3D] px-4 py-2 text-xs font-semibold text-white hover:bg-[#2F4A31]"
+                  >
+                    <Plus className="h-3.5 w-3.5" />
+                    Tambah Indikator Baru
+                  </button>
+                </div>
+
+                <div className="overflow-hidden rounded-3xl border border-[#E5DEC9] bg-white shadow-xs">
+                  <div className="overflow-x-auto">
+                    <table className="w-full min-w-[700px] border-collapse text-left text-xs">
+                      <thead>
+                        <tr className="border-b border-[#E5DEC9] bg-[#FAF8F5] text-[11px] font-bold uppercase tracking-wider text-[#6E5C52]">
+                          <th className="px-5 py-3.5">Label Indikator</th>
+                          <th className="px-5 py-3.5">Nilai Kustom</th>
+                          <th className="px-5 py-3.5">Satuan</th>
+                          <th className="px-5 py-3.5">Keterangan</th>
+                          <th className="px-5 py-3.5 text-right">Aksi</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-[#F0EAE0]">
+                        {(impactSettings?.indicators ?? []).map((ind) => (
+                          <tr
+                            key={ind.id}
+                            className="transition hover:bg-[#FAF8F5]/60"
+                          >
+                            <td className="px-5 py-3.5 font-bold text-[#2C1E18]">
+                              {ind.label}
+                            </td>
+                            <td className="px-5 py-3.5 font-mono font-bold text-[#3B5B3D]">
+                              {ind.value}
+                            </td>
+                            <td className="px-5 py-3.5 text-[#5C4B42]">
+                              <span className="rounded-md bg-[#FAF8F5] px-2 py-0.5 font-mono text-[11px] ring-1 ring-[#E5DEC9]">
+                                {ind.unit}
+                              </span>
+                            </td>
+                            <td className="px-5 py-3.5 text-[#6E5C52] max-w-xs">
+                              {ind.description}
+                            </td>
+                            <td className="px-5 py-3.5 text-right">
+                              <div className="inline-flex items-center gap-1.5">
+                                <button
+                                  type="button"
+                                  onClick={() => openEditIndicatorModal(ind)}
+                                  className="rounded-full border border-[#3B5B3D]/30 bg-[#3B5B3D]/8 px-2.5 py-1 text-[11px] font-semibold text-[#3B5B3D] hover:bg-[#3B5B3D] hover:text-white"
+                                >
+                                  Edit
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={() =>
+                                    handleDeleteIndicator(ind.id, ind.label)
+                                  }
+                                  className="rounded-full p-1 text-red-600 hover:bg-red-50"
+                                  title="Hapus Indikator"
+                                >
+                                  <Trash2 className="h-3.5 w-3.5" />
+                                </button>
+                              </div>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </section>
+          )}
+
+          {/* ============================================================== */}
+          {/* TAB 7: LAPORAN KEUANGAN & DAMPAK SIRKULAR                      */}
           {/* ============================================================== */}
           {activeTab === 'finance' && (
             <section className="animate-cora-fade-in space-y-8">
@@ -2211,8 +2814,8 @@ export default function AdminDashboardPage() {
                         Laporan Dampak Lingkungan &amp; Ekonomi Sirkular
                       </h2>
                       <p className="text-xs text-[#6E5C52]">
-                        Perhitungan real-time pemanfaatan limbah ampas kelapa,
-                        produksi tepung, dan mitigasi emisi gas rumah kaca.
+                        Perhitungan pemanfaatan limbah ampas kelapa, produksi
+                        tepung, dan mitigasi emisi gas rumah kaca.
                       </p>
                     </div>
                   </div>
@@ -2227,7 +2830,10 @@ export default function AdminDashboardPage() {
                       Total Ampas Kelapa Diolah
                     </p>
                     <p className="mt-1 font-serif text-3xl font-extrabold text-[#3B5B3D]">
-                      {environmentalStats.totalUpcycledKg} kg
+                      {impactSettings?.useCustomStats
+                        ? impactSettings.customResidueKg
+                        : environmentalStats.totalUpcycledKg}{' '}
+                      kg
                     </p>
                     <p className="mt-1 text-[11px] text-[#6E5C52]">
                       Diselamatkan dari TPA &amp; pembusukan
@@ -2239,7 +2845,10 @@ export default function AdminDashboardPage() {
                       Tepung Kelapa Diproduksi
                     </p>
                     <p className="mt-1 font-serif text-3xl font-extrabold text-[#2C1E18]">
-                      {environmentalStats.totalFlourProducedKg} kg
+                      {impactSettings?.useCustomStats
+                        ? impactSettings.customFlourKg
+                        : environmentalStats.totalFlourProducedKg}{' '}
+                      kg
                     </p>
                     <p className="mt-1 text-[11px] text-[#6E5C52]">
                       Rendemen tepung kering higienis ~42%
@@ -2251,7 +2860,10 @@ export default function AdminDashboardPage() {
                       Estimasi Emisi Karbon (CO₂e) Ditekan
                     </p>
                     <p className="mt-1 font-serif text-3xl font-extrabold text-[#4E9A34]">
-                      {environmentalStats.co2SavedKg} kg CO₂e
+                      {impactSettings?.useCustomStats
+                        ? impactSettings.customCo2AvoidedKg
+                        : environmentalStats.co2SavedKg}{' '}
+                      kg CO₂e
                     </p>
                     <p className="mt-1 text-[11px] text-[#4E9A34]">
                       Mencegah pelepasan gas metana di alam
@@ -2265,8 +2877,8 @@ export default function AdminDashboardPage() {
                       🎯 SDG 12: Responsible Consumption
                     </p>
                     <p className="mt-1 text-[#6E5C52]">
-                      Mendaur ulang limbah pangan hewani/nabati menjadi bahan baku
-                      bernilai gizi tinggi dan bebas gluten.
+                      Mendaur ulang limbah pangan nabati menjadi bahan baku bernilai
+                      gizi tinggi dan bebas gluten.
                     </p>
                   </div>
                   <div className="rounded-2xl border border-[#E5DEC9] bg-[#FAF8F5] p-3.5 text-xs">
@@ -2284,7 +2896,7 @@ export default function AdminDashboardPage() {
                     </p>
                     <p className="mt-1 text-[#6E5C52]">
                       Mereduksi jejak karbon logistik dan dekomposisi organik di
-                      lingkungan perkotaan Bali.
+                      lingkungan perkotaan.
                     </p>
                   </div>
                 </div>
@@ -2544,7 +3156,7 @@ export default function AdminDashboardPage() {
           role="dialog"
           aria-modal="true"
           aria-label={
-            editingProductId ? 'Edit Product Details' : 'Add New Product'
+            editingProductId ? 'Edit Detail Produk' : 'Tambah Produk Baru'
           }
         >
           <form
@@ -2555,12 +3167,11 @@ export default function AdminDashboardPage() {
               <div>
                 <h3 className="font-serif text-lg font-bold text-[#2C1E18]">
                   {editingProductId
-                    ? 'Edit Product & Packaging Photo'
-                    : 'Add New Product'}
+                    ? 'Edit Detail Produk & Foto Packaging'
+                    : 'Tambah Produk Baru'}
                 </h3>
                 <p className="text-xs text-[#6E5C52]">
-                  Change product photo by uploading from your device, entering
-                  an image URL, or selecting a CORA preset.
+                  Kelola nama, harga, stok, berat, serta foto kemasan produk.
                 </p>
               </div>
               <button
@@ -2577,7 +3188,7 @@ export default function AdminDashboardPage() {
               {/* Photo Editor Section */}
               <div className="rounded-2xl border border-[#E5DEC9] bg-[#FAF8F5] p-4">
                 <span className="block text-xs font-bold uppercase tracking-wider text-[#3B5B3D]">
-                  Product Photo
+                  Foto Kemasan Produk
                 </span>
                 <div className="mt-3 flex flex-col gap-4 sm:flex-row sm:items-center">
                   <div className="relative h-28 w-28 shrink-0 overflow-hidden rounded-2xl border border-[#E5DEC9] bg-white">
@@ -2594,7 +3205,7 @@ export default function AdminDashboardPage() {
                     <div className="flex flex-wrap items-center gap-2">
                       <label className="inline-flex cursor-pointer items-center gap-1.5 rounded-full bg-[#3B5B3D] px-4 py-2 text-xs font-semibold text-white transition hover:bg-[#2F4A31]">
                         <UploadCloud className="h-3.5 w-3.5" />
-                        Upload Photo from Device
+                        Upload Foto dari Komputer
                         <input
                           type="file"
                           accept="image/*"
@@ -2603,26 +3214,26 @@ export default function AdminDashboardPage() {
                         />
                       </label>
                       <span className="text-[11px] text-[#6E5C52]">
-                        PNG, JPG, WebP, or SVG
+                        PNG, JPG, WebP, SVG
                       </span>
                     </div>
 
                     <div>
                       <label className="block text-[11px] font-semibold text-[#5C4B42]">
-                        Or enter Image URL / Path
+                        Atau Masukkan URL / Path Gambar
                       </label>
                       <input
                         type="text"
                         value={prodImage}
                         onChange={(e) => setProdImage(e.target.value)}
-                        placeholder="/images/products/brownies.jpg or https://..."
+                        placeholder="/images/products/brownies.jpg"
                         className="mt-1 w-full rounded-xl bg-white px-3 py-1.5 text-xs text-[#2C1E18] ring-1 ring-[#E5DEC9] focus:ring-2 focus:ring-[#3B5B3D] focus:outline-none"
                       />
                     </div>
 
                     <div className="flex flex-wrap items-center gap-1.5">
                       <span className="text-[11px] font-medium text-[#6E5C52]">
-                        Presets:
+                        Preset Cepat:
                       </span>
                       {IMAGE_PRESETS.map((preset) => (
                         <button
@@ -2646,7 +3257,7 @@ export default function AdminDashboardPage() {
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <div>
                   <label className="block text-xs font-semibold text-[#2C1E18]">
-                    Product Name *
+                    Nama Produk *
                   </label>
                   <input
                     type="text"
@@ -2674,7 +3285,7 @@ export default function AdminDashboardPage() {
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
                 <div>
                   <label className="block text-xs font-semibold text-[#2C1E18]">
-                    Category
+                    Kategori
                   </label>
                   <select
                     value={prodCategory}
@@ -2690,7 +3301,7 @@ export default function AdminDashboardPage() {
                 </div>
                 <div>
                   <label className="block text-xs font-semibold text-[#2C1E18]">
-                    Price (IDR) *
+                    Harga Satuan (IDR) *
                   </label>
                   <input
                     type="number"
@@ -2704,7 +3315,7 @@ export default function AdminDashboardPage() {
                 </div>
                 <div>
                   <label className="block text-xs font-semibold text-[#2C1E18]">
-                    Stock *
+                    Stok *
                   </label>
                   <input
                     type="number"
@@ -2721,7 +3332,7 @@ export default function AdminDashboardPage() {
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label className="block text-xs font-semibold text-[#2C1E18]">
-                    Weight (g)
+                    Berat Bersih (gram)
                   </label>
                   <input
                     type="number"
@@ -2734,7 +3345,7 @@ export default function AdminDashboardPage() {
                 </div>
                 <div>
                   <label className="block text-xs font-semibold text-[#2C1E18]">
-                    Residue Saved (g)
+                    Ampas Diselamatkan (gram)
                   </label>
                   <input
                     type="number"
@@ -2749,13 +3360,13 @@ export default function AdminDashboardPage() {
 
               <div>
                 <label className="block text-xs font-semibold text-[#2C1E18]">
-                  Short Description
+                  Deskripsi Singkat
                 </label>
                 <textarea
                   rows={2}
                   value={prodDescription}
                   onChange={(e) => setProdDescription(e.target.value)}
-                  placeholder="Brief summary of circular product benefits..."
+                  placeholder="Ringkasan rasa dan keunggulan circular..."
                   className="mt-1 w-full rounded-xl bg-[#FAF8F5] px-3.5 py-2 text-sm ring-1 ring-[#E5DEC9] focus:bg-white focus:ring-2 focus:ring-[#3B5B3D] focus:outline-none"
                 />
               </div>
@@ -2766,14 +3377,14 @@ export default function AdminDashboardPage() {
                   onClick={() => setShowProductForm(false)}
                   className="rounded-full border border-[#E5DEC9] px-4 py-2 text-xs font-semibold text-[#5C4B42] hover:bg-[#FAF8F5]"
                 >
-                  Cancel
+                  Batal
                 </button>
                 <button
                   type="submit"
                   className="inline-flex items-center gap-1.5 rounded-full bg-[#3B5B3D] px-5 py-2 text-xs font-semibold text-white hover:bg-[#2F4A31]"
                 >
                   <Save className="h-3.5 w-3.5" />
-                  Save Product
+                  Simpan Produk
                 </button>
               </div>
             </div>
@@ -2871,13 +3482,17 @@ export default function AdminDashboardPage() {
         </div>
       )}
 
-      {/* MODAL: ADD SUPPLIER */}
+      {/* MODAL: ADD / EDIT SUPPLIER */}
       {showSupplierModal && (
         <div
           className="animate-cora-fade-in fixed inset-0 z-50 flex items-center justify-center bg-[#2C1E18]/60 p-4 backdrop-blur-xs"
           role="dialog"
           aria-modal="true"
-          aria-label="Daftarkan Mitra Pemasok Baru"
+          aria-label={
+            editingSupplierId
+              ? 'Edit Data Mitra Pemasok'
+              : 'Daftarkan Mitra Pemasok Baru'
+          }
         >
           <form
             onSubmit={handleSaveSupplier}
@@ -2886,15 +3501,22 @@ export default function AdminDashboardPage() {
             <div className="flex items-center justify-between border-b border-[#F0EAE0] pb-3">
               <div>
                 <h3 className="font-serif text-lg font-bold text-[#2C1E18]">
-                  Daftarkan Mitra Pemasok Baru
+                  {editingSupplierId
+                    ? 'Edit Data Mitra Pemasok'
+                    : 'Daftarkan Mitra Pemasok Baru'}
                 </h3>
                 <p className="text-xs text-[#6E5C52]">
-                  Tambahkan UMKM pemeras kelapa/santan ke jaringan mitra CORA.
+                  {editingSupplierId
+                    ? 'Perbarui profil usaha, kontak, lokasi, atau kapasitas pasokan mitra.'
+                    : 'Tambahkan UMKM pemeras kelapa/santan ke jaringan mitra CORA.'}
                 </p>
               </div>
               <button
                 type="button"
-                onClick={() => setShowSupplierModal(false)}
+                onClick={() => {
+                  setShowSupplierModal(false);
+                  setEditingSupplierId(null);
+                }}
                 className="rounded-full p-1 text-[#6E5C52] hover:bg-[#F0ECE1]"
               >
                 <X className="h-5 w-5" />
@@ -2997,7 +3619,10 @@ export default function AdminDashboardPage() {
             <div className="flex justify-end gap-2 border-t border-[#F0EAE0] pt-3">
               <button
                 type="button"
-                onClick={() => setShowSupplierModal(false)}
+                onClick={() => {
+                  setShowSupplierModal(false);
+                  setEditingSupplierId(null);
+                }}
                 className="rounded-full border border-[#E5DEC9] px-4 py-2 text-xs font-semibold text-[#5C4B42]"
               >
                 Batal
@@ -3007,7 +3632,7 @@ export default function AdminDashboardPage() {
                 className="inline-flex items-center gap-1.5 rounded-full bg-[#3B5B3D] px-5 py-2 text-xs font-semibold text-white hover:bg-[#2F4A31]"
               >
                 <Save className="h-3.5 w-3.5" />
-                Simpan Mitra
+                {editingSupplierId ? 'Simpan Perubahan' : 'Daftarkan Mitra'}
               </button>
             </div>
           </form>
@@ -3256,6 +3881,119 @@ export default function AdminDashboardPage() {
               >
                 <Save className="h-3.5 w-3.5" />
                 Simpan Resep
+              </button>
+            </div>
+          </form>
+        </div>
+      )}
+
+      {/* MODAL: ADD / EDIT IMPACT INDICATOR */}
+      {showIndicatorModal && (
+        <div
+          className="animate-cora-fade-in fixed inset-0 z-50 flex items-center justify-center bg-[#2C1E18]/60 p-4 backdrop-blur-xs"
+          role="dialog"
+          aria-modal="true"
+          aria-label={
+            editingIndicatorId
+              ? 'Edit Indikator Dampak'
+              : 'Tambah Indikator Baru'
+          }
+        >
+          <form
+            onSubmit={handleSaveIndicator}
+            className="animate-cora-modal max-h-[90vh] w-full max-w-md overflow-y-auto rounded-2xl border border-[#E5DEC9] bg-white p-6 shadow-2xl space-y-4"
+          >
+            <div className="flex items-center justify-between border-b border-[#F0EAE0] pb-3">
+              <div>
+                <h3 className="font-serif text-lg font-bold text-[#2C1E18]">
+                  {editingIndicatorId
+                    ? 'Edit Indikator Dampak'
+                    : 'Tambah Indikator Dampak Baru'}
+                </h3>
+                <p className="text-xs text-[#6E5C52]">
+                  Indikator ini akan langsung tampil di grid statistik Our Impact.
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowIndicatorModal(false)}
+                className="rounded-full p-1 text-[#6E5C52] hover:bg-[#F0ECE1]"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+
+            <div>
+              <label className="block text-xs font-semibold text-[#2C1E18]">
+                Label / Judul Indikator *
+              </label>
+              <input
+                type="text"
+                required
+                value={indLabel}
+                onChange={(e) => setIndLabel(e.target.value)}
+                placeholder="e.g. Ampas Dimanfaatkan"
+                className="mt-1 w-full rounded-xl bg-[#FAF8F5] px-3.5 py-2 text-xs text-[#2C1E18] ring-1 ring-[#E5DEC9] focus:bg-white focus:ring-2 focus:ring-[#3B5B3D] focus:outline-none"
+              />
+            </div>
+
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label className="block text-xs font-semibold text-[#2C1E18]">
+                  Nilai *
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={indValue}
+                  onChange={(e) => setIndValue(e.target.value)}
+                  placeholder="e.g. 2.36"
+                  className="mt-1 w-full rounded-xl bg-[#FAF8F5] px-3.5 py-2 text-xs font-bold text-[#2C1E18] ring-1 ring-[#E5DEC9] focus:bg-white focus:ring-2 focus:ring-[#3B5B3D] focus:outline-none"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-[#2C1E18]">
+                  Satuan *
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={indUnit}
+                  onChange={(e) => setIndUnit(e.target.value)}
+                  placeholder="kg / mitra / pcs"
+                  className="mt-1 w-full rounded-xl bg-[#FAF8F5] px-3.5 py-2 text-xs text-[#2C1E18] ring-1 ring-[#E5DEC9] focus:bg-white focus:ring-2 focus:ring-[#3B5B3D] focus:outline-none"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-xs font-semibold text-[#2C1E18]">
+                Keterangan Singkat
+              </label>
+              <textarea
+                rows={2}
+                value={indDesc}
+                onChange={(e) => setIndDesc(e.target.value)}
+                placeholder="Penjelasan ringkas indikator..."
+                className="mt-1 w-full rounded-xl bg-[#FAF8F5] px-3.5 py-2 text-xs text-[#2C1E18] ring-1 ring-[#E5DEC9] focus:bg-white focus:ring-2 focus:ring-[#3B5B3D] focus:outline-none"
+              />
+            </div>
+
+            <div className="flex justify-end gap-2 border-t border-[#F0EAE0] pt-3">
+              <button
+                type="button"
+                onClick={() => setShowIndicatorModal(false)}
+                className="rounded-full border border-[#E5DEC9] px-4 py-2 text-xs font-semibold text-[#5C4B42]"
+              >
+                Batal
+              </button>
+              <button
+                type="submit"
+                className="inline-flex items-center gap-1.5 rounded-full bg-[#3B5B3D] px-5 py-2 text-xs font-semibold text-white hover:bg-[#2F4A31]"
+              >
+                <Save className="h-3.5 w-3.5" />
+                Simpan Indikator
               </button>
             </div>
           </form>
