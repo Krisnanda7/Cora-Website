@@ -19,12 +19,16 @@ import type {
   PickupRequest,
   PickupRequestStatus,
   Product,
+  Recipe,
+  RegisterSupplierInput,
   SaveBankAccountInput,
   SaveProductInput,
   SubmitPickupInput,
+  Supplier,
+  UserProfile,
 } from '@/types/cora';
 
-const STORAGE_KEY = 'cora_circular_store_v3';
+const STORAGE_KEY = 'cora_circular_store_v4';
 
 interface CoraStoreState {
   products: Product[];
@@ -32,6 +36,9 @@ interface CoraStoreState {
   orders: Order[];
   financialRecords: FinancialRecord[];
   pickupRequests: PickupRequest[];
+  suppliers: Supplier[];
+  recipes: Recipe[];
+  userProfile: UserProfile;
   cart: CartItem[];
 }
 
@@ -39,7 +46,7 @@ interface CoraContextValue extends CoraStoreState {
   isHydrated: boolean;
   cartCount: number;
   cartTotal: number;
-  addToCart: (product: Product, qty?: number) => void;
+  addToCart: (product: Product, qty?: number, variant?: string) => void;
   updateCartQty: (productId: string, qty: number) => void;
   removeFromCart: (productId: string) => void;
   clearCart: () => void;
@@ -60,6 +67,12 @@ interface CoraContextValue extends CoraStoreState {
   addManualExpense: (expense: AddExpenseInput) => FinancialRecord;
   submitPickupRequest: (request: SubmitPickupInput) => PickupRequest;
   updatePickupStatus: (requestId: string, status: PickupRequestStatus) => void;
+  registerSupplier: (input: RegisterSupplierInput) => Supplier;
+  toggleFavoriteRecipe: (recipeId: string) => void;
+  updateUserProfile: (profile: Partial<UserProfile>) => void;
+  saveRecipe: (recipe: Recipe) => void;
+  deleteRecipe: (recipeId: string) => void;
+  findOrderByNumber: (orderNumber: string) => Order | undefined;
   resetDemoData: () => void;
 }
 
@@ -123,6 +136,12 @@ function generateOrderNumber(): string {
   return `CORA-${y}${m}${d}-${suffix}`;
 }
 
+const COMMON_BENEFITS = [
+  'Menggunakan tepung berbahan dasar ampas kelapa',
+  'Mengoptimalkan pemanfaatan hasil samping produksi santan',
+  'Menghadirkan alternatif bahan pangan yang inovatif',
+];
+
 export const INITIAL_PRODUCTS: Product[] = [
   {
     id: 'prod-brownies',
@@ -136,6 +155,21 @@ export const INITIAL_PRODUCTS: Product[] = [
     image: '/images/products/brownies.jpg',
     description:
       'Rich fudgy dark-chocolate brownies crafted with upcycled coconut flour from rescued coconut milk residue. Naturally moist, fiber-rich, and guilt-free.',
+    ingredients: [
+      'Tepung Ampas Kelapa CORA',
+      '70% Belgian Dark Chocolate',
+      'Telur Ayam Kampung',
+      'Gula Aren Organik',
+      'Minyak Kelapa Murni (VCO)',
+      'Ekstrak Vanila',
+      'Sea Salt',
+    ],
+    netWeight: '200g (isi 6 potong)',
+    variants: ['Classic Fudgy Dark', 'Roasted Almond Topping'],
+    storageInfo:
+      'Simpan di tempat sejuk dan kering dalam wadah tertutup. Untuk tekstur fudgy maksimal, simpan di dalam kulkas.',
+    shelfLife: '14 hari pada suhu ruang, hingga 30 hari di dalam chiller kulkas.',
+    benefits: COMMON_BENEFITS,
   },
   {
     id: 'prod-cookies',
@@ -149,6 +183,20 @@ export const INITIAL_PRODUCTS: Product[] = [
     image: '/images/products/cookies.jpg',
     description:
       'Crisp artisanal cookies baked with toasted upcycled coconut flour, coconut nectar, and dark chocolate chunks for a warm, nutty crunch.',
+    ingredients: [
+      'Tepung Ampas Kelapa Sangrai CORA',
+      'Nektar Kelapa Alami',
+      'Dark Chocolate Chunks',
+      'Telur Organik',
+      'Minyak Kelapa Murni',
+      'Sea Salt Bali',
+    ],
+    netWeight: '150g (isi 12 keping)',
+    variants: ['Dark Choco Nibs', 'Toasted Coconut Flakes'],
+    storageInfo:
+      'Tutup rapat zipper pouch kedap udara setelah dibuka. Hindari paparan panas langsung.',
+    shelfLife: '60 hari dalam kemasan tersegel rapat.',
+    benefits: COMMON_BENEFITS,
   },
   {
     id: 'prod-flour-500',
@@ -162,6 +210,15 @@ export const INITIAL_PRODUCTS: Product[] = [
     image: '/images/products/coconut.jpg',
     description:
       'Hygienically dried and finely milled from fresh coconut residue. High in dietary fiber, naturally low-glycemic, and ideal for everyday circular baking.',
+    ingredients: [
+      '100% Ampas Kelapa Segar Terpilih (Hasil Upcycling Higienis Bebas Pengawet)',
+    ],
+    netWeight: '500g',
+    variants: ['Pouch 500g', 'Pouch 1000g (Value Pack)'],
+    storageInfo:
+      'Simpan di dalam toples kaca kedap udara di tempat sejuk, kering, dan terlindung dari kelembapan.',
+    shelfLife: '6 bulan dalam kondisi kemasan tertutup rapat.',
+    benefits: COMMON_BENEFITS,
   },
   {
     id: 'prod-brownies-twin',
@@ -175,8 +232,207 @@ export const INITIAL_PRODUCTS: Product[] = [
     image: '/images/hero/hero.jpg',
     description:
       'Value bundle containing the full CORA upcycled trio: Coconut Flour, Brownies, and Cookies. Perfect for gifting or sharing while maximizing your circular food impact.',
+    ingredients: [
+      'Kombinasi lengkap Tepung Kelapa 500g, Brownies 200g, dan Cookies 150g',
+    ],
+    netWeight: '850g Total',
+    variants: ['Gift Box Edition', 'Eco Kraft Box'],
+    storageInfo: 'Simpan sesuai panduan masing-masing produk di dalam box.',
+    shelfLife: 'Mengikuti tanggal kedaluwarsa masing-masing item bundle.',
+    benefits: COMMON_BENEFITS,
   },
 ];
+
+export const INITIAL_RECIPES: Recipe[] = [
+  {
+    id: 'rec-cookies',
+    title: 'Coconut Flour Cookies',
+    category: 'Cookies and Biscuits',
+    prepTime: '15 mins',
+    cookTime: '12 mins',
+    servings: '12 cookies',
+    calories: 110,
+    difficulty: 'Easy',
+    coconutFlourUsed: '60g CORA Coconut Flour',
+    summary:
+      'Kue kering renyah di luar dan lembut di dalam dengan wangi kelapa sangrai alami dan lelehan cokelat.',
+    ingredients: [
+      '60g Tepung Ampas Kelapa CORA',
+      '2 butir Telur ayam',
+      '50g Gula aren atau gula kelapa',
+      '45g Minyak kelapa / mentega cair',
+      '50g Dark chocolate chips',
+      '1/2 sdt Baking soda & sejumput garam',
+    ],
+    steps: [
+      'Kocok telur, minyak kelapa, dan gula aren hingga larut dan sedikit berbusa.',
+      'Ayak tepung kelapa CORA, baking soda, dan garam ke dalam adonan basah.',
+      'Aduk merata dan diamkan 3 menit agar tepung kelapa menyerap cairan dengan sempurna.',
+      'Masukkan chocolate chips, bentuk bulatan pipih di atas loyang berlapis kertas roti.',
+      'Panggang pada suhu 175°C selama 10–12 menit hingga tepi kecokelatan.',
+    ],
+    image: '/images/products/cookies.jpg',
+  },
+  {
+    id: 'rec-brownies',
+    title: 'Coconut Brownies',
+    category: 'Cakes and Brownies',
+    prepTime: '20 mins',
+    cookTime: '25 mins',
+    servings: '9 squares',
+    calories: 165,
+    difficulty: 'Medium',
+    coconutFlourUsed: '65g CORA Coconut Flour',
+    summary:
+      'Brownies cokelat hitam fudgy tanpa tepung terigu yang moist alami berkat serat halus tepung kelapa CORA.',
+    ingredients: [
+      '65g Tepung Ampas Kelapa CORA',
+      '120g Dark Chocolate 70%, lelehkan',
+      '3 butir Telur suhu ruang',
+      '75g Gula aren bubuk',
+      '60ml Minyak kelapa / butter leleh',
+      '1 sdt Ekstrak vanila & 1/4 sdt garam laut',
+    ],
+    steps: [
+      'Panaskan oven ke suhu 175°C. Siapkan loyang 18x18 cm beroles margarin.',
+      'Kocok telur dan gula aren dengan whisk selama 2 menit sampai mengembang ringan.',
+      'Tuangkan cokelat leleh dan minyak kelapa ke dalam adonan telur, aduk balik perlahan.',
+      'Masukkan tepung ampas kelapa CORA dan garam, aduk hingga adonan mengkilap dan rata.',
+      'Panggang selama 22-25 menit. Dinginkan sebelum dipotong agar tekstur fudgy kokoh.',
+    ],
+    image: '/images/products/brownies.jpg',
+  },
+  {
+    id: 'rec-pancakes',
+    title: 'Coconut Pancakes',
+    category: 'Healthy Snacks',
+    prepTime: '10 mins',
+    cookTime: '10 mins',
+    servings: '6 pancakes',
+    calories: 135,
+    difficulty: 'Easy',
+    coconutFlourUsed: '45g CORA Coconut Flour',
+    summary:
+      'Pancake sarapan tinggi serat yang mengenyangkan lebih lama, dipadukan dengan pisang manis alami.',
+    ingredients: [
+      '45g Tepung Ampas Kelapa CORA',
+      '1 buah Pisang matang, haluskan',
+      '2 butir Telur ayam',
+      '80ml Susu nabati (oat milk atau almond milk)',
+      '1 sdt Baking powder',
+      '1/2 sdt Kayu manis bubuk (opsional)',
+    ],
+    steps: [
+      'Haluskan pisang dalam mangkuk, tambahkan telur dan susu nabati, kocok merata.',
+      'Campurkan tepung ampas kelapa CORA dan baking powder, aduk hingga menjadi adonan kental.',
+      'Diamkan adonan selama 3 menit agar tepung kelapa terhidrasi sempurna.',
+      'Panaskan teflon anti lengket dengan api kecil, tuang 1 sendok sayur adonan.',
+      'Masak 2 menit per sisi hingga matang keemasan. Sajikan hangat dengan madu atau buah segar.',
+    ],
+    image: '/images/journey/brownies.jpg',
+  },
+  {
+    id: 'rec-muffins',
+    title: 'Coconut Muffins',
+    category: 'Cakes and Brownies',
+    prepTime: '15 mins',
+    cookTime: '20 mins',
+    servings: '6 muffins',
+    calories: 145,
+    difficulty: 'Medium',
+    coconutFlourUsed: '50g CORA Coconut Flour',
+    summary:
+      'Muffin kelapa empuk beraroma vanila dan kayu manis, pilihan camilan sehat teman kopi atau teh sore.',
+    ingredients: [
+      '50g Tepung Ampas Kelapa CORA',
+      '3 butir Telur',
+      '60ml Madu murni / sirup kelapa',
+      '50ml Santan encer atau susu',
+      '40ml Minyak kelapa',
+      '1 sdt Baking powder & 1/2 sdt vanila bubuk',
+    ],
+    steps: [
+      'Panaskan oven ke 180°C dan siapkan 6 cetakan muffin dengan cup kertas.',
+      'Campurkan telur, madu, santan encer, dan minyak kelapa dalam satu wadah.',
+      'Masukkan tepung ampas kelapa CORA, baking powder, dan vanila secara bertahap.',
+      'Bagi adonan merata ke dalam 6 cetakan muffin.',
+      'Panggang selama 18–20 menit hingga bagian atas mengembang keemasan.',
+    ],
+    image: '/images/products/cookies.jpg',
+  },
+  {
+    id: 'rec-banana-cake',
+    title: 'Coconut Flour Banana Cake',
+    category: 'Creative Recipes',
+    prepTime: '20 mins',
+    cookTime: '35 mins',
+    servings: '8 slices',
+    calories: 155,
+    difficulty: 'Creative',
+    coconutFlourUsed: '70g CORA Coconut Flour',
+    summary:
+      'Bolu pisang lembut gluten-free yang kaya aroma tropis berkat kombinasi pisang raja dan tepung ampas kelapa.',
+    ingredients: [
+      '70g Tepung Ampas Kelapa CORA',
+      '3 buah Pisang raja matang, lumatkan',
+      '4 butir Telur',
+      '60g Gula kelapa / gula aren',
+      '50g Margarin leleh atau minyak kelapa',
+      '1 sdt Baking powder & 1/2 sdt soda kue',
+      'Topping: Irisan pisang dan kelapa parut panggang',
+    ],
+    steps: [
+      'Lumatkan pisang sampai lembut, tambahkan telur, gula aren, dan margarin cair.',
+      'Masukkan tepung kelapa CORA, baking powder, dan soda kue. Aduk perlahan hingga rata.',
+      'Tuangkan ke dalam loyang loaf yang sudah dialasi baking paper.',
+      'Beri hiasan irisan pisang di atasnya, lalu panggang pada suhu 170°C selama 30–35 menit.',
+      'Tusuk dengan lidi untuk memeriksa kematangan. Angkat dan dinginkan sebelum diiris.',
+    ],
+    image: '/images/hero/hero.jpg',
+  },
+];
+
+export const INITIAL_SUPPLIERS: Supplier[] = [
+  {
+    id: 'sup-001',
+    name: 'Kelapa Makmur Jaya',
+    phone: '081288990011',
+    businessLocation: 'Pasar Badung, Jl. Sulawesi No. 14, Denpasar',
+    businessType: 'Pengolahan Santan Harian',
+    estimatedKg: 120,
+    productionFrequency: 'Setiap Hari',
+    createdAt: '2026-10-15T08:00:00.000Z',
+  },
+  {
+    id: 'sup-002',
+    name: 'Santan Segar Sari',
+    phone: '085777889900',
+    businessLocation: 'Kuta Utara, Badung',
+    businessType: 'Usaha Santan Murni & Parut',
+    estimatedKg: 65,
+    productionFrequency: '3x Seminggu',
+    createdAt: '2026-10-22T10:30:00.000Z',
+  },
+  {
+    id: 'sup-003',
+    name: 'Berkah Kelapa Nusantara',
+    phone: '081399887766',
+    businessLocation: 'Sanur Kauh, Denpasar Selatan',
+    businessType: 'Kios Kelapa & Santan Tradisional',
+    estimatedKg: 95,
+    productionFrequency: 'Setiap Hari',
+    createdAt: '2026-11-01T09:15:00.000Z',
+  },
+];
+
+export const INITIAL_USER_PROFILE: UserProfile = {
+  id: 'usr-demo-01',
+  name: 'Krisna Pratama',
+  email: 'krisna@cora.id',
+  phone: '081234567890',
+  address: 'Jl. Tukad Balian No. 88, Renon, Denpasar, Bali 80226',
+  favoriteRecipeIds: ['rec-brownies', 'rec-cookies'],
+};
 
 export const INITIAL_BANK_ACCOUNTS: BankAccount[] = [
   {
@@ -236,6 +492,7 @@ export const INITIAL_ORDERS: Order[] = [
         price: 38000,
         qty: 2,
         image: '/images/products/brownies.jpg',
+        variant: 'Classic Fudgy Dark',
       },
       {
         productId: 'prod-cookies',
@@ -243,13 +500,15 @@ export const INITIAL_ORDERS: Order[] = [
         price: 32000,
         qty: 1,
         image: '/images/products/cookies.jpg',
+        variant: 'Dark Choco Nibs',
       },
     ],
     totalAmount: 108000,
     bankAccountUsed: 'Bank BCA - 8820192831',
     proofImage: RECEIPT_ORD_001,
     status: 'WAITING_VERIFICATION',
-    notes: 'Please pack securely with protective wrap.',
+    courier: 'JNE Regular',
+    notes: 'Mohon dibungkus bubble wrap tebal ya Kak.',
     createdAt: '2026-11-12T09:15:00.000Z',
   },
   {
@@ -265,13 +524,15 @@ export const INITIAL_ORDERS: Order[] = [
         price: 25000,
         qty: 3,
         image: '/images/products/coconut.jpg',
+        variant: 'Pouch 500g',
       },
     ],
     totalAmount: 75000,
     bankAccountUsed: 'Bank Mandiri - 1450029381920',
     proofImage: RECEIPT_ORD_002,
     status: 'PROCESSING',
-    notes: 'For weekend baking stock.',
+    courier: 'SiCepat Best',
+    notes: 'Untuk stok baking akhir pekan.',
     createdAt: '2026-11-11T14:30:00.000Z',
   },
   {
@@ -287,6 +548,7 @@ export const INITIAL_ORDERS: Order[] = [
         price: 72000,
         qty: 1,
         image: '/images/hero/hero.jpg',
+        variant: 'Gift Box Edition',
       },
       {
         productId: 'prod-cookies',
@@ -294,14 +556,16 @@ export const INITIAL_ORDERS: Order[] = [
         price: 32000,
         qty: 2,
         image: '/images/products/cookies.jpg',
+        variant: 'Dark Choco Nibs',
       },
     ],
     totalAmount: 136000,
     bankAccountUsed: 'Bank BCA - 8820192831',
     proofImage: RECEIPT_ORD_003,
     status: 'COMPLETED',
+    courier: 'JNE Express',
     trackingNumber: 'JNE-CORA88291044',
-    notes: 'Leave with security if nobody is home.',
+    notes: 'Bisa titip satpam jika rumah sedang kosong.',
     createdAt: '2026-11-08T10:05:00.000Z',
   },
 ];
@@ -332,19 +596,37 @@ export const INITIAL_PICKUP_REQUESTS: PickupRequest[] = [
     id: 'pick-001',
     supplierName: 'Kelapa Makmur Jaya',
     phone: '081288990011',
-    location: 'Pasar Badung',
+    location: 'Pasar Badung, Jl. Sulawesi No. 14, Denpasar',
     estimatedKg: 120,
     preferredDate: '2026-11-15',
-    status: 'SCHEDULED',
+    preferredTime: '08:00 - 10:00 WITA',
+    notes: 'Ampas kelapa dari parutan pagi hari, disimpan di tong bersih tertutup.',
+    status: 'REQUEST_CONFIRMED',
+    createdAt: '2026-11-12T07:30:00.000Z',
   },
   {
     id: 'pick-002',
     supplierName: 'Santan Segar Sari',
     phone: '085777889900',
-    location: 'Denpasar',
+    location: 'Jl. Raya Kerobokan No. 42, Badung',
     estimatedKg: 65,
     preferredDate: '2026-11-16',
-    status: 'PENDING',
+    preferredTime: '13:00 - 15:00 WITA',
+    notes: 'Kondisi kering tiris santan murni.',
+    status: 'REQUEST_SUBMITTED',
+    createdAt: '2026-11-12T11:00:00.000Z',
+  },
+  {
+    id: 'pick-003',
+    supplierName: 'Berkah Kelapa Sanur',
+    phone: '081399887766',
+    location: 'Jl. Danau Tamblingan No. 108, Sanur',
+    estimatedKg: 95,
+    preferredDate: '2026-11-10',
+    preferredTime: '09:00 - 11:00 WITA',
+    notes: 'Penjemputan rutin mingguan.',
+    status: 'COMPLETED',
+    createdAt: '2026-11-10T08:00:00.000Z',
   },
 ];
 
@@ -358,17 +640,11 @@ function getInitialStoreState(): CoraStoreState {
     })),
     financialRecords: INITIAL_FINANCIAL_RECORDS.map((f) => ({ ...f })),
     pickupRequests: INITIAL_PICKUP_REQUESTS.map((r) => ({ ...r })),
+    suppliers: INITIAL_SUPPLIERS.map((s) => ({ ...s })),
+    recipes: INITIAL_RECIPES.map((r) => ({ ...r })),
+    userProfile: { ...INITIAL_USER_PROFILE },
     cart: [],
   };
-}
-
-function migrateProductImage(img: string): string {
-  if (!img) return '/images/products/brownies.jpg';
-  if (img.includes('cora-brownies.svg')) return '/images/products/brownies.jpg';
-  if (img.includes('cora-cookies.svg')) return '/images/products/cookies.jpg';
-  if (img.includes('cora-flour.svg')) return '/images/products/coconut.jpg';
-  if (img.includes('cora-brownies-twin.svg')) return '/images/hero/hero.jpg';
-  return img;
 }
 
 function parseStoredState(raw: string | null): CoraStoreState | null {
@@ -387,24 +663,31 @@ function parseStoredState(raw: string | null): CoraStoreState | null {
       return null;
     }
     return {
-      products: parsed.products.map((p) => ({
-        ...p,
-        image: migrateProductImage(p.image),
-      })),
+      products: parsed.products.map((p) => {
+        const found = INITIAL_PRODUCTS.find((init) => init.id === p.id);
+        return {
+          ...found,
+          ...p,
+          benefits: p.benefits ?? found?.benefits ?? COMMON_BENEFITS,
+          ingredients: p.ingredients ?? found?.ingredients,
+          variants: p.variants ?? found?.variants,
+          netWeight: p.netWeight ?? found?.netWeight,
+          storageInfo: p.storageInfo ?? found?.storageInfo,
+          shelfLife: p.shelfLife ?? found?.shelfLife,
+        };
+      }),
       bankAccounts: parsed.bankAccounts,
-      orders: parsed.orders.map((o) => ({
-        ...o,
-        items: o.items.map((i) => ({
-          ...i,
-          image: migrateProductImage(i.image),
-        })),
-      })),
+      orders: parsed.orders,
       financialRecords: parsed.financialRecords,
       pickupRequests: parsed.pickupRequests,
-      cart: parsed.cart.map((c) => ({
-        ...c,
-        image: migrateProductImage(c.image),
-      })),
+      suppliers: Array.isArray(parsed.suppliers)
+        ? parsed.suppliers
+        : INITIAL_SUPPLIERS,
+      recipes: Array.isArray(parsed.recipes) && parsed.recipes.length > 0
+        ? parsed.recipes
+        : INITIAL_RECIPES,
+      userProfile: parsed.userProfile ?? INITIAL_USER_PROFILE,
+      cart: parsed.cart,
     };
   } catch {
     return null;
@@ -449,7 +732,7 @@ export function CoraProvider({ children }: { children: React.ReactNode }) {
   );
 
   const addToCart = useCallback(
-    (product: Product, qty = 1) => {
+    (product: Product, qty = 1, variant?: string) => {
       if (qty <= 0 || product.stock <= 0) return;
       updateStore((prev) => {
         const liveProduct =
@@ -457,8 +740,11 @@ export function CoraProvider({ children }: { children: React.ReactNode }) {
         const maxStock = Math.max(0, liveProduct.stock);
         if (maxStock <= 0) return prev;
 
+        const effectiveVariant = variant ?? liveProduct.variants?.[0];
         const existingIndex = prev.cart.findIndex(
-          (item) => item.productId === liveProduct.id
+          (item) =>
+            item.productId === liveProduct.id &&
+            item.variant === effectiveVariant
         );
 
         if (existingIndex >= 0) {
@@ -486,6 +772,7 @@ export function CoraProvider({ children }: { children: React.ReactNode }) {
           image: liveProduct.image,
           weightGram: liveProduct.weightGram,
           residueSavedGram: liveProduct.residueSavedGram,
+          variant: effectiveVariant,
         };
 
         return { ...prev, cart: [...prev.cart, newItem] };
@@ -545,6 +832,7 @@ export function CoraProvider({ children }: { children: React.ReactNode }) {
               price: item.price,
               qty: item.qty,
               image: item.image,
+              variant: item.variant,
             }));
 
       const totalAmount = orderItems.reduce(
@@ -563,15 +851,36 @@ export function CoraProvider({ children }: { children: React.ReactNode }) {
         bankAccountUsed: input.bankAccountUsed,
         proofImage: input.proofImage,
         status: 'WAITING_VERIFICATION',
+        courier: input.courier ?? 'JNE Regular',
         notes: input.notes?.trim() || undefined,
         createdAt: new Date().toISOString(),
       };
 
-      updateStore((prev) => ({
-        ...prev,
-        orders: [newOrder, ...prev.orders],
-        cart: input.items && input.items.length > 0 ? prev.cart : [],
-      }));
+      updateStore((prev) => {
+        const itemQtyMap = new Map<string, number>();
+        for (const item of orderItems) {
+          itemQtyMap.set(
+            item.productId,
+            (itemQtyMap.get(item.productId) ?? 0) + item.qty
+          );
+        }
+
+        const updatedProducts = prev.products.map((prod) => {
+          const orderedQty = itemQtyMap.get(prod.id);
+          if (!orderedQty) return prod;
+          return {
+            ...prod,
+            stock: Math.max(0, prod.stock - orderedQty),
+          };
+        });
+
+        return {
+          ...prev,
+          orders: [newOrder, ...prev.orders],
+          products: updatedProducts,
+          cart: [],
+        };
+      });
 
       return newOrder;
     },
@@ -579,86 +888,68 @@ export function CoraProvider({ children }: { children: React.ReactNode }) {
   );
 
   const verifyOrderPayment = useCallback(
-    (
-      orderId: string,
-      action: 'APPROVE' | 'REJECT',
-      trackingNumber?: string
-    ) => {
+    (orderId: string, action: 'APPROVE' | 'REJECT', trackingNumber?: string) => {
       updateStore((prev) => {
         const targetOrder = prev.orders.find((o) => o.id === orderId);
         if (!targetOrder) return prev;
 
-        if (action === 'REJECT') {
-          return {
-            ...prev,
-            orders: prev.orders.map((order) =>
-              order.id === orderId ? { ...order, status: 'REJECTED' } : order
-            ),
-          };
-        }
+        const nextStatus: OrderStatus =
+          action === 'APPROVE' ? 'PROCESSING' : 'REJECTED';
 
-        // Guard against double-deducting stock or duplicating INCOME records
-        const alreadyApproved =
-          targetOrder.status === 'PROCESSING' ||
-          targetOrder.status === 'SHIPPED' ||
-          targetOrder.status === 'COMPLETED';
-
-        const trimmedTracking = trackingNumber?.trim();
-        const nextStatus: OrderStatus = trimmedTracking
-          ? 'SHIPPED'
-          : 'PROCESSING';
-
-        const nextOrders = prev.orders.map((order) =>
-          order.id === orderId
+        const updatedOrders = prev.orders.map((o) =>
+          o.id === orderId
             ? {
-                ...order,
+                ...o,
                 status: nextStatus,
-                trackingNumber: trimmedTracking || order.trackingNumber,
+                trackingNumber:
+                  trackingNumber?.trim() || o.trackingNumber,
               }
-            : order
+            : o
         );
 
-        if (alreadyApproved) {
-          return { ...prev, orders: nextOrders };
+        let nextFinance = prev.financialRecords;
+        let nextProducts = prev.products;
+
+        if (action === 'APPROVE') {
+          const alreadyRecorded = prev.financialRecords.some(
+            (rec) => rec.orderNumber === targetOrder.orderNumber
+          );
+          if (!alreadyRecorded) {
+            const incomeRecord: FinancialRecord = {
+              id: generateId('fin'),
+              date: new Date().toISOString(),
+              orderNumber: targetOrder.orderNumber,
+              description: `Payment for Order #${targetOrder.orderNumber} (${targetOrder.customerName})`,
+              type: 'INCOME',
+              amount: targetOrder.totalAmount,
+              category: 'Product Sales',
+            };
+            nextFinance = [incomeRecord, ...prev.financialRecords];
+          }
+        } else {
+          const restoreQtyMap = new Map<string, number>();
+          for (const item of targetOrder.items) {
+            restoreQtyMap.set(
+              item.productId,
+              (restoreQtyMap.get(item.productId) ?? 0) + item.qty
+            );
+          }
+
+          nextProducts = prev.products.map((prod) => {
+            const restoredQty = restoreQtyMap.get(prod.id);
+            if (!restoredQty) return prod;
+            return {
+              ...prod,
+              stock: prod.stock + restoredQty,
+            };
+          });
         }
-
-        const nextProducts = prev.products.map((product) => {
-          const orderedQty = targetOrder.items
-            .filter((item) => item.productId === product.id)
-            .reduce((sum, item) => sum + item.qty, 0);
-          if (orderedQty <= 0) return product;
-          return {
-            ...product,
-            stock: Math.max(0, product.stock - orderedQty),
-          };
-        });
-
-        const hasExistingIncome = prev.financialRecords.some(
-          (rec) =>
-            rec.type === 'INCOME' &&
-            rec.orderNumber === targetOrder.orderNumber
-        );
-
-        const nextFinancialRecords = hasExistingIncome
-          ? prev.financialRecords
-          : [
-              {
-                id: generateId('fin'),
-                date: new Date().toISOString(),
-                orderNumber: targetOrder.orderNumber,
-                description: `Payment for Order #${targetOrder.orderNumber} (${targetOrder.customerName})`,
-                type: 'INCOME' as const,
-                amount: targetOrder.totalAmount,
-                category: 'Product Sales',
-              },
-              ...prev.financialRecords,
-            ];
 
         return {
           ...prev,
+          orders: updatedOrders,
+          financialRecords: nextFinance,
           products: nextProducts,
-          orders: nextOrders,
-          financialRecords: nextFinancialRecords,
         };
       });
     },
@@ -674,10 +965,7 @@ export function CoraProvider({ children }: { children: React.ReactNode }) {
             ? {
                 ...order,
                 status,
-                trackingNumber:
-                  trackingNumber !== undefined
-                    ? trackingNumber.trim() || undefined
-                    : order.trackingNumber,
+                trackingNumber: trackingNumber?.trim() || order.trackingNumber,
               }
             : order
         ),
@@ -687,55 +975,65 @@ export function CoraProvider({ children }: { children: React.ReactNode }) {
   );
 
   const saveProduct = useCallback(
-    (productInput: SaveProductInput): Product => {
-      const existing = productInput.id
-        ? state.products.find((p) => p.id === productInput.id)
-        : undefined;
-
-      const savedProduct: Product = {
-        id: existing ? existing.id : productInput.id || generateId('prod'),
-        name: productInput.name.trim(),
-        subtitle: productInput.subtitle.trim(),
-        category: productInput.category,
-        price: Number(productInput.price),
-        stock: Math.max(0, Number(productInput.stock)),
-        weightGram: Math.max(0, Number(productInput.weightGram)),
-        residueSavedGram: Math.max(0, Number(productInput.residueSavedGram)),
-        image: productInput.image,
-        description: productInput.description.trim(),
-      };
+    (input: SaveProductInput): Product => {
+      let savedProduct: Product;
 
       updateStore((prev) => {
-        const exists = prev.products.some((p) => p.id === savedProduct.id);
-        const nextProducts = exists
-          ? prev.products.map((p) =>
-              p.id === savedProduct.id ? savedProduct : p
-            )
-          : [savedProduct, ...prev.products];
+        if (input.id) {
+          const existing = prev.products.find((p) => p.id === input.id);
+          savedProduct = {
+            id: input.id,
+            name: input.name.trim(),
+            subtitle: input.subtitle.trim(),
+            category: input.category,
+            price: Math.max(0, Number(input.price)),
+            stock: Math.max(0, Number(input.stock)),
+            weightGram: Math.max(0, Number(input.weightGram)),
+            residueSavedGram: Math.max(0, Number(input.residueSavedGram)),
+            image: input.image.trim(),
+            description: input.description.trim(),
+            ingredients: input.ingredients ?? existing?.ingredients,
+            netWeight: input.netWeight ?? existing?.netWeight,
+            variants: input.variants ?? existing?.variants,
+            storageInfo: input.storageInfo ?? existing?.storageInfo,
+            shelfLife: input.shelfLife ?? existing?.shelfLife,
+            benefits: input.benefits ?? existing?.benefits ?? COMMON_BENEFITS,
+          };
+          return {
+            ...prev,
+            products: prev.products.map((p) =>
+              p.id === input.id ? savedProduct : p
+            ),
+          };
+        }
 
-        const nextCart = prev.cart.map((item) =>
-          item.productId === savedProduct.id
-            ? {
-                ...item,
-                productName: savedProduct.name,
-                price: savedProduct.price,
-                image: savedProduct.image,
-                weightGram: savedProduct.weightGram,
-                residueSavedGram: savedProduct.residueSavedGram,
-              }
-            : item
-        );
-
+        savedProduct = {
+          id: generateId('prod'),
+          name: input.name.trim(),
+          subtitle: input.subtitle.trim(),
+          category: input.category,
+          price: Math.max(0, Number(input.price)),
+          stock: Math.max(0, Number(input.stock)),
+          weightGram: Math.max(0, Number(input.weightGram)),
+          residueSavedGram: Math.max(0, Number(input.residueSavedGram)),
+          image: input.image.trim(),
+          description: input.description.trim(),
+          ingredients: input.ingredients,
+          netWeight: input.netWeight,
+          variants: input.variants ?? ['Standard'],
+          storageInfo: input.storageInfo,
+          shelfLife: input.shelfLife,
+          benefits: input.benefits ?? COMMON_BENEFITS,
+        };
         return {
           ...prev,
-          products: nextProducts,
-          cart: nextCart,
+          products: [savedProduct, ...prev.products],
         };
       });
 
-      return savedProduct;
+      return savedProduct!;
     },
-    [state.products, updateStore]
+    [updateStore]
   );
 
   const deleteProduct = useCallback(
@@ -743,55 +1041,61 @@ export function CoraProvider({ children }: { children: React.ReactNode }) {
       updateStore((prev) => ({
         ...prev,
         products: prev.products.filter((p) => p.id !== productId),
-        cart: prev.cart.filter((item) => item.productId !== productId),
+        cart: prev.cart.filter((c) => c.productId !== productId),
       }));
     },
     [updateStore]
   );
 
   const saveBankAccount = useCallback(
-    (accountInput: SaveBankAccountInput): BankAccount => {
-      const existing = accountInput.id
-        ? state.bankAccounts.find((b) => b.id === accountInput.id)
-        : undefined;
-
-      const savedAccount: BankAccount = {
-        id: existing ? existing.id : accountInput.id || generateId('bank'),
-        bankName: accountInput.bankName.trim(),
-        accountNumber: accountInput.accountNumber.trim(),
-        accountHolder: accountInput.accountHolder.trim(),
-        isActive: Boolean(accountInput.isActive),
-      };
+    (input: SaveBankAccountInput): BankAccount => {
+      let savedBank: BankAccount;
 
       updateStore((prev) => {
-        const exists = prev.bankAccounts.some((b) => b.id === savedAccount.id);
-        const nextAccounts = exists
-          ? prev.bankAccounts.map((b) =>
-              b.id === savedAccount.id ? savedAccount : b
-            )
-          : [...prev.bankAccounts, savedAccount];
+        if (input.id) {
+          savedBank = {
+            id: input.id,
+            bankName: input.bankName.trim(),
+            accountNumber: input.accountNumber.trim(),
+            accountHolder: input.accountHolder.trim(),
+            isActive: Boolean(input.isActive),
+          };
+          return {
+            ...prev,
+            bankAccounts: prev.bankAccounts.map((b) =>
+              b.id === input.id ? savedBank : b
+            ),
+          };
+        }
 
+        savedBank = {
+          id: generateId('bank'),
+          bankName: input.bankName.trim(),
+          accountNumber: input.accountNumber.trim(),
+          accountHolder: input.accountHolder.trim(),
+          isActive: Boolean(input.isActive),
+        };
         return {
           ...prev,
-          bankAccounts: nextAccounts,
+          bankAccounts: [...prev.bankAccounts, savedBank],
         };
       });
 
-      return savedAccount;
+      return savedBank!;
     },
-    [state.bankAccounts, updateStore]
+    [updateStore]
   );
 
   const addManualExpense = useCallback(
-    (expense: AddExpenseInput): FinancialRecord => {
+    (input: AddExpenseInput): FinancialRecord => {
       const newRecord: FinancialRecord = {
         id: generateId('fin'),
-        date: expense.date || new Date().toISOString(),
-        orderNumber: expense.orderNumber?.trim() || undefined,
-        description: expense.description.trim(),
+        date: input.date || new Date().toISOString(),
+        orderNumber: input.orderNumber?.trim() || undefined,
+        description: input.description.trim(),
         type: 'EXPENSE',
-        amount: Math.max(0, Number(expense.amount)),
-        category: expense.category.trim(),
+        amount: Math.max(0, Number(input.amount)),
+        category: input.category.trim() || 'General Expense',
       };
 
       updateStore((prev) => ({
@@ -813,7 +1117,10 @@ export function CoraProvider({ children }: { children: React.ReactNode }) {
         location: request.location.trim(),
         estimatedKg: Math.max(0, Number(request.estimatedKg)),
         preferredDate: request.preferredDate,
-        status: 'PENDING',
+        preferredTime: request.preferredTime || '09:00 - 12:00 WITA',
+        notes: request.notes?.trim() || undefined,
+        status: 'REQUEST_SUBMITTED',
+        createdAt: new Date().toISOString(),
       };
 
       updateStore((prev) => ({
@@ -836,6 +1143,98 @@ export function CoraProvider({ children }: { children: React.ReactNode }) {
       }));
     },
     [updateStore]
+  );
+
+  const registerSupplier = useCallback(
+    (input: RegisterSupplierInput): Supplier => {
+      const newSupplier: Supplier = {
+        id: generateId('sup'),
+        name: input.name.trim(),
+        phone: input.phone.trim(),
+        businessLocation: input.businessLocation.trim(),
+        businessType: input.businessType.trim(),
+        estimatedKg: Math.max(0, Number(input.estimatedKg)),
+        productionFrequency: input.productionFrequency.trim(),
+        createdAt: new Date().toISOString(),
+      };
+
+      updateStore((prev) => ({
+        ...prev,
+        suppliers: [newSupplier, ...prev.suppliers],
+      }));
+
+      return newSupplier;
+    },
+    [updateStore]
+  );
+
+  const toggleFavoriteRecipe = useCallback(
+    (recipeId: string) => {
+      updateStore((prev) => {
+        const favorites = prev.userProfile.favoriteRecipeIds;
+        const exists = favorites.includes(recipeId);
+        const nextFavorites = exists
+          ? favorites.filter((id) => id !== recipeId)
+          : [...favorites, recipeId];
+
+        return {
+          ...prev,
+          userProfile: {
+            ...prev.userProfile,
+            favoriteRecipeIds: nextFavorites,
+          },
+        };
+      });
+    },
+    [updateStore]
+  );
+
+  const updateUserProfile = useCallback(
+    (profile: Partial<UserProfile>) => {
+      updateStore((prev) => ({
+        ...prev,
+        userProfile: {
+          ...prev.userProfile,
+          ...profile,
+        },
+      }));
+    },
+    [updateStore]
+  );
+
+  const saveRecipe = useCallback(
+    (recipe: Recipe) => {
+      updateStore((prev) => {
+        const exists = prev.recipes.some((r) => r.id === recipe.id);
+        const nextRecipes = exists
+          ? prev.recipes.map((r) => (r.id === recipe.id ? recipe : r))
+          : [recipe, ...prev.recipes];
+        return { ...prev, recipes: nextRecipes };
+      });
+    },
+    [updateStore]
+  );
+
+  const deleteRecipe = useCallback(
+    (recipeId: string) => {
+      updateStore((prev) => ({
+        ...prev,
+        recipes: prev.recipes.filter((r) => r.id !== recipeId),
+      }));
+    },
+    [updateStore]
+  );
+
+  const findOrderByNumber = useCallback(
+    (orderNumber: string): Order | undefined => {
+      const normalized = orderNumber.trim().toUpperCase();
+      return state.orders.find(
+        (o) =>
+          o.orderNumber.toUpperCase() === normalized ||
+          o.id.toUpperCase() === normalized
+      );
+    },
+    [state.orders]
   );
 
   const resetDemoData = useCallback(() => {
@@ -873,6 +1272,12 @@ export function CoraProvider({ children }: { children: React.ReactNode }) {
       addManualExpense,
       submitPickupRequest,
       updatePickupStatus,
+      registerSupplier,
+      toggleFavoriteRecipe,
+      updateUserProfile,
+      saveRecipe,
+      deleteRecipe,
+      findOrderByNumber,
       resetDemoData,
     }),
     [
@@ -893,6 +1298,12 @@ export function CoraProvider({ children }: { children: React.ReactNode }) {
       addManualExpense,
       submitPickupRequest,
       updatePickupStatus,
+      registerSupplier,
+      toggleFavoriteRecipe,
+      updateUserProfile,
+      saveRecipe,
+      deleteRecipe,
+      findOrderByNumber,
       resetDemoData,
     ]
   );
@@ -907,4 +1318,3 @@ export function useCora(): CoraContextValue {
   }
   return context;
 }
-

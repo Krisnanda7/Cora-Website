@@ -9,9 +9,12 @@ import {
   Building2,
   Check,
   CheckCircle2,
+  ChefHat,
   ClipboardCheck,
+  Clock,
   Download,
   Edit3,
+  ExternalLink,
   Eye,
   ImagePlus,
   LayoutDashboard,
@@ -20,11 +23,14 @@ import {
   Plus,
   RotateCcw,
   Save,
+  Scale,
+  Search,
   Trash2,
   TrendingDown,
   TrendingUp,
   Truck,
   UploadCloud,
+  Users,
   Wallet,
   X,
   XCircle,
@@ -34,13 +40,23 @@ import type {
   BankAccount,
   Order,
   OrderStatus,
+  PickupRequest,
   PickupRequestStatus,
   Product,
   ProductCategory,
+  Recipe,
+  RecipeCategory,
 } from '@/types/cora';
 
-type AdminTab = 'orders' | 'finance' | 'cms' | 'pickup';
+type AdminTab =
+  | 'orders'
+  | 'cms'
+  | 'pickup'
+  | 'suppliers'
+  | 'recipes'
+  | 'finance';
 type OrderFilter = 'ALL' | OrderStatus;
+type PickupFilter = 'ALL' | PickupRequestStatus;
 
 function formatRupiah(amount: number): string {
   return new Intl.NumberFormat('id-ID', {
@@ -103,19 +119,32 @@ function getPickupBadge(status: PickupRequestStatus): {
   className: string;
 } {
   switch (status) {
+    case 'REQUEST_SUBMITTED':
     case 'PENDING':
       return {
-        label: 'Pending',
+        label: 'Request Submitted',
         className: 'bg-amber-50 text-amber-800 ring-1 ring-amber-200',
       };
+    case 'REQUEST_CONFIRMED':
     case 'SCHEDULED':
       return {
-        label: 'Scheduled',
+        label: 'Request Confirmed',
         className: 'bg-sky-50 text-sky-800 ring-1 ring-sky-200',
       };
-    case 'COMPLETED':
+    case 'ON_THE_WAY':
       return {
-        label: 'Completed',
+        label: 'Driver Dispatched',
+        className: 'bg-purple-50 text-purple-800 ring-1 ring-purple-200',
+      };
+    case 'PICKED_UP':
+      return {
+        label: 'Residue Picked Up',
+        className: 'bg-teal-50 text-teal-800 ring-1 ring-teal-200',
+      };
+    case 'COMPLETED':
+    default:
+      return {
+        label: 'Completed / Processed',
         className: 'bg-[#3B5B3D]/12 text-[#3B5B3D] ring-1 ring-[#3B5B3D]/25',
       };
   }
@@ -130,6 +159,14 @@ const IMAGE_PRESETS: { label: string; value: string }[] = [
   { label: 'Cookies Stack', value: '/images/journey/cookies.jpg' },
   { label: 'Raw Coconut', value: '/images/ingredients/coconut.jpg' },
   { label: 'Flour Bowl', value: '/images/ingredients/coconut-flour.jpg' },
+];
+
+const RECIPE_IMAGE_PRESETS: { label: string; value: string }[] = [
+  { label: 'Crispy Cookies', value: '/images/products/cookies.jpg' },
+  { label: 'Fudgy Brownies', value: '/images/products/brownies.jpg' },
+  { label: 'Fluffy Pancakes', value: '/images/journey/cookies.jpg' },
+  { label: 'Banana Cake / Muffins', value: '/images/journey/brownies.jpg' },
+  { label: 'Coconut Flour Pack', value: '/images/products/coconut.jpg' },
 ];
 
 async function productImageFileToDataUrl(file: File): Promise<string> {
@@ -180,6 +217,9 @@ export default function AdminDashboardPage() {
     orders,
     financialRecords,
     pickupRequests,
+    recipes,
+    suppliers,
+    userProfile,
     verifyOrderPayment,
     updateOrderStatus,
     saveProduct,
@@ -187,6 +227,9 @@ export default function AdminDashboardPage() {
     saveBankAccount,
     addManualExpense,
     updatePickupStatus,
+    registerSupplier,
+    saveRecipe,
+    deleteRecipe,
     resetDemoData,
   } = useCora();
 
@@ -229,6 +272,40 @@ export default function AdminDashboardPage() {
   );
   const [bankIsActive, setBankIsActive] = useState(true);
 
+  // Tab 4: Pickup State
+  const [pickupFilter, setPickupFilter] = useState<PickupFilter>('ALL');
+
+  // Tab 5: Supplier Network State
+  const [supplierSearch, setSupplierSearch] = useState('');
+  const [showSupplierModal, setShowSupplierModal] = useState(false);
+  const [supName, setSupName] = useState('');
+  const [supPhone, setSupPhone] = useState('');
+  const [supLocation, setSupLocation] = useState('');
+  const [supType, setSupType] = useState('Pabrik Pengolahan Santan');
+  const [supKg, setSupKg] = useState('25');
+  const [supFreq, setSupFreq] = useState('Setiap Hari');
+
+  // Tab 6: RecipeHub CMS State
+  const [recipeFilterCategory, setRecipeFilterCategory] = useState<string>('ALL');
+  const [showRecipeModal, setShowRecipeModal] = useState(false);
+  const [editingRecipeId, setEditingRecipeId] = useState<string | null>(null);
+  const [recTitle, setRecTitle] = useState('');
+  const [recCategory, setRecCategory] = useState<RecipeCategory>(
+    'Cookies and Biscuits'
+  );
+  const [recPrepTime, setRecPrepTime] = useState('15 mins');
+  const [recCookTime, setRecCookTime] = useState('20 mins');
+  const [recServings, setRecServings] = useState('4-6 portions');
+  const [recCalories, setRecCalories] = useState('180');
+  const [recDifficulty, setRecDifficulty] = useState<
+    'Easy' | 'Medium' | 'Creative'
+  >('Easy');
+  const [recCoconutFlour, setRecCoconutFlour] = useState('50g Upcycled Coconut Flour');
+  const [recSummary, setRecSummary] = useState('');
+  const [recIngredientsText, setRecIngredientsText] = useState('');
+  const [recStepsText, setRecStepsText] = useState('');
+  const [recImage, setRecImage] = useState(RECIPE_IMAGE_PRESETS[0].value);
+
   const showToast = (msg: string) => {
     setToastMessage(msg);
     window.setTimeout(() => {
@@ -242,7 +319,10 @@ export default function AdminDashboardPage() {
     [orders]
   );
   const pendingPickupsCount = useMemo(
-    () => pickupRequests.filter((p) => p.status === 'PENDING').length,
+    () =>
+      pickupRequests.filter(
+        (p) => p.status === 'REQUEST_SUBMITTED' || p.status === 'PENDING'
+      ).length,
     [pickupRequests]
   );
 
@@ -251,6 +331,30 @@ export default function AdminDashboardPage() {
     if (orderFilter === 'ALL') return orders;
     return orders.filter((o) => o.status === orderFilter);
   }, [orders, orderFilter]);
+
+  // Filtered Pickups
+  const filteredPickups = useMemo(() => {
+    if (pickupFilter === 'ALL') return pickupRequests;
+    return pickupRequests.filter((p) => p.status === pickupFilter);
+  }, [pickupRequests, pickupFilter]);
+
+  // Filtered Suppliers
+  const filteredSuppliers = useMemo(() => {
+    const q = supplierSearch.toLowerCase().trim();
+    if (!q) return suppliers;
+    return suppliers.filter(
+      (s) =>
+        s.name.toLowerCase().includes(q) ||
+        s.businessLocation.toLowerCase().includes(q) ||
+        s.businessType.toLowerCase().includes(q)
+    );
+  }, [suppliers, supplierSearch]);
+
+  // Filtered Recipes
+  const filteredRecipes = useMemo(() => {
+    if (recipeFilterCategory === 'ALL') return recipes;
+    return recipes.filter((r) => r.category === recipeFilterCategory);
+  }, [recipes, recipeFilterCategory]);
 
   // Financial KPIs
   const financeStats = useMemo(() => {
@@ -295,6 +399,42 @@ export default function AdminDashboardPage() {
     };
   }, [financialRecords, orders]);
 
+  // Environmental Impact Analytics
+  const environmentalStats = useMemo(() => {
+    const totalResidueFromOrdersKg =
+      orders
+        .filter((o) => o.status !== 'REJECTED')
+        .reduce((sum, o) => {
+          return (
+            sum +
+            o.items.reduce((itemSum, item) => {
+              const product = products.find((p) => p.id === item.productId);
+              return itemSum + (product?.residueSavedGram ?? 200) * item.qty;
+            }, 0)
+          );
+        }, 0) / 1000;
+
+    const totalResidueFromPickupsKg = pickupRequests
+      .filter((p) => p.status === 'COMPLETED' || p.status === 'PICKED_UP')
+      .reduce((sum, p) => sum + p.estimatedKg, 0);
+
+    const totalUpcycledKg =
+      485.4 +
+      totalResidueFromOrdersKg +
+      totalResidueFromPickupsKg;
+
+    const totalFlourProducedKg = totalUpcycledKg * 0.42;
+    const co2SavedKg = totalUpcycledKg * 2.38; // ~2.38 kg CO2e mitigated per kg coconut waste prevented from landfill
+
+    return {
+      totalUpcycledKg: totalUpcycledKg.toFixed(1),
+      totalFlourProducedKg: totalFlourProducedKg.toFixed(1),
+      co2SavedKg: co2SavedKg.toFixed(1),
+      partnerSuppliersCount: suppliers.length,
+      activePickupsCount: pickupRequests.length,
+    };
+  }, [orders, products, pickupRequests, suppliers]);
+
   const handleResetDemo = () => {
     resetDemoData();
     setTrackingDrafts({});
@@ -335,7 +475,7 @@ export default function AdminDashboardPage() {
     );
   };
 
-  // --- Tab 2 Handlers ---
+  // --- Tab 2 Handlers (Finance) ---
   const handleAddExpense = (e: React.FormEvent) => {
     e.preventDefault();
     const numericAmount = Number(expAmount);
@@ -388,7 +528,7 @@ export default function AdminDashboardPage() {
     showToast('Financial report downloaded successfully as CSV.');
   };
 
-  // --- Tab 3 Handlers ---
+  // --- Tab 3 Handlers (CMS Products & Bank) ---
   const openNewProductForm = () => {
     setEditingProductId(null);
     setProdName('');
@@ -522,6 +662,127 @@ export default function AdminDashboardPage() {
     showToast('CORA bank account settings saved successfully.');
   };
 
+  // --- Tab 4 Handlers (Pickup Alur) ---
+  const advancePickupStatus = (
+    req: PickupRequest,
+    next: PickupRequestStatus
+  ) => {
+    updatePickupStatus(req.id, next);
+    const badge = getPickupBadge(next);
+    showToast(`Status penjemputan ${req.supplierName} diperbarui ke ${badge.label}.`);
+  };
+
+  // --- Tab 5 Handlers (Suppliers) ---
+  const handleSaveSupplier = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!supName.trim() || !supPhone.trim() || !supLocation.trim()) {
+      showToast('Mohon lengkapi formulir mitra pemasok.');
+      return;
+    }
+    registerSupplier({
+      name: supName.trim(),
+      phone: supPhone.trim(),
+      businessLocation: supLocation.trim(),
+      businessType: supType,
+      estimatedKg: Number(supKg) || 20,
+      productionFrequency: supFreq,
+    });
+    setShowSupplierModal(false);
+    setSupName('');
+    setSupPhone('');
+    setSupLocation('');
+    showToast('Mitra pemasok baru berhasil didaftarkan ke jaringan CORA.');
+  };
+
+  // --- Tab 6 Handlers (RecipeHub CMS) ---
+  const openNewRecipeForm = () => {
+    setEditingRecipeId(null);
+    setRecTitle('');
+    setRecCategory('Cookies and Biscuits');
+    setRecPrepTime('15 mins');
+    setRecCookTime('20 mins');
+    setRecServings('4-6 portions');
+    setRecCalories('180');
+    setRecDifficulty('Easy');
+    setRecCoconutFlour('50g Upcycled Coconut Flour');
+    setRecSummary('');
+    setRecIngredientsText(
+      '50g CORA upcycled coconut flour\n100g oat flour\n40ml coconut oil\n3 tbsp coconut sugar\n1 tsp vanilla extract\nPinch of sea salt'
+    );
+    setRecStepsText(
+      'Preheat the oven to 175°C and line a baking sheet.\nMix coconut flour and oat flour in a dry bowl.\nFold in coconut oil and coconut sugar until dough forms.\nScoop into 12 balls and flatten lightly.\nBake for 14-16 minutes until edges are golden brown.'
+    );
+    setRecImage(RECIPE_IMAGE_PRESETS[0].value);
+    setShowRecipeModal(true);
+  };
+
+  const openEditRecipeForm = (recipe: Recipe) => {
+    setEditingRecipeId(recipe.id);
+    setRecTitle(recipe.title);
+    setRecCategory(recipe.category);
+    setRecPrepTime(recipe.prepTime);
+    setRecCookTime(recipe.cookTime);
+    setRecServings(recipe.servings);
+    setRecCalories(String(recipe.calories));
+    setRecDifficulty(recipe.difficulty);
+    setRecCoconutFlour(recipe.coconutFlourUsed);
+    setRecSummary(recipe.summary);
+    setRecIngredientsText(recipe.ingredients.join('\n'));
+    setRecStepsText(recipe.steps.join('\n'));
+    setRecImage(recipe.image || RECIPE_IMAGE_PRESETS[0].value);
+    setShowRecipeModal(true);
+  };
+
+  const handleSaveRecipeForm = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!recTitle.trim() || !recIngredientsText.trim() || !recStepsText.trim()) {
+      showToast('Mohon lengkapi judul, bahan, dan langkah resep.');
+      return;
+    }
+
+    const ingredients = recIngredientsText
+      .split('\n')
+      .map((s) => s.trim())
+      .filter(Boolean);
+    const steps = recStepsText
+      .split('\n')
+      .map((s) => s.trim())
+      .filter(Boolean);
+
+    const recipeData: Recipe = {
+      id: editingRecipeId ?? `recipe-${Date.now()}`,
+      title: recTitle.trim(),
+      category: recCategory,
+      prepTime: recPrepTime.trim(),
+      cookTime: recCookTime.trim(),
+      servings: recServings.trim(),
+      calories: Number(recCalories) || 200,
+      difficulty: recDifficulty,
+      coconutFlourUsed: recCoconutFlour.trim(),
+      summary:
+        recSummary.trim() ||
+        `Resep lezat dan bergizi tinggi serat menggunakan tepung kelapa circular CORA.`,
+      ingredients,
+      steps,
+      image: recImage.trim() || RECIPE_IMAGE_PRESETS[0].value,
+    };
+
+    saveRecipe(recipeData);
+    setShowRecipeModal(false);
+    showToast(
+      editingRecipeId
+        ? `Resep "${recipeData.title}" berhasil diperbarui.`
+        : `Resep baru "${recipeData.title}" berhasil ditambahkan ke RecipeHub.`
+    );
+  };
+
+  const handleDeleteRecipe = (id: string, title: string) => {
+    if (confirm(`Hapus resep "${title}" dari RecipeHub?`)) {
+      deleteRecipe(id);
+      showToast(`Resep "${title}" telah dihapus.`);
+    }
+  };
+
   const NAV_TABS: {
     id: AdminTab;
     label: string;
@@ -535,20 +796,32 @@ export default function AdminDashboardPage() {
       badge: pendingOrdersCount > 0 ? pendingOrdersCount : undefined,
     },
     {
-      id: 'finance',
-      label: 'Financial Reports',
-      icon: Wallet,
-    },
-    {
       id: 'cms',
-      label: 'Product CMS & Bank Accounts',
+      label: 'Product & Pricing CMS',
       icon: Package,
     },
     {
       id: 'pickup',
-      label: 'Coconut Pickup Schedule',
+      label: 'Coconut Pickup Workflow',
       icon: Truck,
       badge: pendingPickupsCount > 0 ? pendingPickupsCount : undefined,
+    },
+    {
+      id: 'suppliers',
+      label: 'Supplier Network',
+      icon: Building2,
+      badge: suppliers.length > 0 ? suppliers.length : undefined,
+    },
+    {
+      id: 'recipes',
+      label: 'RecipeHub CMS',
+      icon: ChefHat,
+      badge: recipes.length > 0 ? recipes.length : undefined,
+    },
+    {
+      id: 'finance',
+      label: 'Financial & Impact Reports',
+      icon: Wallet,
     },
   ];
 
@@ -572,12 +845,12 @@ export default function AdminDashboardPage() {
                     CORA Admin
                   </p>
                   <p className="mt-1 text-[11px] font-medium text-[#6E5C52]">
-                    Circular Operations
+                    Circular Operations Console
                   </p>
                 </div>
               </Link>
               <span className="rounded-full bg-[#3B5B3D]/12 px-2.5 py-0.5 text-[10px] font-bold text-[#3B5B3D]">
-                Light
+                Verified
               </span>
             </div>
 
@@ -647,8 +920,8 @@ export default function AdminDashboardPage() {
                   {activeTabTitle}
                 </h1>
                 <p className="text-xs text-[#6E5C52]">
-                  Manage transactions, financial cash flow, product catalog,
-                  bank accounts, and coconut residue pickups.
+                  Central command for orders, suppliers, pickups, recipe CMS,
+                  and circular economy accounting.
                 </p>
               </div>
             </div>
@@ -919,11 +1192,937 @@ export default function AdminDashboardPage() {
           )}
 
           {/* ============================================================== */}
-          {/* TAB 2: LAPORAN KEUANGAN (FINANCIAL REPORT)                     */}
+          {/* TAB 2: PRODUCT & PRICING CMS + BANK ACCOUNTS                   */}
+          {/* ============================================================== */}
+          {activeTab === 'cms' && (
+            <section className="animate-cora-fade-in space-y-10">
+              {/* Product Catalog Management */}
+              <div className="space-y-5">
+                <div className="flex flex-wrap items-center justify-between gap-3">
+                  <div>
+                    <h2 className="font-serif text-xl font-bold text-[#2C1E18]">
+                      Product Catalog &amp; Live Stock
+                    </h2>
+                    <p className="text-xs text-[#6E5C52]">
+                      Manage prices, live stock, variants, and high-resolution packaging
+                      photos.
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={openNewProductForm}
+                    className="inline-flex items-center gap-1.5 rounded-full bg-[#3B5B3D] px-5 py-2.5 text-xs font-semibold text-white transition hover:bg-[#2F4A31]"
+                  >
+                    <Plus className="h-4 w-4" />
+                    Add New Product
+                  </button>
+                </div>
+
+                <div className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
+                  {products.map((product) => {
+                    const draft = quickEdits[product.id] ?? {
+                      price: String(product.price),
+                      stock: String(product.stock),
+                    };
+                    const isDirty =
+                      draft.price !== String(product.price) ||
+                      draft.stock !== String(product.stock);
+
+                    return (
+                      <div
+                        key={product.id}
+                        className="flex flex-col justify-between rounded-3xl border border-[#E5DEC9] bg-white p-5 shadow-xs transition hover:shadow-md"
+                      >
+                        <div>
+                          {/* Photo & Quick Upload */}
+                          <div className="relative aspect-4/3 w-full overflow-hidden rounded-2xl border border-[#E5DEC9] bg-[#FAF8F5]">
+                            <Image
+                              src={product.image}
+                              alt={product.name}
+                              fill
+                              unoptimized
+                              className="object-contain p-3"
+                            />
+                            <label className="absolute right-3 bottom-3 inline-flex cursor-pointer items-center gap-1 rounded-full bg-[#2C1E18]/85 px-3 py-1.5 text-[11px] font-semibold text-white shadow-sm transition hover:bg-[#2C1E18]">
+                              <ImagePlus className="h-3.5 w-3.5" />
+                              Change Photo
+                              <input
+                                type="file"
+                                accept="image/*"
+                                onChange={(e) =>
+                                  handleQuickPhotoUpload(product, e)
+                                }
+                                className="sr-only"
+                              />
+                            </label>
+                          </div>
+
+                          <div className="mt-4">
+                            <span className="rounded-full bg-[#3B5B3D]/10 px-2.5 py-0.5 text-[10px] font-bold text-[#3B5B3D]">
+                              {product.category}
+                            </span>
+                            <h3 className="mt-1.5 font-serif text-lg font-bold text-[#2C1E18]">
+                              {product.name}
+                            </h3>
+                            <p className="line-clamp-2 text-xs text-[#6E5C52]">
+                              {product.description}
+                            </p>
+                          </div>
+
+                          {/* Quick Edit Price & Stock */}
+                          <div className="mt-4 grid grid-cols-2 gap-3 rounded-2xl bg-[#FAF8F5] p-3 text-xs ring-1 ring-[#E5DEC9]/70">
+                            <div>
+                              <label className="block text-[11px] font-medium text-[#6E5C52]">
+                                Price (IDR)
+                              </label>
+                              <input
+                                type="number"
+                                value={draft.price}
+                                onChange={(e) =>
+                                  setQuickEdits((prev) => ({
+                                    ...prev,
+                                    [product.id]: {
+                                      price: e.target.value,
+                                      stock: draft.stock,
+                                    },
+                                  }))
+                                }
+                                className="mt-1 w-full rounded-lg bg-white px-2.5 py-1 font-bold text-[#2C1E18] ring-1 ring-[#E5DEC9] focus:ring-2 focus:ring-[#3B5B3D] focus:outline-none"
+                              />
+                            </div>
+                            <div>
+                              <label className="block text-[11px] font-medium text-[#6E5C52]">
+                                Live Stock
+                              </label>
+                              <input
+                                type="number"
+                                value={draft.stock}
+                                onChange={(e) =>
+                                  setQuickEdits((prev) => ({
+                                    ...prev,
+                                    [product.id]: {
+                                      price: draft.price,
+                                      stock: e.target.value,
+                                    },
+                                  }))
+                                }
+                                className="mt-1 w-full rounded-lg bg-white px-2.5 py-1 font-bold text-[#2C1E18] ring-1 ring-[#E5DEC9] focus:ring-2 focus:ring-[#3B5B3D] focus:outline-none"
+                              />
+                            </div>
+                          </div>
+
+                          <p className="mt-2 text-[11px] text-[#3B5B3D] font-medium">
+                            ♻ Rescues {product.residueSavedGram}g coconut residue
+                          </p>
+                        </div>
+
+                        <div className="mt-5 flex items-center justify-between gap-2 border-t border-[#F0EAE0] pt-4">
+                          <button
+                            type="button"
+                            onClick={() => openEditProductForm(product)}
+                            className="inline-flex items-center gap-1 text-xs font-semibold text-[#3B5B3D] hover:underline"
+                          >
+                            <Edit3 className="h-3.5 w-3.5" />
+                            Full Edit
+                          </button>
+
+                          <div className="flex items-center gap-2">
+                            {isDirty && (
+                              <button
+                                type="button"
+                                onClick={() => handleQuickSaveProduct(product)}
+                                className="inline-flex items-center gap-1 rounded-full bg-[#3B5B3D] px-3.5 py-1.5 text-xs font-semibold text-white shadow-2xs hover:bg-[#2F4A31]"
+                              >
+                                <Save className="h-3 w-3" />
+                                Save
+                              </button>
+                            )}
+                            <button
+                              type="button"
+                              onClick={() => {
+                                if (
+                                  confirm(`Delete product ${product.name}?`)
+                                ) {
+                                  deleteProduct(product.id);
+                                  showToast(
+                                    `Product ${product.name} deleted.`
+                                  );
+                                }
+                              }}
+                              className="rounded-full p-1.5 text-red-600 hover:bg-red-50"
+                              title="Delete product"
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Destination Bank Accounts */}
+              <div className="space-y-5 border-t border-[#E5DEC9] pt-8">
+                <div>
+                  <h2 className="font-serif text-xl font-bold text-[#2C1E18]">
+                    CORA Destination Bank Accounts
+                  </h2>
+                  <p className="text-xs text-[#6E5C52]">
+                    Accounts displayed to customers on the checkout page for
+                    manual bank transfer.
+                  </p>
+                </div>
+
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                  {bankAccounts.map((bank) => (
+                    <div
+                      key={bank.id}
+                      className="flex items-center justify-between rounded-2xl border border-[#E5DEC9] bg-white p-4 shadow-xs"
+                    >
+                      <div className="flex items-center gap-3">
+                        <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#3B5B3D]/10 text-[#3B5B3D]">
+                          <Building2 className="h-5 w-5" />
+                        </span>
+                        <div>
+                          <p className="font-bold text-[#2C1E18]">
+                            {bank.bankName}
+                          </p>
+                          <p className="font-mono text-sm font-semibold text-[#3B5B3D]">
+                            {bank.accountNumber}
+                          </p>
+                          <p className="text-[11px] text-[#6E5C52]">
+                            a.n. {bank.accountHolder}
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center gap-2">
+                        <span
+                          className={`rounded-full px-2 py-0.5 text-[10px] font-bold ${
+                            bank.isActive
+                              ? 'bg-[#3B5B3D]/12 text-[#3B5B3D]'
+                              : 'bg-stone-100 text-stone-500'
+                          }`}
+                        >
+                          {bank.isActive ? 'Active' : 'Inactive'}
+                        </span>
+                        <button
+                          type="button"
+                          onClick={() => handleEditBank(bank)}
+                          className="rounded-full p-1.5 text-[#3B5B3D] hover:bg-[#3B5B3D]/10"
+                        >
+                          <Edit3 className="h-4 w-4" />
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Bank Account Edit / Add Form */}
+                <form
+                  onSubmit={handleSaveBankForm}
+                  className="rounded-3xl border border-[#E5DEC9] bg-white p-6 shadow-xs space-y-4"
+                >
+                  <h3 className="font-serif text-base font-bold text-[#2C1E18]">
+                    {editingBankId
+                      ? 'Edit Bank Account'
+                      : 'Add New Destination Bank Account'}
+                  </h3>
+
+                  <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+                    <div>
+                      <label className="block text-xs font-semibold text-[#2C1E18]">
+                        Bank Name
+                      </label>
+                      <input
+                        type="text"
+                        required
+                        value={bankName}
+                        onChange={(e) => setBankName(e.target.value)}
+                        placeholder="e.g. Bank BCA / Mandiri / BNI"
+                        className="mt-1.5 w-full rounded-xl bg-[#FAF8F5] px-3.5 py-2 text-xs text-[#2C1E18] ring-1 ring-[#E5DEC9] focus:bg-white focus:ring-2 focus:ring-[#3B5B3D] focus:outline-none"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-semibold text-[#2C1E18]">
+                        Account Number
+                      </label>
+                      <input
+                        type="text"
+                        required
+                        value={accountNumber}
+                        onChange={(e) => setAccountNumber(e.target.value)}
+                        placeholder="e.g. 8820192831"
+                        className="mt-1.5 w-full rounded-xl bg-[#FAF8F5] px-3.5 py-2 text-xs text-[#2C1E18] ring-1 ring-[#E5DEC9] focus:bg-white focus:ring-2 focus:ring-[#3B5B3D] focus:outline-none"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-semibold text-[#2C1E18]">
+                        Account Holder
+                      </label>
+                      <input
+                        type="text"
+                        required
+                        value={accountHolder}
+                        onChange={(e) => setAccountHolder(e.target.value)}
+                        placeholder="PT CORA Circular Innovation"
+                        className="mt-1.5 w-full rounded-xl bg-[#FAF8F5] px-3.5 py-2 text-xs text-[#2C1E18] ring-1 ring-[#E5DEC9] focus:bg-white focus:ring-2 focus:ring-[#3B5B3D] focus:outline-none"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="flex items-center justify-between pt-2">
+                    <label className="inline-flex items-center gap-2 text-xs font-semibold text-[#2C1E18]">
+                      <input
+                        type="checkbox"
+                        checked={bankIsActive}
+                        onChange={(e) => setBankIsActive(e.target.checked)}
+                        className="h-4 w-4 rounded text-[#3B5B3D] focus:ring-[#3B5B3D]"
+                      />
+                      Enable account on checkout page
+                    </label>
+
+                    <div className="flex items-center gap-2">
+                      {editingBankId && (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setEditingBankId(null);
+                            setBankName('');
+                            setAccountNumber('');
+                          }}
+                          className="rounded-full border border-[#E5DEC9] px-4 py-2 text-xs font-semibold text-[#5C4B42]"
+                        >
+                          Cancel
+                        </button>
+                      )}
+                      <button
+                        type="submit"
+                        className="inline-flex items-center gap-1.5 rounded-full bg-[#3B5B3D] px-5 py-2 text-xs font-semibold text-white hover:bg-[#2F4A31]"
+                      >
+                        <Save className="h-3.5 w-3.5" />
+                        {editingBankId ? 'Save Account' : 'Add Bank'}
+                      </button>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </section>
+          )}
+
+          {/* ============================================================== */}
+          {/* TAB 3: COCONUT PICKUP WORKFLOW (5-STAGE STATUS ALUR)           */}
+          {/* ============================================================== */}
+          {activeTab === 'pickup' && (
+            <section className="animate-cora-fade-in space-y-6">
+              {/* Pickup KPI Cards */}
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-4">
+                <div className="rounded-3xl border border-[#E5DEC9] bg-white p-5 shadow-xs">
+                  <p className="text-xs font-semibold text-[#6E5C52]">
+                    Total Partner Requests
+                  </p>
+                  <p className="mt-2 text-2xl font-extrabold text-[#2C1E18]">
+                    {pickupRequests.length}
+                  </p>
+                  <p className="mt-1 text-[11px] text-[#3B5B3D]">
+                    Active pickup queue
+                  </p>
+                </div>
+                <div className="rounded-3xl border border-[#E5DEC9] bg-white p-5 shadow-xs">
+                  <p className="text-xs font-semibold text-[#6E5C52]">
+                    Request Submitted
+                  </p>
+                  <p className="mt-2 text-2xl font-extrabold text-amber-700">
+                    {pendingPickupsCount}
+                  </p>
+                  <p className="mt-1 text-[11px] text-amber-800">
+                    Needs dispatch confirmation
+                  </p>
+                </div>
+                <div className="rounded-3xl border border-[#E5DEC9] bg-white p-5 shadow-xs">
+                  <p className="text-xs font-semibold text-[#6E5C52]">
+                    En Route / Picked Up
+                  </p>
+                  <p className="mt-2 text-2xl font-extrabold text-purple-700">
+                    {
+                      pickupRequests.filter(
+                        (p) =>
+                          p.status === 'ON_THE_WAY' || p.status === 'PICKED_UP'
+                      ).length
+                    }
+                  </p>
+                  <p className="mt-1 text-[11px] text-purple-800">
+                    Logistics in progress
+                  </p>
+                </div>
+                <div className="rounded-3xl border border-[#E5DEC9] bg-white p-5 shadow-xs">
+                  <p className="text-xs font-semibold text-[#6E5C52]">
+                    Total Estimated Residue
+                  </p>
+                  <p className="mt-2 text-2xl font-extrabold text-[#3B5B3D]">
+                    {pickupRequests.reduce((s, p) => s + p.estimatedKg, 0)} kg
+                  </p>
+                  <p className="mt-1 text-[11px] text-[#3B5B3D]">
+                    Rescued from local partners
+                  </p>
+                </div>
+              </div>
+
+              {/* 5-Stage Status Workflow Legend & Filter */}
+              <div className="rounded-3xl border border-[#E5DEC9] bg-white p-5 shadow-xs space-y-4">
+                <div className="flex flex-wrap items-center justify-between gap-3">
+                  <div>
+                    <h3 className="font-serif text-base font-bold text-[#2C1E18]">
+                      5-Stage Pickup Alur Status
+                    </h3>
+                    <p className="text-xs text-[#6E5C52]">
+                      1. Request Submitted → 2. Request Confirmed → 3. On the Way
+                      → 4. Picked Up → 5. Completed
+                    </p>
+                  </div>
+                </div>
+
+                {/* Filter Pills */}
+                <div className="flex flex-wrap items-center gap-2 pt-2 border-t border-[#F0EAE0]">
+                  {(
+                    [
+                      { label: 'All Statuses', value: 'ALL' },
+                      {
+                        label: '1. Request Submitted',
+                        value: 'REQUEST_SUBMITTED',
+                      },
+                      {
+                        label: '2. Request Confirmed',
+                        value: 'REQUEST_CONFIRMED',
+                      },
+                      { label: '3. On the Way', value: 'ON_THE_WAY' },
+                      { label: '4. Picked Up', value: 'PICKED_UP' },
+                      { label: '5. Completed', value: 'COMPLETED' },
+                    ] as { label: string; value: PickupFilter }[]
+                  ).map((item) => {
+                    const active = pickupFilter === item.value;
+                    return (
+                      <button
+                        key={item.value}
+                        type="button"
+                        onClick={() => setPickupFilter(item.value)}
+                        className={`rounded-full px-3.5 py-1.5 text-xs font-semibold transition ${
+                          active
+                            ? 'bg-[#3B5B3D] text-white'
+                            : 'border border-[#E5DEC9] bg-[#FAF8F5] text-[#5C4B42] hover:bg-[#EAE5D5]'
+                        }`}
+                      >
+                        {item.label}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Pickup Requests Table */}
+              <div className="overflow-hidden rounded-3xl border border-[#E5DEC9] bg-white shadow-xs">
+                <div className="overflow-x-auto">
+                  <table className="w-full min-w-[900px] border-collapse text-left text-xs">
+                    <thead>
+                      <tr className="border-b border-[#E5DEC9] bg-[#FAF8F5] text-[11px] font-bold uppercase tracking-wider text-[#6E5C52]">
+                        <th className="px-5 py-4">Partner / Supplier</th>
+                        <th className="px-5 py-4">Pickup Location</th>
+                        <th className="px-5 py-4">Residue Amount</th>
+                        <th className="px-5 py-4">Preferred Slot</th>
+                        <th className="px-5 py-4">Current Stage</th>
+                        <th className="px-5 py-4 text-right">Workflow Progression</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-[#F0EAE0]">
+                      {filteredPickups.length === 0 ? (
+                        <tr>
+                          <td
+                            colSpan={6}
+                            className="px-6 py-12 text-center text-sm text-[#6E5C52]"
+                          >
+                            No pickup requests found for this filter.
+                          </td>
+                        </tr>
+                      ) : (
+                        filteredPickups.map((req) => {
+                          const badge = getPickupBadge(req.status);
+                          return (
+                            <tr
+                              key={req.id}
+                              className="transition hover:bg-[#FAF8F5]/60"
+                            >
+                              <td className="px-5 py-4">
+                                <p className="font-bold text-[#2C1E18]">
+                                  {req.supplierName}
+                                </p>
+                                <a
+                                  href={`https://wa.me/${req.phone.replace(
+                                    /\D/g,
+                                    ''
+                                  )}`}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="mt-0.5 inline-flex items-center gap-1 text-[11px] text-[#3B5B3D] hover:underline"
+                                >
+                                  {req.phone}
+                                  <ExternalLink className="h-3 w-3" />
+                                </a>
+                              </td>
+                              <td className="px-5 py-4 max-w-xs text-[#5C4B42]">
+                                <p>{req.location}</p>
+                                {req.notes && (
+                                  <p className="mt-1 text-[11px] italic text-[#8A776C]">
+                                    Note: {req.notes}
+                                  </p>
+                                )}
+                              </td>
+                              <td className="px-5 py-4 font-bold text-[#2C1E18]">
+                                {req.estimatedKg} kg
+                              </td>
+                              <td className="px-5 py-4 text-[#5C4B42]">
+                                <p className="font-medium text-[#2C1E18]">
+                                  {req.preferredDate}
+                                </p>
+                                <p className="text-[11px] text-[#6E5C52]">
+                                  {req.preferredTime || '09:00 - 12:00 WITA'}
+                                </p>
+                              </td>
+                              <td className="px-5 py-4">
+                                <span
+                                  className={`inline-flex rounded-full px-3 py-1 text-[11px] font-semibold whitespace-nowrap ${badge.className}`}
+                                >
+                                  {badge.label}
+                                </span>
+                              </td>
+                              <td className="px-5 py-4 text-right">
+                                <div className="inline-flex flex-wrap justify-end gap-1.5">
+                                  {(req.status === 'REQUEST_SUBMITTED' ||
+                                    req.status === 'PENDING') && (
+                                    <button
+                                      type="button"
+                                      onClick={() =>
+                                        advancePickupStatus(
+                                          req,
+                                          'REQUEST_CONFIRMED'
+                                        )
+                                      }
+                                      className="rounded-full bg-sky-600 px-3 py-1.5 text-[11px] font-semibold text-white hover:bg-sky-700"
+                                    >
+                                      Confirm Request
+                                    </button>
+                                  )}
+
+                                  {(req.status === 'REQUEST_CONFIRMED' ||
+                                    req.status === 'SCHEDULED') && (
+                                    <button
+                                      type="button"
+                                      onClick={() =>
+                                        advancePickupStatus(
+                                          req,
+                                          'ON_THE_WAY'
+                                        )
+                                      }
+                                      className="rounded-full bg-purple-600 px-3 py-1.5 text-[11px] font-semibold text-white hover:bg-purple-700"
+                                    >
+                                      Dispatch Driver
+                                    </button>
+                                  )}
+
+                                  {req.status === 'ON_THE_WAY' && (
+                                    <button
+                                      type="button"
+                                      onClick={() =>
+                                        advancePickupStatus(req, 'PICKED_UP')
+                                      }
+                                      className="rounded-full bg-teal-600 px-3 py-1.5 text-[11px] font-semibold text-white hover:bg-teal-700"
+                                    >
+                                      Mark Picked Up
+                                    </button>
+                                  )}
+
+                                  {req.status === 'PICKED_UP' && (
+                                    <button
+                                      type="button"
+                                      onClick={() =>
+                                        advancePickupStatus(req, 'COMPLETED')
+                                      }
+                                      className="rounded-full bg-[#3B5B3D] px-3 py-1.5 text-[11px] font-semibold text-white hover:bg-[#2F4A31]"
+                                    >
+                                      Complete &amp; Process
+                                    </button>
+                                  )}
+
+                                  {req.status === 'COMPLETED' && (
+                                    <span className="inline-flex items-center gap-1 text-[11px] font-bold text-[#3B5B3D]">
+                                      <CheckCircle2 className="h-3.5 w-3.5" />
+                                      Upcycled to Flour
+                                    </span>
+                                  )}
+                                </div>
+                              </td>
+                            </tr>
+                          );
+                        })
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </section>
+          )}
+
+          {/* ============================================================== */}
+          {/* TAB 4: SUPPLIER NETWORK MANAGEMENT                             */}
+          {/* ============================================================== */}
+          {activeTab === 'suppliers' && (
+            <section className="animate-cora-fade-in space-y-6">
+              {/* Supplier Network KPIs */}
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+                <div className="rounded-3xl border border-[#E5DEC9] bg-white p-5 shadow-xs">
+                  <div className="flex items-center justify-between">
+                    <p className="text-xs font-semibold text-[#6E5C52]">
+                      Mitra Pemasok Terdaftar
+                    </p>
+                    <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#3B5B3D]/12 text-[#3B5B3D]">
+                      <Building2 className="h-4 w-4" />
+                    </span>
+                  </div>
+                  <p className="mt-2 text-2xl font-extrabold text-[#2C1E18]">
+                    {suppliers.length} Mitra
+                  </p>
+                  <p className="mt-1 text-[11px] text-[#3B5B3D]">
+                    UMKM &amp; Sentra Kelapa Aktif
+                  </p>
+                </div>
+
+                <div className="rounded-3xl border border-[#E5DEC9] bg-white p-5 shadow-xs">
+                  <div className="flex items-center justify-between">
+                    <p className="text-xs font-semibold text-[#6E5C52]">
+                      Potensi Pasokan Harian
+                    </p>
+                    <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-amber-50 text-amber-700">
+                      <Scale className="h-4 w-4" />
+                    </span>
+                  </div>
+                  <p className="mt-2 text-2xl font-extrabold text-[#2C1E18]">
+                    {suppliers.reduce((s, sup) => s + sup.estimatedKg, 0)} kg /
+                    hari
+                  </p>
+                  <p className="mt-1 text-[11px] text-[#6E5C52]">
+                    Kapasitas ampas segar terjadwal
+                  </p>
+                </div>
+
+                <div className="rounded-3xl border border-[#E5DEC9] bg-white p-5 shadow-xs">
+                  <div className="flex items-center justify-between">
+                    <p className="text-xs font-semibold text-[#6E5C52]">
+                      Zona Operasional Aktif
+                    </p>
+                    <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-sky-50 text-sky-700">
+                      <Truck className="h-4 w-4" />
+                    </span>
+                  </div>
+                  <p className="mt-2 text-2xl font-extrabold text-[#2C1E18]">
+                    Denpasar &amp; Badung
+                  </p>
+                  <p className="mt-1 text-[11px] text-sky-700">
+                    Jadwal rute penjemputan berkala
+                  </p>
+                </div>
+              </div>
+
+              {/* Action Bar & Search */}
+              <div className="flex flex-wrap items-center justify-between gap-3 rounded-3xl border border-[#E5DEC9] bg-white p-4 shadow-xs">
+                <div className="relative flex-1 min-w-[240px]">
+                  <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-[#8A776C]" />
+                  <input
+                    type="text"
+                    value={supplierSearch}
+                    onChange={(e) => setSupplierSearch(e.target.value)}
+                    placeholder="Cari nama mitra, jenis usaha, atau lokasi..."
+                    className="w-full rounded-full bg-[#FAF8F5] py-2 pl-10 pr-4 text-xs text-[#2C1E18] ring-1 ring-[#E5DEC9] focus:bg-white focus:ring-2 focus:ring-[#3B5B3D] focus:outline-none"
+                  />
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => setShowSupplierModal(true)}
+                  className="inline-flex items-center gap-1.5 rounded-full bg-[#3B5B3D] px-5 py-2.5 text-xs font-semibold text-white transition hover:bg-[#2F4A31]"
+                >
+                  <Plus className="h-4 w-4" />
+                  Daftarkan Mitra Baru
+                </button>
+              </div>
+
+              {/* Supplier Table */}
+              <div className="overflow-hidden rounded-3xl border border-[#E5DEC9] bg-white shadow-xs">
+                <div className="overflow-x-auto">
+                  <table className="w-full min-w-[850px] border-collapse text-left text-xs">
+                    <thead>
+                      <tr className="border-b border-[#E5DEC9] bg-[#FAF8F5] text-[11px] font-bold uppercase tracking-wider text-[#6E5C52]">
+                        <th className="px-5 py-4">Nama Usaha / Mitra</th>
+                        <th className="px-5 py-4">Jenis Usaha</th>
+                        <th className="px-5 py-4">Alamat &amp; Kontak</th>
+                        <th className="px-5 py-4">Estimasi Harian</th>
+                        <th className="px-5 py-4">Frekuensi Produksi</th>
+                        <th className="px-5 py-4">Status &amp; Bergabung</th>
+                        <th className="px-5 py-4 text-right">Aksi</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-[#F0EAE0]">
+                      {filteredSuppliers.length === 0 ? (
+                        <tr>
+                          <td
+                            colSpan={7}
+                            className="px-6 py-12 text-center text-sm text-[#6E5C52]"
+                          >
+                            Tidak ada mitra pemasok yang cocok dengan pencarian.
+                          </td>
+                        </tr>
+                      ) : (
+                        filteredSuppliers.map((sup) => (
+                          <tr
+                            key={sup.id}
+                            className="transition hover:bg-[#FAF8F5]/60"
+                          >
+                            <td className="px-5 py-4">
+                              <p className="font-bold text-[#2C1E18]">
+                                {sup.name}
+                              </p>
+                              <p className="text-[11px] text-[#6E5C52]">
+                                ID: {sup.id}
+                              </p>
+                            </td>
+                            <td className="px-5 py-4">
+                              <span className="rounded-full bg-[#FAF8F5] px-2.5 py-1 text-[11px] font-medium text-[#5C4B42] ring-1 ring-[#E5DEC9]">
+                                {sup.businessType}
+                              </span>
+                            </td>
+                            <td className="px-5 py-4 max-w-xs">
+                              <p className="text-[#2C1E18]">
+                                {sup.businessLocation}
+                              </p>
+                              <a
+                                href={`https://wa.me/${sup.phone.replace(
+                                  /\D/g,
+                                  ''
+                                )}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="mt-0.5 inline-flex items-center gap-1 text-[11px] font-medium text-[#3B5B3D] hover:underline"
+                              >
+                                {sup.phone}
+                                <ExternalLink className="h-3 w-3" />
+                              </a>
+                            </td>
+                            <td className="px-5 py-4 font-bold text-[#2C1E18]">
+                              {sup.estimatedKg} kg / hari
+                            </td>
+                            <td className="px-5 py-4 text-[#5C4B42]">
+                              {sup.productionFrequency}
+                            </td>
+                            <td className="px-5 py-4">
+                              <span className="inline-flex rounded-full bg-[#3B5B3D]/12 px-2.5 py-0.5 text-[10px] font-bold text-[#3B5B3D]">
+                                Aktif Terverifikasi
+                              </span>
+                              <p className="mt-1 text-[11px] text-[#8A776C]">
+                                {formatDateTime(sup.createdAt)}
+                              </p>
+                            </td>
+                            <td className="px-5 py-4 text-right">
+                              <a
+                                href={`https://wa.me/${sup.phone.replace(
+                                  /\D/g,
+                                  ''
+                                )}?text=Halo%20${encodeURIComponent(
+                                  sup.name
+                                )},%20tim%20logistik%20CORA%20ingin%20mengonfirmasi%20jadwal%20penjemputan%20ampas%20kelapa.`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="inline-flex items-center gap-1 rounded-full bg-[#3B5B3D]/10 px-3 py-1.5 text-[11px] font-semibold text-[#3B5B3D] transition hover:bg-[#3B5B3D] hover:text-white"
+                              >
+                                Kontak WA
+                              </a>
+                            </td>
+                          </tr>
+                        ))
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </section>
+          )}
+
+          {/* ============================================================== */}
+          {/* TAB 5: RECIPEHUB CMS (MANAJEMEN RESEP)                         */}
+          {/* ============================================================== */}
+          {activeTab === 'recipes' && (
+            <section className="animate-cora-fade-in space-y-6">
+              {/* RecipeHub Header Stats */}
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+                <div className="rounded-3xl border border-[#E5DEC9] bg-white p-5 shadow-xs">
+                  <p className="text-xs font-semibold text-[#6E5C52]">
+                    Total Resep Terdaftar
+                  </p>
+                  <p className="mt-2 text-2xl font-extrabold text-[#2C1E18]">
+                    {recipes.length} Resep
+                  </p>
+                  <p className="mt-1 text-[11px] text-[#3B5B3D]">
+                    Koleksi resep tepung circular CORA
+                  </p>
+                </div>
+                <div className="rounded-3xl border border-[#E5DEC9] bg-white p-5 shadow-xs">
+                  <p className="text-xs font-semibold text-[#6E5C52]">
+                    Kategori Menu
+                  </p>
+                  <p className="mt-2 text-2xl font-extrabold text-[#2C1E18]">
+                    4 Kategori
+                  </p>
+                  <p className="mt-1 text-[11px] text-[#6E5C52]">
+                    Cookies, Brownies, Healthy Snacks, Creative
+                  </p>
+                </div>
+                <div className="rounded-3xl border border-[#E5DEC9] bg-white p-5 shadow-xs">
+                  <p className="text-xs font-semibold text-[#6E5C52]">
+                    Resep Disimpan Pengguna
+                  </p>
+                  <p className="mt-2 text-2xl font-extrabold text-[#4E9A34]">
+                    {userProfile.favoriteRecipeIds.length} Favorit
+                  </p>
+                  <p className="mt-1 text-[11px] text-[#4E9A34]">
+                    Bookmark pembaca RecipeHub
+                  </p>
+                </div>
+              </div>
+
+              {/* Action Bar & Category Filters */}
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <div className="flex flex-wrap items-center gap-2">
+                  {[
+                    'ALL',
+                    'Cookies and Biscuits',
+                    'Cakes and Brownies',
+                    'Healthy Snacks',
+                    'Creative Recipes',
+                  ].map((cat) => {
+                    const active = recipeFilterCategory === cat;
+                    return (
+                      <button
+                        key={cat}
+                        type="button"
+                        onClick={() => setRecipeFilterCategory(cat)}
+                        className={`rounded-full px-4 py-2 text-xs font-semibold transition ${
+                          active
+                            ? 'bg-[#3B5B3D] text-white'
+                            : 'border border-[#E5DEC9] bg-white text-[#5C4B42] hover:bg-[#F0ECE1]'
+                        }`}
+                      >
+                        {cat === 'ALL' ? 'Semua Resep' : cat}
+                      </button>
+                    );
+                  })}
+                </div>
+
+                <button
+                  type="button"
+                  onClick={openNewRecipeForm}
+                  className="inline-flex items-center gap-1.5 rounded-full bg-[#3B5B3D] px-5 py-2.5 text-xs font-semibold text-white transition hover:bg-[#2F4A31]"
+                >
+                  <Plus className="h-4 w-4" />
+                  Tambah Resep Baru
+                </button>
+              </div>
+
+              {/* Recipe Cards Grid */}
+              <div className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
+                {filteredRecipes.map((recipe) => (
+                  <div
+                    key={recipe.id}
+                    className="flex flex-col justify-between rounded-3xl border border-[#E5DEC9] bg-white p-5 shadow-xs transition hover:shadow-md"
+                  >
+                    <div>
+                      {/* Image Preview */}
+                      <div className="relative aspect-16/10 w-full overflow-hidden rounded-2xl border border-[#E5DEC9] bg-[#FAF8F5]">
+                        <Image
+                          src={recipe.image || RECIPE_IMAGE_PRESETS[0].value}
+                          alt={recipe.title}
+                          fill
+                          unoptimized
+                          className="object-cover"
+                        />
+                        <span className="absolute top-3 left-3 rounded-full bg-[#2C1E18]/80 px-2.5 py-1 text-[10px] font-bold text-white backdrop-blur-xs">
+                          {recipe.category}
+                        </span>
+                        <span className="absolute top-3 right-3 rounded-full bg-[#3B5B3D] px-2.5 py-1 text-[10px] font-bold text-white">
+                          {recipe.difficulty}
+                        </span>
+                      </div>
+
+                      <div className="mt-4">
+                        <h3 className="font-serif text-lg font-bold text-[#2C1E18]">
+                          {recipe.title}
+                        </h3>
+                        <p className="mt-1 line-clamp-2 text-xs text-[#6E5C52]">
+                          {recipe.summary}
+                        </p>
+
+                        <div className="mt-3 flex flex-wrap items-center gap-3 text-[11px] text-[#5C4B42]">
+                          <span className="inline-flex items-center gap-1">
+                            <Clock className="h-3.5 w-3.5 text-[#3B5B3D]" />
+                            {recipe.prepTime} prep • {recipe.cookTime} cook
+                          </span>
+                          <span className="inline-flex items-center gap-1">
+                            <Users className="h-3.5 w-3.5 text-[#3B5B3D]" />
+                            {recipe.servings}
+                          </span>
+                        </div>
+
+                        <div className="mt-3 rounded-xl bg-[#FAF8F5] p-2.5 text-[11px] text-[#3B5B3D] ring-1 ring-[#E5DEC9]">
+                          🥥 {recipe.coconutFlourUsed}
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="mt-5 flex items-center justify-between border-t border-[#F0EAE0] pt-4">
+                      <div className="text-[11px] text-[#8A776C]">
+                        {recipe.ingredients.length} bahan •{' '}
+                        {recipe.steps.length} langkah
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <button
+                          type="button"
+                          onClick={() => openEditRecipeForm(recipe)}
+                          className="inline-flex items-center gap-1 rounded-full border border-[#3B5B3D]/30 bg-[#3B5B3D]/8 px-3 py-1.5 text-xs font-semibold text-[#3B5B3D] hover:bg-[#3B5B3D] hover:text-white"
+                        >
+                          <Edit3 className="h-3.5 w-3.5" />
+                          Edit
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() =>
+                            handleDeleteRecipe(recipe.id, recipe.title)
+                          }
+                          className="rounded-full p-1.5 text-red-600 hover:bg-red-50"
+                          title="Hapus Resep"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </section>
+          )}
+
+          {/* ============================================================== */}
+          {/* TAB 6: LAPORAN KEUANGAN & DAMPAK SIRKULAR                      */}
           {/* ============================================================== */}
           {activeTab === 'finance' && (
             <section className="animate-cora-fade-in space-y-8">
-              {/* 4 Summary KPI Cards */}
+              {/* 4 Financial KPI Cards */}
               <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-4">
                 <div className="rounded-3xl border border-[#E5DEC9] bg-white p-5 shadow-xs">
                   <div className="flex items-center justify-between">
@@ -997,6 +2196,97 @@ export default function AdminDashboardPage() {
                   <p className="mt-1 text-[11px] text-[#6E5C52]">
                     Processing / Shipped / Completed
                   </p>
+                </div>
+              </div>
+
+              {/* SPECIAL: ENVIRONMENTAL & CIRCULAR IMPACT REPORT */}
+              <div className="rounded-3xl border border-[#3B5B3D]/30 bg-radial from-[#FAF8F5] to-[#F2EFE8] p-6 shadow-sm space-y-6">
+                <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#E5DEC9] pb-4">
+                  <div className="flex items-center gap-3">
+                    <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-[#3B5B3D] text-white">
+                      <Leaf className="h-5 w-5" />
+                    </span>
+                    <div>
+                      <h2 className="font-serif text-lg font-bold text-[#2C1E18]">
+                        Laporan Dampak Lingkungan &amp; Ekonomi Sirkular
+                      </h2>
+                      <p className="text-xs text-[#6E5C52]">
+                        Perhitungan real-time pemanfaatan limbah ampas kelapa,
+                        produksi tepung, dan mitigasi emisi gas rumah kaca.
+                      </p>
+                    </div>
+                  </div>
+                  <span className="rounded-full bg-[#3B5B3D]/12 px-3 py-1 text-xs font-bold text-[#3B5B3D]">
+                    SDGs Framework 12 • 8 • 13
+                  </span>
+                </div>
+
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+                  <div className="rounded-2xl bg-white p-4 shadow-2xs ring-1 ring-[#E5DEC9]">
+                    <p className="text-xs font-semibold text-[#6E5C52]">
+                      Total Ampas Kelapa Diolah
+                    </p>
+                    <p className="mt-1 font-serif text-3xl font-extrabold text-[#3B5B3D]">
+                      {environmentalStats.totalUpcycledKg} kg
+                    </p>
+                    <p className="mt-1 text-[11px] text-[#6E5C52]">
+                      Diselamatkan dari TPA &amp; pembusukan
+                    </p>
+                  </div>
+
+                  <div className="rounded-2xl bg-white p-4 shadow-2xs ring-1 ring-[#E5DEC9]">
+                    <p className="text-xs font-semibold text-[#6E5C52]">
+                      Tepung Kelapa Diproduksi
+                    </p>
+                    <p className="mt-1 font-serif text-3xl font-extrabold text-[#2C1E18]">
+                      {environmentalStats.totalFlourProducedKg} kg
+                    </p>
+                    <p className="mt-1 text-[11px] text-[#6E5C52]">
+                      Rendemen tepung kering higienis ~42%
+                    </p>
+                  </div>
+
+                  <div className="rounded-2xl bg-white p-4 shadow-2xs ring-1 ring-[#E5DEC9]">
+                    <p className="text-xs font-semibold text-[#6E5C52]">
+                      Estimasi Emisi Karbon (CO₂e) Ditekan
+                    </p>
+                    <p className="mt-1 font-serif text-3xl font-extrabold text-[#4E9A34]">
+                      {environmentalStats.co2SavedKg} kg CO₂e
+                    </p>
+                    <p className="mt-1 text-[11px] text-[#4E9A34]">
+                      Mencegah pelepasan gas metana di alam
+                    </p>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 gap-3 sm:grid-cols-3 pt-2">
+                  <div className="rounded-2xl border border-[#E5DEC9] bg-[#FAF8F5] p-3.5 text-xs">
+                    <p className="font-bold text-[#3B5B3D]">
+                      🎯 SDG 12: Responsible Consumption
+                    </p>
+                    <p className="mt-1 text-[#6E5C52]">
+                      Mendaur ulang limbah pangan hewani/nabati menjadi bahan baku
+                      bernilai gizi tinggi dan bebas gluten.
+                    </p>
+                  </div>
+                  <div className="rounded-2xl border border-[#E5DEC9] bg-[#FAF8F5] p-3.5 text-xs">
+                    <p className="font-bold text-[#3B5B3D]">
+                      🤝 SDG 8: Decent Work &amp; Economic Growth
+                    </p>
+                    <p className="mt-1 text-[#6E5C52]">
+                      Memberikan pendapatan tambahan langsung bagi {suppliers.length}{' '}
+                      mitra UMKM pemeras santan dan kedai kelapa.
+                    </p>
+                  </div>
+                  <div className="rounded-2xl border border-[#E5DEC9] bg-[#FAF8F5] p-3.5 text-xs">
+                    <p className="font-bold text-[#3B5B3D]">
+                      🌱 SDG 13: Climate Action
+                    </p>
+                    <p className="mt-1 text-[#6E5C52]">
+                      Mereduksi jejak karbon logistik dan dekomposisi organik di
+                      lingkungan perkotaan Bali.
+                    </p>
+                  </div>
                 </div>
               </div>
 
@@ -1244,482 +2534,6 @@ export default function AdminDashboardPage() {
               </div>
             </section>
           )}
-
-          {/* ============================================================== */}
-          {/* TAB 3: PRODUCT CMS & BANK ACCOUNTS                             */}
-          {/* ============================================================== */}
-          {activeTab === 'cms' && (
-            <section className="animate-cora-fade-in space-y-8">
-              {/* Product Management */}
-              <div className="space-y-4">
-                <div className="flex flex-wrap items-center justify-between gap-3">
-                  <div>
-                    <h2 className="font-serif text-xl font-bold text-[#2C1E18]">
-                      CORA Product Catalog Management
-                    </h2>
-                    <p className="text-xs text-[#6E5C52]">
-                      Add new products, edit details &amp; replace packaging photos,
-                      adjust quick pricing &amp; inventory, or delete items.
-                    </p>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={openNewProductForm}
-                    className="inline-flex items-center gap-1.5 rounded-full bg-[#3B5B3D] px-4 py-2.5 text-xs font-semibold text-white transition hover:bg-[#2F4A31]"
-                  >
-                    <Plus className="h-4 w-4" />
-                    Add New Product
-                  </button>
-                </div>
-
-                {/* Product Table with Quick Price, Stock & Photo Edit */}
-                <div className="overflow-hidden rounded-3xl border border-[#E5DEC9] bg-white shadow-xs">
-                  <div className="overflow-x-auto">
-                    <table className="w-full min-w-[820px] border-collapse text-left text-xs">
-                      <thead>
-                        <tr className="border-b border-[#E5DEC9] bg-[#FAF8F5] text-[11px] font-bold uppercase tracking-wider text-[#6E5C52]">
-                          <th className="px-5 py-3.5">Product</th>
-                          <th className="px-5 py-3.5">Category &amp; Impact</th>
-                          <th className="px-5 py-3.5">Quick Price (IDR)</th>
-                          <th className="px-5 py-3.5">Quick Stock</th>
-                          <th className="px-5 py-3.5 text-right">Actions</th>
-                        </tr>
-                      </thead>
-                      <tbody className="divide-y divide-[#F0EAE0]">
-                        {products.map((product) => {
-                          const draft = quickEdits[product.id];
-                          const priceVal = draft
-                            ? draft.price
-                            : String(product.price);
-                          const stockVal = draft
-                            ? draft.stock
-                            : String(product.stock);
-                          const hasChanges = Boolean(draft);
-
-                          return (
-                            <tr
-                              key={product.id}
-                              className="transition hover:bg-[#FAF8F5]/60"
-                            >
-                              <td className="px-5 py-3.5">
-                                <div className="flex items-center gap-3">
-                                  <label
-                                    title="Click to replace product photo"
-                                    className="group/img relative h-14 w-14 shrink-0 cursor-pointer overflow-hidden rounded-xl bg-[#FAF8F5] ring-1 ring-[#E5DEC9]"
-                                  >
-                                    <Image
-                                      src={product.image}
-                                      alt={product.name}
-                                      fill
-                                      unoptimized
-                                      className="object-contain p-1 transition group-hover/img:opacity-65"
-                                    />
-                                    <span className="absolute inset-0 flex items-center justify-center bg-[#2C1E18]/45 text-white opacity-0 transition group-hover/img:opacity-100">
-                                      <ImagePlus className="h-4 w-4" />
-                                    </span>
-                                    <input
-                                      type="file"
-                                      accept="image/*"
-                                      onChange={(e) =>
-                                        handleQuickPhotoUpload(product, e)
-                                      }
-                                      className="sr-only"
-                                    />
-                                  </label>
-                                  <div>
-                                    <p className="font-bold text-[#2C1E18]">
-                                      {product.name}
-                                    </p>
-                                    <p className="text-[11px] text-[#6E5C52]">
-                                      {product.subtitle} • {product.weightGram}g
-                                    </p>
-                                  </div>
-                                </div>
-                              </td>
-                              <td className="px-5 py-3.5">
-                                <span className="inline-block rounded-full bg-[#3B5B3D]/10 px-2.5 py-0.5 text-[11px] font-semibold text-[#3B5B3D]">
-                                  {product.category}
-                                </span>
-                                <p className="mt-1 text-[11px] text-[#6E5C52]">
-                                  Saves {product.residueSavedGram}g residue
-                                </p>
-                              </td>
-                              <td className="px-5 py-3.5">
-                                <input
-                                  type="number"
-                                  min={0}
-                                  value={priceVal}
-                                  onChange={(e) =>
-                                    setQuickEdits((prev) => ({
-                                      ...prev,
-                                      [product.id]: {
-                                        price: e.target.value,
-                                        stock:
-                                          prev[product.id]?.stock ??
-                                          String(product.stock),
-                                      },
-                                    }))
-                                  }
-                                  className="w-28 rounded-xl border border-[#E5DEC9] bg-[#FAF8F5] px-3 py-1.5 text-xs font-semibold text-[#2C1E18] focus:bg-white focus:ring-2 focus:ring-[#3B5B3D] focus:outline-none"
-                                />
-                              </td>
-                              <td className="px-5 py-3.5">
-                                <input
-                                  type="number"
-                                  min={0}
-                                  value={stockVal}
-                                  onChange={(e) =>
-                                    setQuickEdits((prev) => ({
-                                      ...prev,
-                                      [product.id]: {
-                                        price:
-                                          prev[product.id]?.price ??
-                                          String(product.price),
-                                        stock: e.target.value,
-                                      },
-                                    }))
-                                  }
-                                  className="w-20 rounded-xl border border-[#E5DEC9] bg-[#FAF8F5] px-3 py-1.5 text-xs font-semibold text-[#2C1E18] focus:bg-white focus:ring-2 focus:ring-[#3B5B3D] focus:outline-none"
-                                />
-                              </td>
-                              <td className="px-5 py-3.5 text-right">
-                                <div className="inline-flex items-center gap-1.5">
-                                  {hasChanges && (
-                                    <button
-                                      type="button"
-                                      onClick={() =>
-                                        handleQuickSaveProduct(product)
-                                      }
-                                      className="inline-flex items-center gap-1 rounded-full bg-[#3B5B3D] px-3 py-1.5 text-[11px] font-semibold text-white hover:bg-[#2F4A31]"
-                                    >
-                                      <Save className="h-3 w-3" />
-                                      Save
-                                    </button>
-                                  )}
-                                  <button
-                                    type="button"
-                                    onClick={() => openEditProductForm(product)}
-                                    className="inline-flex items-center gap-1 rounded-full border border-[#E5DEC9] bg-white px-3 py-1.5 text-[11px] font-semibold text-[#2C1E18] hover:bg-[#F0ECE1]"
-                                  >
-                                    <Edit3 className="h-3 w-3" />
-                                    Edit
-                                  </button>
-                                  <button
-                                    type="button"
-                                    onClick={() => {
-                                      deleteProduct(product.id);
-                                      showToast(
-                                        `Product ${product.name} deleted.`
-                                      );
-                                    }}
-                                    className="inline-flex items-center gap-1 rounded-full border border-red-200 bg-red-50 px-3 py-1.5 text-[11px] font-semibold text-red-700 hover:bg-red-100"
-                                  >
-                                    <Trash2 className="h-3 w-3" />
-                                    Delete
-                                  </button>
-                                </div>
-                              </td>
-                            </tr>
-                          );
-                        })}
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-              </div>
-
-              {/* Bank Account Settings */}
-              <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
-                <div className="rounded-3xl border border-[#E5DEC9] bg-white p-6 shadow-xs lg:col-span-7 space-y-4">
-                  <div className="flex items-center gap-2.5">
-                    <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-[#3B5B3D]/12 text-[#3B5B3D]">
-                      <Building2 className="h-4 w-4" />
-                    </span>
-                    <div>
-                      <h2 className="font-serif text-lg font-bold text-[#2C1E18]">
-                        Official CORA Bank Accounts
-                      </h2>
-                      <p className="text-xs text-[#6E5C52]">
-                        Active bank accounts automatically appear on the customer
-                        checkout page.
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="space-y-3">
-                    {bankAccounts.map((bank) => (
-                      <div
-                        key={bank.id}
-                        className="flex flex-wrap items-center justify-between gap-3 rounded-2xl bg-[#FAF8F5] p-4 ring-1 ring-[#E5DEC9]"
-                      >
-                        <div>
-                          <div className="flex items-center gap-2">
-                            <span className="text-sm font-bold text-[#2C1E18]">
-                              {bank.bankName}
-                            </span>
-                            <span
-                              className={`rounded-full px-2.5 py-0.5 text-[10px] font-bold ${
-                                bank.isActive
-                                  ? 'bg-[#3B5B3D]/12 text-[#3B5B3D]'
-                                  : 'bg-zinc-200 text-zinc-600'
-                              }`}
-                            >
-                              {bank.isActive ? 'Active' : 'Inactive'}
-                            </span>
-                          </div>
-                          <p className="mt-1 font-mono text-sm font-bold text-[#3B5B3D]">
-                            {bank.accountNumber}
-                          </p>
-                          <p className="text-xs text-[#6E5C52]">
-                            a.n. {bank.accountHolder}
-                          </p>
-                        </div>
-
-                        <div className="flex items-center gap-2">
-                          <button
-                            type="button"
-                            onClick={() => {
-                              saveBankAccount({
-                                ...bank,
-                                isActive: !bank.isActive,
-                              });
-                              showToast(
-                                `Account status for ${bank.bankName} updated.`
-                              );
-                            }}
-                            className="rounded-full border border-[#E5DEC9] bg-white px-3 py-1.5 text-xs font-semibold text-[#2C1E18] hover:bg-[#F0ECE1]"
-                          >
-                            {bank.isActive ? 'Deactivate' : 'Activate'}
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => handleEditBank(bank)}
-                            className="inline-flex items-center gap-1 rounded-full bg-[#3B5B3D]/10 px-3 py-1.5 text-xs font-semibold text-[#3B5B3D] hover:bg-[#3B5B3D] hover:text-white"
-                          >
-                            <Edit3 className="h-3 w-3" />
-                            Edit
-                          </button>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                <form
-                  onSubmit={handleSaveBankForm}
-                  className="rounded-3xl border border-[#E5DEC9] bg-white p-6 shadow-xs lg:col-span-5 space-y-4"
-                >
-                  <div className="flex items-center justify-between">
-                    <h2 className="font-serif text-lg font-bold text-[#2C1E18]">
-                      {editingBankId
-                        ? 'Edit Bank Account'
-                        : 'Add Bank Account'}
-                    </h2>
-                    {editingBankId && (
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setEditingBankId(null);
-                          setBankName('');
-                          setAccountNumber('');
-                          setAccountHolder('PT CORA Circular Innovation');
-                          setBankIsActive(true);
-                        }}
-                        className="text-xs font-semibold text-[#6E5C52] hover:underline"
-                      >
-                        Cancel Edit
-                      </button>
-                    )}
-                  </div>
-
-                  <div>
-                    <label className="block text-xs font-semibold text-[#2C1E18]">
-                      Bank Name
-                    </label>
-                    <input
-                      type="text"
-                      required
-                      value={bankName}
-                      onChange={(e) => setBankName(e.target.value)}
-                      placeholder="e.g. Bank Central Asia (BCA)"
-                      className="mt-1.5 w-full rounded-xl bg-[#FAF8F5] px-3.5 py-2.5 text-sm ring-1 ring-[#E5DEC9] focus:bg-white focus:ring-2 focus:ring-[#3B5B3D] focus:outline-none"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-xs font-semibold text-[#2C1E18]">
-                      Account Number
-                    </label>
-                    <input
-                      type="text"
-                      required
-                      value={accountNumber}
-                      onChange={(e) => setAccountNumber(e.target.value)}
-                      placeholder="e.g. 8820192831"
-                      className="mt-1.5 w-full rounded-xl bg-[#FAF8F5] px-3.5 py-2.5 font-mono text-sm ring-1 ring-[#E5DEC9] focus:bg-white focus:ring-2 focus:ring-[#3B5B3D] focus:outline-none"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-xs font-semibold text-[#2C1E18]">
-                      Account Holder Name
-                    </label>
-                    <input
-                      type="text"
-                      required
-                      value={accountHolder}
-                      onChange={(e) => setAccountHolder(e.target.value)}
-                      className="mt-1.5 w-full rounded-xl bg-[#FAF8F5] px-3.5 py-2.5 text-sm ring-1 ring-[#E5DEC9] focus:bg-white focus:ring-2 focus:ring-[#3B5B3D] focus:outline-none"
-                    />
-                  </div>
-
-                  <label className="flex items-center gap-2 text-xs font-semibold text-[#2C1E18]">
-                    <input
-                      type="checkbox"
-                      checked={bankIsActive}
-                      onChange={(e) => setBankIsActive(e.target.checked)}
-                      className="h-4 w-4 rounded accent-[#3B5B3D]"
-                    />
-                    Display on customer Checkout page
-                  </label>
-
-                  <button
-                    type="submit"
-                    className="flex w-full items-center justify-center gap-2 rounded-full bg-[#3B5B3D] px-5 py-3 text-xs font-semibold text-white transition hover:bg-[#2F4A31]"
-                  >
-                    <Save className="h-4 w-4" />
-                    {editingBankId
-                      ? 'Save Account Changes'
-                      : 'Save New Bank Account'}
-                  </button>
-                </form>
-              </div>
-            </section>
-          )}
-
-          {/* ============================================================== */}
-          {/* TAB 4: COCONUT PICKUP SCHEDULE                                 */}
-          {/* ============================================================== */}
-          {activeTab === 'pickup' && (
-            <section className="animate-cora-fade-in space-y-6">
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-                <div className="rounded-3xl border border-[#E5DEC9] bg-white p-5 shadow-xs">
-                  <p className="text-xs font-semibold text-[#6E5C52]">
-                    Total Partner Requests
-                  </p>
-                  <p className="mt-2 text-2xl font-extrabold text-[#2C1E18]">
-                    {pickupRequests.length}
-                  </p>
-                </div>
-                <div className="rounded-3xl border border-[#E5DEC9] bg-white p-5 shadow-xs">
-                  <p className="text-xs font-semibold text-[#6E5C52]">
-                    Awaiting Schedule (Pending)
-                  </p>
-                  <p className="mt-2 text-2xl font-extrabold text-amber-700">
-                    {pendingPickupsCount}
-                  </p>
-                </div>
-                <div className="rounded-3xl border border-[#E5DEC9] bg-white p-5 shadow-xs">
-                  <p className="text-xs font-semibold text-[#6E5C52]">
-                    Total Estimated Coconut Residue
-                  </p>
-                  <p className="mt-2 text-2xl font-extrabold text-[#3B5B3D]">
-                    {pickupRequests.reduce((s, p) => s + p.estimatedKg, 0)} kg
-                  </p>
-                </div>
-              </div>
-
-              <div className="overflow-hidden rounded-3xl border border-[#E5DEC9] bg-white shadow-xs">
-                <div className="overflow-x-auto">
-                  <table className="w-full min-w-[820px] border-collapse text-left text-xs">
-                    <thead>
-                      <tr className="border-b border-[#E5DEC9] bg-[#FAF8F5] text-[11px] font-bold uppercase tracking-wider text-[#6E5C52]">
-                        <th className="px-5 py-4">Partner / Supplier</th>
-                        <th className="px-5 py-4">Pickup Location</th>
-                        <th className="px-5 py-4">Estimated Weight</th>
-                        <th className="px-5 py-4">Preferred Date</th>
-                        <th className="px-5 py-4">Status</th>
-                        <th className="px-5 py-4 text-right">Update Status</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-[#F0EAE0]">
-                      {pickupRequests.map((req) => {
-                        const badge = getPickupBadge(req.status);
-                        return (
-                          <tr
-                            key={req.id}
-                            className="transition hover:bg-[#FAF8F5]/60"
-                          >
-                            <td className="px-5 py-4">
-                              <p className="font-bold text-[#2C1E18]">
-                                {req.supplierName}
-                              </p>
-                              <p className="mt-0.5 text-[11px] text-[#6E5C52]">
-                                {req.phone}
-                              </p>
-                            </td>
-                            <td className="px-5 py-4 max-w-xs text-[#5C4B42]">
-                              {req.location}
-                            </td>
-                            <td className="px-5 py-4 font-bold text-[#2C1E18]">
-                              {req.estimatedKg} kg
-                            </td>
-                            <td className="px-5 py-4 text-[#5C4B42]">
-                              {req.preferredDate}
-                            </td>
-                            <td className="px-5 py-4">
-                              <span
-                                className={`inline-flex rounded-full px-3 py-1 text-[11px] font-semibold ${badge.className}`}
-                              >
-                                {badge.label}
-                              </span>
-                            </td>
-                            <td className="px-5 py-4 text-right">
-                              <div className="inline-flex flex-wrap justify-end gap-1.5">
-                                {req.status === 'PENDING' && (
-                                  <button
-                                    type="button"
-                                    onClick={() => {
-                                      updatePickupStatus(req.id, 'SCHEDULED');
-                                      showToast(
-                                        `Pickup for ${req.supplierName} scheduled.`
-                                      );
-                                    }}
-                                    className="rounded-full bg-sky-600 px-3 py-1.5 text-[11px] font-semibold text-white hover:bg-sky-700"
-                                  >
-                                    Schedule
-                                  </button>
-                                )}
-                                {req.status !== 'COMPLETED' && (
-                                  <button
-                                    type="button"
-                                    onClick={() => {
-                                      updatePickupStatus(req.id, 'COMPLETED');
-                                      showToast(
-                                        `Pickup for ${req.supplierName} marked as completed.`
-                                      );
-                                    }}
-                                    className="rounded-full bg-[#3B5B3D] px-3 py-1.5 text-[11px] font-semibold text-white hover:bg-[#2F4A31]"
-                                  >
-                                    Mark as Picked Up
-                                  </button>
-                                )}
-                                {req.status === 'COMPLETED' && (
-                                  <span className="text-[11px] font-semibold text-[#3B5B3D]">
-                                    Completed ✓
-                                  </span>
-                                )}
-                              </div>
-                            </td>
-                          </tr>
-                        );
-                      })}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            </section>
-          )}
         </main>
       </div>
 
@@ -1839,7 +2653,7 @@ export default function AdminDashboardPage() {
                     required
                     value={prodName}
                     onChange={(e) => setProdName(e.target.value)}
-                    placeholder="CORA Brownies"
+                    placeholder="e.g. CORA Artisan Cookies"
                     className="mt-1 w-full rounded-xl bg-[#FAF8F5] px-3.5 py-2 text-sm ring-1 ring-[#E5DEC9] focus:bg-white focus:ring-2 focus:ring-[#3B5B3D] focus:outline-none"
                   />
                 </div>
@@ -1851,10 +2665,13 @@ export default function AdminDashboardPage() {
                     type="text"
                     value={prodSubtitle}
                     onChange={(e) => setProdSubtitle(e.target.value)}
-                    placeholder="Coconut Based Brownies"
+                    placeholder="e.g. Upcycled Coconut Bites"
                     className="mt-1 w-full rounded-xl bg-[#FAF8F5] px-3.5 py-2 text-sm ring-1 ring-[#E5DEC9] focus:bg-white focus:ring-2 focus:ring-[#3B5B3D] focus:outline-none"
                   />
                 </div>
+              </div>
+
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
                 <div>
                   <label className="block text-xs font-semibold text-[#2C1E18]">
                     Category
@@ -1864,11 +2681,11 @@ export default function AdminDashboardPage() {
                     onChange={(e) =>
                       setProdCategory(e.target.value as ProductCategory)
                     }
-                    className="mt-1 w-full rounded-xl bg-[#FAF8F5] px-3.5 py-2 text-sm ring-1 ring-[#E5DEC9] focus:bg-white focus:ring-2 focus:ring-[#3B5B3D] focus:outline-none"
+                    className="mt-1 w-full rounded-xl bg-[#FAF8F5] px-3 py-2 text-sm ring-1 ring-[#E5DEC9] focus:bg-white focus:ring-2 focus:ring-[#3B5B3D] focus:outline-none"
                   >
                     <option value="Brownies">Brownies</option>
                     <option value="Cookies">Cookies</option>
-                    <option value="Flour">Flour</option>
+                    <option value="Coconut Flour">Coconut Flour</option>
                   </select>
                 </div>
                 <div>
@@ -1899,33 +2716,34 @@ export default function AdminDashboardPage() {
                     className="mt-1 w-full rounded-xl bg-[#FAF8F5] px-3.5 py-2 text-sm ring-1 ring-[#E5DEC9] focus:bg-white focus:ring-2 focus:ring-[#3B5B3D] focus:outline-none"
                   />
                 </div>
-                <div className="grid grid-cols-2 gap-3">
-                  <div>
-                    <label className="block text-xs font-semibold text-[#2C1E18]">
-                      Weight (g)
-                    </label>
-                    <input
-                      type="number"
-                      min={0}
-                      value={prodWeight}
-                      onChange={(e) => setProdWeight(e.target.value)}
-                      placeholder="200"
-                      className="mt-1 w-full rounded-xl bg-[#FAF8F5] px-3 py-2 text-sm ring-1 ring-[#E5DEC9] focus:bg-white focus:ring-2 focus:ring-[#3B5B3D] focus:outline-none"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-xs font-semibold text-[#2C1E18]">
-                      Residue Saved (g)
-                    </label>
-                    <input
-                      type="number"
-                      min={0}
-                      value={prodResidue}
-                      onChange={(e) => setProdResidue(e.target.value)}
-                      placeholder="250"
-                      className="mt-1 w-full rounded-xl bg-[#FAF8F5] px-3 py-2 text-sm ring-1 ring-[#E5DEC9] focus:bg-white focus:ring-2 focus:ring-[#3B5B3D] focus:outline-none"
-                    />
-                  </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-xs font-semibold text-[#2C1E18]">
+                    Weight (g)
+                  </label>
+                  <input
+                    type="number"
+                    min={0}
+                    value={prodWeight}
+                    onChange={(e) => setProdWeight(e.target.value)}
+                    placeholder="200"
+                    className="mt-1 w-full rounded-xl bg-[#FAF8F5] px-3 py-2 text-sm ring-1 ring-[#E5DEC9] focus:bg-white focus:ring-2 focus:ring-[#3B5B3D] focus:outline-none"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold text-[#2C1E18]">
+                    Residue Saved (g)
+                  </label>
+                  <input
+                    type="number"
+                    min={0}
+                    value={prodResidue}
+                    onChange={(e) => setProdResidue(e.target.value)}
+                    placeholder="250"
+                    className="mt-1 w-full rounded-xl bg-[#FAF8F5] px-3 py-2 text-sm ring-1 ring-[#E5DEC9] focus:bg-white focus:ring-2 focus:ring-[#3B5B3D] focus:outline-none"
+                  />
                 </div>
               </div>
 
@@ -2052,7 +2870,397 @@ export default function AdminDashboardPage() {
           </div>
         </div>
       )}
+
+      {/* MODAL: ADD SUPPLIER */}
+      {showSupplierModal && (
+        <div
+          className="animate-cora-fade-in fixed inset-0 z-50 flex items-center justify-center bg-[#2C1E18]/60 p-4 backdrop-blur-xs"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Daftarkan Mitra Pemasok Baru"
+        >
+          <form
+            onSubmit={handleSaveSupplier}
+            className="animate-cora-modal max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-2xl border border-[#E5DEC9] bg-white p-6 shadow-2xl space-y-4"
+          >
+            <div className="flex items-center justify-between border-b border-[#F0EAE0] pb-3">
+              <div>
+                <h3 className="font-serif text-lg font-bold text-[#2C1E18]">
+                  Daftarkan Mitra Pemasok Baru
+                </h3>
+                <p className="text-xs text-[#6E5C52]">
+                  Tambahkan UMKM pemeras kelapa/santan ke jaringan mitra CORA.
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowSupplierModal(false)}
+                className="rounded-full p-1 text-[#6E5C52] hover:bg-[#F0ECE1]"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+
+            <div>
+              <label className="block text-xs font-semibold text-[#2C1E18]">
+                Nama Usaha / Mitra *
+              </label>
+              <input
+                type="text"
+                required
+                value={supName}
+                onChange={(e) => setSupName(e.target.value)}
+                placeholder="e.g. Sentra Santan Segar Renon"
+                className="mt-1 w-full rounded-xl bg-[#FAF8F5] px-3.5 py-2 text-xs text-[#2C1E18] ring-1 ring-[#E5DEC9] focus:bg-white focus:ring-2 focus:ring-[#3B5B3D] focus:outline-none"
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs font-semibold text-[#2C1E18]">
+                Nomor WhatsApp / Telepon *
+              </label>
+              <input
+                type="tel"
+                required
+                value={supPhone}
+                onChange={(e) => setSupPhone(e.target.value)}
+                placeholder="081234567890"
+                className="mt-1 w-full rounded-xl bg-[#FAF8F5] px-3.5 py-2 text-xs text-[#2C1E18] ring-1 ring-[#E5DEC9] focus:bg-white focus:ring-2 focus:ring-[#3B5B3D] focus:outline-none"
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs font-semibold text-[#2C1E18]">
+                Alamat Lokasi Usaha *
+              </label>
+              <textarea
+                required
+                rows={2}
+                value={supLocation}
+                onChange={(e) => setSupLocation(e.target.value)}
+                placeholder="Jl. Tukad Yeh Aya No. 42, Renon, Denpasar Selatan"
+                className="mt-1 w-full rounded-xl bg-[#FAF8F5] px-3.5 py-2 text-xs text-[#2C1E18] ring-1 ring-[#E5DEC9] focus:bg-white focus:ring-2 focus:ring-[#3B5B3D] focus:outline-none"
+              />
+            </div>
+
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label className="block text-xs font-semibold text-[#2C1E18]">
+                  Jenis Usaha
+                </label>
+                <select
+                  value={supType}
+                  onChange={(e) => setSupType(e.target.value)}
+                  className="mt-1 w-full rounded-xl bg-[#FAF8F5] px-3 py-2 text-xs text-[#2C1E18] ring-1 ring-[#E5DEC9] focus:bg-white focus:ring-2 focus:ring-[#3B5B3D] focus:outline-none"
+                >
+                  <option value="Pabrik Pengolahan Santan">Pabrik Santan</option>
+                  <option value="Kedai Kopi / Kafe">Kedai Kopi / Kafe</option>
+                  <option value="Kios Kelapa Muda Tradisional">
+                    Kios Kelapa Muda
+                  </option>
+                  <option value="Katering & Bakery">Katering &amp; Bakery</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-[#2C1E18]">
+                  Estimasi Harian (kg)
+                </label>
+                <input
+                  type="number"
+                  min={1}
+                  required
+                  value={supKg}
+                  onChange={(e) => setSupKg(e.target.value)}
+                  placeholder="25"
+                  className="mt-1 w-full rounded-xl bg-[#FAF8F5] px-3.5 py-2 text-xs text-[#2C1E18] ring-1 ring-[#E5DEC9] focus:bg-white focus:ring-2 focus:ring-[#3B5B3D] focus:outline-none"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-xs font-semibold text-[#2C1E18]">
+                Frekuensi Produksi
+              </label>
+              <select
+                value={supFreq}
+                onChange={(e) => setSupFreq(e.target.value)}
+                className="mt-1 w-full rounded-xl bg-[#FAF8F5] px-3 py-2 text-xs text-[#2C1E18] ring-1 ring-[#E5DEC9] focus:bg-white focus:ring-2 focus:ring-[#3B5B3D] focus:outline-none"
+              >
+                <option value="Setiap Hari">Setiap Hari</option>
+                <option value="3-4 Kali Seminggu">3-4 Kali Seminggu</option>
+                <option value="1-2 Kali Seminggu">1-2 Kali Seminggu</option>
+                <option value="Berdasarkan Pesanan">Berdasarkan Pesanan</option>
+              </select>
+            </div>
+
+            <div className="flex justify-end gap-2 border-t border-[#F0EAE0] pt-3">
+              <button
+                type="button"
+                onClick={() => setShowSupplierModal(false)}
+                className="rounded-full border border-[#E5DEC9] px-4 py-2 text-xs font-semibold text-[#5C4B42]"
+              >
+                Batal
+              </button>
+              <button
+                type="submit"
+                className="inline-flex items-center gap-1.5 rounded-full bg-[#3B5B3D] px-5 py-2 text-xs font-semibold text-white hover:bg-[#2F4A31]"
+              >
+                <Save className="h-3.5 w-3.5" />
+                Simpan Mitra
+              </button>
+            </div>
+          </form>
+        </div>
+      )}
+
+      {/* MODAL: ADD / EDIT RECIPE */}
+      {showRecipeModal && (
+        <div
+          className="animate-cora-fade-in fixed inset-0 z-50 flex items-center justify-center bg-[#2C1E18]/60 p-4 backdrop-blur-xs"
+          role="dialog"
+          aria-modal="true"
+          aria-label={editingRecipeId ? 'Edit Resep' : 'Tambah Resep Baru'}
+        >
+          <form
+            onSubmit={handleSaveRecipeForm}
+            className="animate-cora-modal max-h-[92vh] w-full max-w-2xl overflow-y-auto rounded-2xl border border-[#E5DEC9] bg-white p-6 shadow-2xl space-y-4"
+          >
+            <div className="flex items-center justify-between border-b border-[#F0EAE0] pb-3">
+              <div>
+                <h3 className="font-serif text-lg font-bold text-[#2C1E18]">
+                  {editingRecipeId ? 'Edit Resep RecipeHub' : 'Tambah Resep Baru'}
+                </h3>
+                <p className="text-xs text-[#6E5C52]">
+                  Resep akan langsung tampil di halaman RecipeHub dan terhubung
+                  dengan CoraBlendAI.
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowRecipeModal(false)}
+                className="rounded-full p-1 text-[#6E5C52] hover:bg-[#F0ECE1]"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+              <div>
+                <label className="block text-xs font-semibold text-[#2C1E18]">
+                  Judul Resep *
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={recTitle}
+                  onChange={(e) => setRecTitle(e.target.value)}
+                  placeholder="e.g. CORA Choco Chunk Cookies"
+                  className="mt-1 w-full rounded-xl bg-[#FAF8F5] px-3.5 py-2 text-xs text-[#2C1E18] ring-1 ring-[#E5DEC9] focus:bg-white focus:ring-2 focus:ring-[#3B5B3D] focus:outline-none"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-[#2C1E18]">
+                  Kategori
+                </label>
+                <select
+                  value={recCategory}
+                  onChange={(e) =>
+                    setRecCategory(e.target.value as RecipeCategory)
+                  }
+                  className="mt-1 w-full rounded-xl bg-[#FAF8F5] px-3 py-2 text-xs text-[#2C1E18] ring-1 ring-[#E5DEC9] focus:bg-white focus:ring-2 focus:ring-[#3B5B3D] focus:outline-none"
+                >
+                  <option value="Cookies and Biscuits">
+                    Cookies and Biscuits
+                  </option>
+                  <option value="Cakes and Brownies">Cakes and Brownies</option>
+                  <option value="Healthy Snacks">Healthy Snacks</option>
+                  <option value="Creative Recipes">Creative Recipes</option>
+                </select>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+              <div>
+                <label className="block text-xs font-semibold text-[#2C1E18]">
+                  Prep Time
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={recPrepTime}
+                  onChange={(e) => setRecPrepTime(e.target.value)}
+                  placeholder="15 mins"
+                  className="mt-1 w-full rounded-xl bg-[#FAF8F5] px-3 py-1.5 text-xs ring-1 ring-[#E5DEC9] focus:ring-2 focus:ring-[#3B5B3D] focus:outline-none"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-semibold text-[#2C1E18]">
+                  Cook Time
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={recCookTime}
+                  onChange={(e) => setRecCookTime(e.target.value)}
+                  placeholder="20 mins"
+                  className="mt-1 w-full rounded-xl bg-[#FAF8F5] px-3 py-1.5 text-xs ring-1 ring-[#E5DEC9] focus:ring-2 focus:ring-[#3B5B3D] focus:outline-none"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-semibold text-[#2C1E18]">
+                  Porsi / Servings
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={recServings}
+                  onChange={(e) => setRecServings(e.target.value)}
+                  placeholder="4-6 portions"
+                  className="mt-1 w-full rounded-xl bg-[#FAF8F5] px-3 py-1.5 text-xs ring-1 ring-[#E5DEC9] focus:ring-2 focus:ring-[#3B5B3D] focus:outline-none"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-semibold text-[#2C1E18]">
+                  Tingkat Kesulitan
+                </label>
+                <select
+                  value={recDifficulty}
+                  onChange={(e) =>
+                    setRecDifficulty(
+                      e.target.value as 'Easy' | 'Medium' | 'Creative'
+                    )
+                  }
+                  className="mt-1 w-full rounded-xl bg-[#FAF8F5] px-2.5 py-1.5 text-xs ring-1 ring-[#E5DEC9] focus:ring-2 focus:ring-[#3B5B3D] focus:outline-none"
+                >
+                  <option value="Easy">Easy (Mudah)</option>
+                  <option value="Medium">Medium (Sedang)</option>
+                  <option value="Creative">Creative (Kreatif)</option>
+                </select>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+              <div>
+                <label className="block text-xs font-semibold text-[#2C1E18]">
+                  Takaran Tepung Kelapa CORA
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={recCoconutFlour}
+                  onChange={(e) => setRecCoconutFlour(e.target.value)}
+                  placeholder="e.g. 50g Upcycled Coconut Flour"
+                  className="mt-1 w-full rounded-xl bg-[#FAF8F5] px-3.5 py-2 text-xs ring-1 ring-[#E5DEC9] focus:ring-2 focus:ring-[#3B5B3D] focus:outline-none"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-semibold text-[#2C1E18]">
+                  Kalori per Porsi (kcal)
+                </label>
+                <input
+                  type="number"
+                  value={recCalories}
+                  onChange={(e) => setRecCalories(e.target.value)}
+                  placeholder="180"
+                  className="mt-1 w-full rounded-xl bg-[#FAF8F5] px-3.5 py-2 text-xs ring-1 ring-[#E5DEC9] focus:ring-2 focus:ring-[#3B5B3D] focus:outline-none"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-xs font-semibold text-[#2C1E18]">
+                Deskripsi Singkat / Summary
+              </label>
+              <textarea
+                rows={2}
+                value={recSummary}
+                onChange={(e) => setRecSummary(e.target.value)}
+                placeholder="Penjelasan kelezatan dan manfaat resep berbahan ampas kelapa..."
+                className="mt-1 w-full rounded-xl bg-[#FAF8F5] px-3.5 py-2 text-xs text-[#2C1E18] ring-1 ring-[#E5DEC9] focus:bg-white focus:ring-2 focus:ring-[#3B5B3D] focus:outline-none"
+              />
+            </div>
+
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+              <div>
+                <label className="block text-xs font-semibold text-[#2C1E18]">
+                  Daftar Bahan (1 bahan per baris) *
+                </label>
+                <textarea
+                  required
+                  rows={5}
+                  value={recIngredientsText}
+                  onChange={(e) => setRecIngredientsText(e.target.value)}
+                  placeholder="50g tepung kelapa CORA&#10;100g oat flour&#10;40ml minyak kelapa..."
+                  className="mt-1 w-full font-mono rounded-xl bg-[#FAF8F5] px-3.5 py-2 text-xs text-[#2C1E18] ring-1 ring-[#E5DEC9] focus:bg-white focus:ring-2 focus:ring-[#3B5B3D] focus:outline-none"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-semibold text-[#2C1E18]">
+                  Langkah Pembuatan (1 langkah per baris) *
+                </label>
+                <textarea
+                  required
+                  rows={5}
+                  value={recStepsText}
+                  onChange={(e) => setRecStepsText(e.target.value)}
+                  placeholder="Panaskan oven ke suhu 175°C.&#10;Campurkan bahan kering.&#10;Panggang selama 15 menit..."
+                  className="mt-1 w-full font-mono rounded-xl bg-[#FAF8F5] px-3.5 py-2 text-xs text-[#2C1E18] ring-1 ring-[#E5DEC9] focus:bg-white focus:ring-2 focus:ring-[#3B5B3D] focus:outline-none"
+                />
+              </div>
+            </div>
+
+            {/* Recipe Image URL & Presets */}
+            <div>
+              <label className="block text-xs font-semibold text-[#2C1E18]">
+                Foto Resep (URL / Preset)
+              </label>
+              <input
+                type="text"
+                value={recImage}
+                onChange={(e) => setRecImage(e.target.value)}
+                placeholder="/images/products/cookies.jpg"
+                className="mt-1 w-full rounded-xl bg-[#FAF8F5] px-3.5 py-2 text-xs ring-1 ring-[#E5DEC9] focus:ring-2 focus:ring-[#3B5B3D] focus:outline-none"
+              />
+              <div className="mt-2 flex flex-wrap items-center gap-1.5">
+                <span className="text-[11px] text-[#6E5C52]">Pilih Cepat:</span>
+                {RECIPE_IMAGE_PRESETS.map((p) => (
+                  <button
+                    key={p.value}
+                    type="button"
+                    onClick={() => setRecImage(p.value)}
+                    className={`rounded-full px-2.5 py-0.5 text-[10px] font-semibold transition ${
+                      recImage === p.value
+                        ? 'bg-[#3B5B3D] text-white'
+                        : 'border border-[#E5DEC9] bg-white text-[#5C4B42]'
+                    }`}
+                  >
+                    {p.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="flex justify-end gap-2 border-t border-[#F0EAE0] pt-3">
+              <button
+                type="button"
+                onClick={() => setShowRecipeModal(false)}
+                className="rounded-full border border-[#E5DEC9] px-4 py-2 text-xs font-semibold text-[#5C4B42]"
+              >
+                Batal
+              </button>
+              <button
+                type="submit"
+                className="inline-flex items-center gap-1.5 rounded-full bg-[#3B5B3D] px-5 py-2 text-xs font-semibold text-white hover:bg-[#2F4A31]"
+              >
+                <Save className="h-3.5 w-3.5" />
+                Simpan Resep
+              </button>
+            </div>
+          </form>
+        </div>
+      )}
     </div>
   );
 }
-

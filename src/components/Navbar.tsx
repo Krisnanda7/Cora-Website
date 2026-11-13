@@ -3,9 +3,10 @@
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { ChevronRight, Menu, ShoppingBag, User, X } from 'lucide-react';
+import { ChevronRight, Menu, Search, ShoppingBag, User, X } from 'lucide-react';
 import { useCora } from '@/context/CoraContext';
 import CartDrawer from '@/components/CartDrawer';
+import GlobalSearchModal from '@/components/GlobalSearchModal';
 
 const NAV_LINKS = [
   { label: 'Home', href: '/' },
@@ -13,6 +14,7 @@ const NAV_LINKS = [
   { label: 'Our Product', href: '/products' },
   { label: 'Recipe & AI', href: '/ecosystem' },
   { label: 'Coconut Pickup', href: '/ecosystem#pickup' },
+  { label: 'About Us', href: '/about' },
 ] as const;
 
 function CoconutLogoMark() {
@@ -46,6 +48,7 @@ export default function Navbar() {
   const { cartCount } = useCora();
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [prevPathname, setPrevPathname] = useState(pathname);
 
   if (prevPathname !== pathname) {
@@ -60,13 +63,19 @@ export default function Navbar() {
   }, []);
 
   useEffect(() => {
-    if (!isMobileMenuOpen) return;
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') setIsMobileMenuOpen(false);
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        setIsSearchOpen((prev) => !prev);
+      }
+      if (e.key === 'Escape') {
+        setIsMobileMenuOpen(false);
+        setIsSearchOpen(false);
+      }
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isMobileMenuOpen]);
+  }, []);
 
   const isActiveLink = (href: string) => {
     if (href === '/') return pathname === '/';
@@ -99,7 +108,7 @@ export default function Navbar() {
             {/* Center: Editorial Nav Links with Centered Active Pill */}
             <nav
               aria-label="Main navigation"
-              className="hidden items-center gap-7 lg:flex"
+              className="hidden items-center gap-6 lg:flex"
             >
               {NAV_LINKS.map((link) => {
                 const active = isActiveLink(link.href);
@@ -123,8 +132,19 @@ export default function Navbar() {
             </nav>
           </div>
 
-          {/* Right: Cart, Admin, and Mobile Menu Trigger */}
+          {/* Right: Search, Cart, User Profile, and Mobile Menu Trigger */}
           <div className="flex items-center gap-2 sm:gap-2.5 shrink-0">
+            {/* Global Search Button */}
+            <button
+              type="button"
+              onClick={() => setIsSearchOpen(true)}
+              aria-label="Cari produk, resep, atau artikel (Cmd+K)"
+              title="Pencarian Terpusat (Cmd+K)"
+              className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-[#DDD4C1] bg-white text-[#5C4B42] transition hover:border-[#3B5B3D] hover:bg-[#FAF8F5] hover:text-[#2C1E18] focus:outline-none active:scale-95"
+            >
+              <Search className="h-4 w-4" />
+            </button>
+
             {/* Primary Action: Responsive Cart (compact circle on mobile, pill on desktop) */}
             <button
               type="button"
@@ -141,11 +161,11 @@ export default function Navbar() {
               )}
             </button>
 
-            {/* Discrete Admin Icon Button */}
+            {/* User Profile Button */}
             <Link
-              href="/admin"
-              aria-label="Admin Portal"
-              title="Admin Portal"
+              href="/profile"
+              aria-label="User Profile & Akun Demo"
+              title="Profil Pengguna"
               className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-[#DDD4C1] bg-white text-[#5C4B42] transition hover:border-[#3B5B3D] hover:bg-[#FAF8F5] hover:text-[#2C1E18] focus:outline-none focus:ring-2 focus:ring-[#3B5B3D]/30 active:scale-95"
             >
               <User className="h-4 w-4" />
@@ -201,16 +221,20 @@ export default function Navbar() {
               {/* Mobile Menu Footer Actions */}
               <div className="pt-2.5 mt-2 border-t border-[#E5DEC9]/80 flex items-center justify-between text-xs text-[#6E5C52] px-1">
                 <Link
-                  href="/admin"
+                  href="/profile"
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className="inline-flex items-center gap-2 rounded-lg py-1.5 px-2 font-medium hover:text-[#2C1E18] transition"
+                  className="inline-flex items-center gap-1.5 rounded-lg py-1.5 px-2 font-medium hover:text-[#2C1E18] transition"
                 >
                   <User className="h-3.5 w-3.5 text-[#3B5B3D]" />
-                  <span>Admin Portal</span>
+                  <span>Profil &amp; Akun</span>
                 </Link>
-                <span className="text-[11px] text-[#8C7A6B] font-medium tracking-wide">
-                  CORA &copy; {new Date().getFullYear()}
-                </span>
+                <Link
+                  href="/admin"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="inline-flex items-center gap-1.5 rounded-lg py-1.5 px-2 font-medium text-[#3B5B3D] hover:underline transition"
+                >
+                  <span>Admin Portal →</span>
+                </Link>
               </div>
             </div>
           </nav>
@@ -218,6 +242,7 @@ export default function Navbar() {
       </header>
 
       <CartDrawer isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />
+      <GlobalSearchModal isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} />
     </>
   );
 }

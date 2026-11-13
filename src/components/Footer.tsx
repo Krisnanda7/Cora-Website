@@ -61,6 +61,14 @@ export default function Footer() {
               </li>
               <li>
                 <Link
+                  href="/track"
+                  className="transition hover:text-[#2C1E18]"
+                >
+                  Lacak Pesanan
+                </Link>
+              </li>
+              <li>
+                <Link
                   href="/ecosystem"
                   className="transition hover:text-[#2C1E18]"
                 >
@@ -73,6 +81,22 @@ export default function Footer() {
                   className="transition hover:text-[#2C1E18]"
                 >
                   Coconut Pickup
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/about"
+                  className="transition hover:text-[#2C1E18]"
+                >
+                  About Us &amp; FAQ
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/profile"
+                  className="transition hover:text-[#2C1E18]"
+                >
+                  Profil Pengguna
                 </Link>
               </li>
               <li>

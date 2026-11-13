@@ -11,6 +11,13 @@ export interface Product {
   residueSavedGram: number;
   image: string;
   description: string;
+  // Enhanced Product Details
+  ingredients?: string[];
+  netWeight?: string;
+  variants?: string[];
+  storageInfo?: string;
+  shelfLife?: string;
+  benefits?: string[];
 }
 
 export interface BankAccount {
@@ -27,6 +34,7 @@ export interface OrderItem {
   price: number;
   qty: number;
   image: string;
+  variant?: string;
 }
 
 export interface CartItem extends OrderItem {
@@ -52,6 +60,7 @@ export interface Order {
   bankAccountUsed: string;
   proofImage: string;
   status: OrderStatus;
+  courier?: string;
   trackingNumber?: string;
   notes?: string;
   createdAt: string;
@@ -69,7 +78,15 @@ export interface FinancialRecord {
   category: string;
 }
 
-export type PickupRequestStatus = 'PENDING' | 'SCHEDULED' | 'COMPLETED';
+export type PickupRequestStatus =
+  | 'REQUEST_SUBMITTED'
+  | 'REQUEST_CONFIRMED'
+  | 'ON_THE_WAY'
+  | 'PICKED_UP'
+  | 'COMPLETED'
+  // Legacy aliases for backward compatibility
+  | 'PENDING'
+  | 'SCHEDULED';
 
 export interface PickupRequest {
   id: string;
@@ -78,7 +95,52 @@ export interface PickupRequest {
   location: string;
   estimatedKg: number;
   preferredDate: string;
+  preferredTime?: string;
+  notes?: string;
   status: PickupRequestStatus;
+  createdAt?: string;
+}
+
+export interface Supplier {
+  id: string;
+  name: string;
+  phone: string;
+  businessLocation: string;
+  businessType: string;
+  estimatedKg: number;
+  productionFrequency: string;
+  createdAt: string;
+}
+
+export type RecipeCategory =
+  | 'Cookies and Biscuits'
+  | 'Cakes and Brownies'
+  | 'Healthy Snacks'
+  | 'Creative Recipes';
+
+export interface Recipe {
+  id: string;
+  title: string;
+  category: RecipeCategory;
+  prepTime: string;
+  cookTime: string;
+  servings: string;
+  calories: number;
+  difficulty: 'Easy' | 'Medium' | 'Creative';
+  coconutFlourUsed: string;
+  summary: string;
+  ingredients: string[];
+  steps: string[];
+  image?: string;
+}
+
+export interface UserProfile {
+  id: string;
+  name: string;
+  email: string;
+  phone: string;
+  address: string;
+  favoriteRecipeIds: string[];
 }
 
 export interface CreateOrderInput {
@@ -88,6 +150,7 @@ export interface CreateOrderInput {
   items?: OrderItem[];
   bankAccountUsed: string;
   proofImage: string;
+  courier?: string;
   notes?: string;
 }
 
@@ -113,5 +176,15 @@ export interface SubmitPickupInput {
   location: string;
   estimatedKg: number;
   preferredDate: string;
+  preferredTime?: string;
+  notes?: string;
 }
 
+export interface RegisterSupplierInput {
+  name: string;
+  phone: string;
+  businessLocation: string;
+  businessType: string;
+  estimatedKg: number;
+  productionFrequency: string;
+}

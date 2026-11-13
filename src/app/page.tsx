@@ -6,12 +6,17 @@ import Link from 'next/link';
 import {
   ArrowRight,
   Check,
+  Globe2,
+  Handshake,
   Laptop,
   Leaf,
+  Package,
   Recycle,
+  Scale,
   ShoppingBag,
   Sparkles,
   Sprout,
+  TrendingUp,
   Users,
 } from 'lucide-react';
 import Navbar from '@/components/Navbar';
@@ -83,7 +88,6 @@ const JOURNEY_STEPS = [
 function HeroProductShowcase() {
   return (
     <div className="group relative overflow-hidden rounded-3xl border border-white/20 bg-stone-900/90 shadow-md ring-1 ring-white/10 transform-gpu transition-[border-color,box-shadow] duration-300 hover:border-white/35 hover:shadow-lg">
-      {/* Real product photograph */}
       <div className="relative aspect-[16/10] w-full overflow-hidden">
         <Image
           src="/images/hero/hero.jpg"
@@ -95,7 +99,6 @@ function HeroProductShowcase() {
         />
         <div className="pointer-events-none absolute inset-0 bg-black/20" />
 
-        {/* Floating Product Badges */}
         <div className="absolute top-4 left-4 sm:top-5 sm:left-5 flex flex-wrap items-center gap-2">
           <span className="inline-flex items-center gap-1.5 rounded-full bg-white/95 px-3 py-1 sm:px-3.5 sm:py-1.5 text-[11px] sm:text-xs font-bold text-[#3B5B3D] shadow-sm">
             <Sparkles className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
@@ -106,7 +109,6 @@ function HeroProductShowcase() {
           </span>
         </div>
 
-        {/* Bottom Bar on photo */}
         <div className="absolute right-4 bottom-4 left-4 sm:right-5 sm:bottom-5 sm:left-5 flex items-center justify-between rounded-2xl bg-white/95 px-4 py-2.5 sm:px-5 sm:py-3 shadow-md">
           <div className="flex items-center gap-3">
             <span className="flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-xl bg-[#3B5B3D] text-white">
@@ -151,14 +153,20 @@ function JourneyCircleVisual({ step }: { step: number }) {
 
   if (step === 2) {
     return (
-      <div className="relative h-full w-full overflow-hidden rounded-full bg-[#EDE9DF] p-0.5 ring-2 ring-[#3B5B3D]/25 shadow-inner">
-        <Image
-          src="/images/ingredients/coconut-flour.jpg"
-          alt="Drying Process"
-          fill
-          sizes="96px"
-          className="rounded-full object-cover transition-transform duration-500 hover:scale-110"
-        />
+      <div className="flex h-full w-full items-center justify-center rounded-full bg-gradient-to-br from-[#EAE4D5] to-[#D5C9B5] text-[#4A5D3F] ring-2 ring-[#3B5B3D]/25">
+        <svg
+          viewBox="0 0 48 48"
+          className="h-10 w-10 transition-transform duration-500 hover:scale-110"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
+          <path d="M12 24 C14 20 18 20 20 24 C22 28 26 28 28 24 C30 20 34 20 36 24" />
+          <path d="M12 18 C14 14 18 14 20 18 C22 22 26 22 28 18 C30 14 34 14 36 18" />
+          <path d="M12 30 C14 26 18 26 20 30 C22 34 26 34 28 30 C30 26 34 26 36 30" />
+        </svg>
       </div>
     );
   }
@@ -167,8 +175,8 @@ function JourneyCircleVisual({ step }: { step: number }) {
     return (
       <div className="relative h-full w-full overflow-hidden rounded-full bg-[#EDE9DF] p-0.5 ring-2 ring-[#3B5B3D]/25 shadow-inner">
         <Image
-          src="/images/products/coconut.jpg"
-          alt="CORA Coconut Flour"
+          src="/images/ingredients/coconut-flour.jpg"
+          alt="Fine Coconut Flour Bowl"
           fill
           sizes="96px"
           className="rounded-full object-cover transition-transform duration-500 hover:scale-110"
@@ -182,7 +190,7 @@ function JourneyCircleVisual({ step }: { step: number }) {
       <div className="relative h-full w-full overflow-hidden rounded-full bg-[#EDE9DF] p-0.5 ring-2 ring-[#3B5B3D]/25 shadow-inner">
         <Image
           src="/images/journey/brownies.jpg"
-          alt="CORA Food Products"
+          alt="Artisanal Brownies Product"
           fill
           sizes="96px"
           className="rounded-full object-cover transition-transform duration-500 hover:scale-110"
@@ -192,29 +200,14 @@ function JourneyCircleVisual({ step }: { step: number }) {
   }
 
   return (
-    <svg viewBox="0 0 120 120" className="h-full w-full" aria-hidden="true">
-      <circle cx="60" cy="60" r="56" fill="#EDE9DF" />
-      <rect x="24" y="32" width="72" height="46" rx="6" fill="#2C1E18" />
-      <rect x="28" y="36" width="64" height="38" rx="3" fill="#FAF8F5" />
-      <rect x="28" y="36" width="64" height="12" rx="2" fill="#3B5B3D" />
-      <rect x="33" y="52" width="24" height="16" rx="2" fill="#E6E3D8" />
-      <rect
-        x="61"
-        y="52"
-        width="26"
-        height="6"
-        rx="2"
-        fill="#4E9A34"
-        fillOpacity="0.65"
-      />
-      <rect x="61" y="61" width="20" height="6" rx="2" fill="#C7BEB1" />
-      <path d="M16 80H104L98 87H22L16 80Z" fill="#8E8478" />
-    </svg>
+    <div className="flex h-full w-full items-center justify-center rounded-full bg-gradient-to-br from-[#E6EFE3] to-[#D5E5D0] text-[#3B5B3D] ring-2 ring-[#3B5B3D]/25">
+      <Laptop className="h-10 w-10 transition-transform duration-500 hover:scale-110" />
+    </div>
   );
 }
 
 export default function HomePage() {
-  const { products, orders, addToCart } = useCora();
+  const { products, orders, suppliers, pickupRequests, addToCart } = useCora();
   const [addedProductId, setAddedProductId] = useState<string | null>(null);
 
   const impactStats = useMemo(() => {
@@ -238,11 +231,34 @@ export default function HomePage() {
       return orderSum + orderGrams;
     }, 0);
 
+    const completedPickupKg = pickupRequests
+      .filter((req) => req.status === 'COMPLETED')
+      .reduce((sum, req) => sum + req.estimatedKg, 0);
+
+    const totalResidueUtilizedKg = (
+      completedPickupKg +
+      totalGramsFromOrders / 1000
+    ).toFixed(1);
+
+    const totalFlourProducedKg = (
+      (completedPickupKg + totalGramsFromOrders / 1000) *
+      0.45
+    ).toFixed(1);
+
+    const totalProductsMarketed = verifiedOrders.reduce(
+      (sum, o) => sum + o.items.reduce((iSum, i) => iSum + i.qty, 0),
+      0
+    );
+
     return {
       totalKgFromTransactions: (totalGramsFromOrders / 1000).toFixed(2),
       verifiedOrderCount: verifiedOrders.length,
+      totalResidueUtilizedKg,
+      totalFlourProducedKg,
+      supplierCount: suppliers.length,
+      totalProductsMarketed,
     };
-  }, [orders, products]);
+  }, [orders, products, suppliers, pickupRequests]);
 
   const featuredProducts = useMemo(() => products.slice(0, 4), [products]);
 
@@ -261,7 +277,6 @@ export default function HomePage() {
       <main className="flex-1">
         {/* 1. HERO SECTION WITH NATURAL COCONUT BG & DARK GRADIENT OVERLAY */}
         <section className="relative overflow-hidden bg-[#121B13] text-[#FAF8F5]">
-          {/* z-0: Minimalist & Natural Raw Coconut Background Image */}
           <div className="pointer-events-none absolute inset-0 z-0 select-none transform-gpu">
             <Image
               src="/images/hero/hero.jpg"
@@ -272,16 +287,13 @@ export default function HomePage() {
             />
           </div>
 
-          {/* z-10: Dark gradient overlay on the left for maximum text contrast */}
           <div
             className="pointer-events-none absolute inset-0 z-10 bg-gradient-to-r from-black/85 via-black/55 to-black/25"
             aria-hidden="true"
           />
 
-          {/* z-20: Content with generous responsive padding */}
           <div className="relative z-20 mx-auto max-w-7xl px-6 md:px-12 lg:px-16 xl:px-20 pt-16 pb-24 sm:pt-20 sm:pb-28 lg:pt-24 lg:pb-32">
             <div className="grid items-start gap-10 lg:grid-cols-12 lg:gap-12 xl:gap-14">
-              {/* Left Grid: 50% on desktop (lg:col-span-6), 100% on mobile */}
               <div className="w-full lg:col-span-6 space-y-6">
                 <div
                   className="animate-cora-fade-up flex items-center gap-3 text-xs font-semibold uppercase tracking-[0.18em] text-[#86C975]"
@@ -327,7 +339,6 @@ export default function HomePage() {
                 </div>
               </div>
 
-              {/* Right Grid: Enlarged Transparent Card aligned with Title */}
               <div
                 className="animate-cora-fade-up w-full lg:col-span-6 lg:pt-10 transform-gpu"
                 style={{ animationDelay: '140ms' }}
@@ -381,13 +392,13 @@ export default function HomePage() {
           </Reveal>
         </section>
 
-        {/* 3. OUR JOURNEY: FROM WASTE TO VALUE */}
+        {/* 3. OUR JOURNEY: FROM WASTE TO VALUE & CIRCULAR IMPACT */}
         <section
           id="impact"
-          className="mx-auto max-w-7xl px-4 py-16 sm:px-6 sm:py-24 lg:px-8"
+          className="mx-auto max-w-7xl px-4 py-16 sm:px-6 sm:py-24 lg:px-8 space-y-16"
         >
+          {/* A. Journey Diagram */}
           <div className="grid items-start gap-12 lg:grid-cols-12">
-            {/* Left Column */}
             <Reveal className="lg:col-span-4 space-y-6">
               <div>
                 <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#3B5B3D]">
@@ -405,8 +416,7 @@ export default function HomePage() {
                 supported by a digital platform.
               </p>
 
-              {/* Dynamic Residue Saved Metric */}
-              <div className="rounded-2xl border border-[#E5DEC9] bg-white p-5">
+              <div className="rounded-2xl border border-[#E5DEC9] bg-white p-5 shadow-2xs">
                 <div className="flex items-center justify-between gap-2">
                   <span className="inline-flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-[0.12em] text-[#3B5B3D]">
                     <Leaf className="h-3.5 w-3.5" />
@@ -441,7 +451,6 @@ export default function HomePage() {
               </div>
             </Reveal>
 
-            {/* Right / Bottom: 5 Stages */}
             <div className="lg:col-span-8">
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-5">
                 {JOURNEY_STEPS.map((item, idx) => (
@@ -465,6 +474,250 @@ export default function HomePage() {
                     </div>
                   </Reveal>
                 ))}
+              </div>
+            </div>
+          </div>
+
+          {/* B. THREE PILLARS OF OUR IMPACT */}
+          <div className="border-t border-[#E5DEC9] pt-12">
+            <div className="text-center max-w-2xl mx-auto space-y-2">
+              <span className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#3B5B3D]">
+                Our Commitment
+              </span>
+              <h3 className="font-serif text-2xl sm:text-3xl font-semibold text-[#2C1E18]">
+                Three Pillars of CORA Impact
+              </h3>
+              <p className="text-xs sm:text-sm text-[#6E5C52]">
+                Menciptakan ekosistem berkelanjutan dari hulu ke hilir yang menyeimbangkan lingkungan, ekonomi lokal, dan kesejahteraan masyarakat.
+              </p>
+            </div>
+
+            <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
+              {/* 1. Environmental Impact */}
+              <div className="rounded-2xl border border-[#E5DEC9] bg-white p-6 shadow-xs flex flex-col justify-between">
+                <div className="space-y-4">
+                  <div className="flex items-center gap-3">
+                    <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#3B5B3D]/10 text-[#3B5B3D]">
+                      <Sprout className="h-5 w-5" />
+                    </span>
+                    <h4 className="text-base font-bold text-[#2C1E18]">
+                      Environmental Impact
+                    </h4>
+                  </div>
+                  <ul className="space-y-2.5 text-xs text-[#5C4B42]">
+                    <li className="flex items-start gap-2">
+                      <Check className="h-4 w-4 shrink-0 text-[#3B5B3D] mt-0.5" />
+                      <span>Mengurangi limbah ampas kelapa dari produksi santan harian.</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <Check className="h-4 w-4 shrink-0 text-[#3B5B3D] mt-0.5" />
+                      <span>Mengoptimalkan pemanfaatan hasil samping pengolahan kelapa menjadi produk bernilai pangan.</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <Check className="h-4 w-4 shrink-0 text-[#3B5B3D] mt-0.5" />
+                      <span>Mendukung konsep zero waste dan ekonomi sirkular ramah bumi.</span>
+                    </li>
+                  </ul>
+                </div>
+                <div className="mt-6 pt-3 border-t border-[#F0EAE0] text-[11px] font-semibold text-[#3B5B3D]">
+                  Zero Waste Food Solution
+                </div>
+              </div>
+
+              {/* 2. Economic Impact */}
+              <div className="rounded-2xl border border-[#E5DEC9] bg-white p-6 shadow-xs flex flex-col justify-between">
+                <div className="space-y-4">
+                  <div className="flex items-center gap-3">
+                    <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#4E9A34]/15 text-[#4E9A34]">
+                      <TrendingUp className="h-5 w-5" />
+                    </span>
+                    <h4 className="text-base font-bold text-[#2C1E18]">
+                      Economic Impact
+                    </h4>
+                  </div>
+                  <ul className="space-y-2.5 text-xs text-[#5C4B42]">
+                    <li className="flex items-start gap-2">
+                      <Check className="h-4 w-4 shrink-0 text-[#3B5B3D] mt-0.5" />
+                      <span>Memberikan nilai tambah pada ampas kelapa yang semula tidak bernilai.</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <Check className="h-4 w-4 shrink-0 text-[#3B5B3D] mt-0.5" />
+                      <span>Membuka peluang usaha inovatif dari produk olahan kelapa (tepung, brownies, cookies).</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <Check className="h-4 w-4 shrink-0 text-[#3B5B3D] mt-0.5" />
+                      <span>Menciptakan nilai ekonomi dan pendapatan tambahan bagi pemasok kelapa lokal.</span>
+                    </li>
+                  </ul>
+                </div>
+                <div className="mt-6 pt-3 border-t border-[#F0EAE0] text-[11px] font-semibold text-[#3B5B3D]">
+                  Residue to High-Value Asset
+                </div>
+              </div>
+
+              {/* 3. Social Impact */}
+              <div className="rounded-2xl border border-[#E5DEC9] bg-white p-6 shadow-xs flex flex-col justify-between">
+                <div className="space-y-4">
+                  <div className="flex items-center gap-3">
+                    <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#6E5C52]/15 text-[#6E5C52]">
+                      <Handshake className="h-5 w-5" />
+                    </span>
+                    <h4 className="text-base font-bold text-[#2C1E18]">
+                      Social Impact
+                    </h4>
+                  </div>
+                  <ul className="space-y-2.5 text-xs text-[#5C4B42]">
+                    <li className="flex items-start gap-2">
+                      <Check className="h-4 w-4 shrink-0 text-[#3B5B3D] mt-0.5" />
+                      <span>Memberdayakan petani, UMKM, dan pedagang kelapa parut lokal.</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <Check className="h-4 w-4 shrink-0 text-[#3B5B3D] mt-0.5" />
+                      <span>Membuka peluang kemitraan penjemputan berkala yang teratur.</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <Check className="h-4 w-4 shrink-0 text-[#3B5B3D] mt-0.5" />
+                      <span>Mendorong keterlibatan aktif masyarakat dalam pengelolaan limbah pangan.</span>
+                    </li>
+                  </ul>
+                </div>
+                <div className="mt-6 pt-3 border-t border-[#F0EAE0] text-[11px] font-semibold text-[#3B5B3D]">
+                  Community Empowerment
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* C. OUR IMPACT STATISTICS */}
+          <div className="rounded-3xl border border-[#E5DEC9] bg-white p-6 sm:p-8 shadow-xs">
+            <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-2 border-b border-[#E5DEC9]/80 pb-4">
+              <div>
+                <span className="text-[11px] font-bold uppercase tracking-[0.16em] text-[#3B5B3D]">
+                  Real-time Indicators
+                </span>
+                <h4 className="font-serif text-2xl font-bold text-[#2C1E18]">
+                  Our Impact Statistics
+                </h4>
+              </div>
+              <p className="text-[11px] text-[#8A776C] italic">
+                *Catatan: angka menggunakan data aktual setelah operasional berjalan.
+              </p>
+            </div>
+
+            <div className="mt-6 grid grid-cols-2 lg:grid-cols-4 gap-4">
+              <div className="rounded-2xl bg-[#FAF8F5] p-5 border border-[#E5DEC9]/80 shadow-2xs">
+                <div className="flex items-center gap-2 text-xs font-semibold text-[#3B5B3D]">
+                  <Scale className="h-4 w-4" />
+                  <span>Ampas Dimanfaatkan</span>
+                </div>
+                <p className="mt-3 font-serif text-3xl font-bold tabular-nums text-[#2C1E18]">
+                  {impactStats.totalResidueUtilizedKg} <span className="text-sm font-sans font-medium text-[#6E5C52]">kg</span>
+                </p>
+                <p className="mt-1 text-[11px] text-[#8A776C]">
+                  Total ampas kelapa berhasil dimanfaatkan
+                </p>
+              </div>
+
+              <div className="rounded-2xl bg-[#FAF8F5] p-5 border border-[#E5DEC9]/80 shadow-2xs">
+                <div className="flex items-center gap-2 text-xs font-semibold text-[#3B5B3D]">
+                  <Package className="h-4 w-4" />
+                  <span>Tepung Diproduksi</span>
+                </div>
+                <p className="mt-3 font-serif text-3xl font-bold tabular-nums text-[#2C1E18]">
+                  {impactStats.totalFlourProducedKg} <span className="text-sm font-sans font-medium text-[#6E5C52]">kg</span>
+                </p>
+                <p className="mt-1 text-[11px] text-[#8A776C]">
+                  Total tepung kelapa yang diproduksi
+                </p>
+              </div>
+
+              <div className="rounded-2xl bg-[#FAF8F5] p-5 border border-[#E5DEC9]/80 shadow-2xs">
+                <div className="flex items-center gap-2 text-xs font-semibold text-[#3B5B3D]">
+                  <Users className="h-4 w-4" />
+                  <span>Mitra Pemasok</span>
+                </div>
+                <p className="mt-3 font-serif text-3xl font-bold tabular-nums text-[#2C1E18]">
+                  {impactStats.supplierCount} <span className="text-sm font-sans font-medium text-[#6E5C52]">mitra</span>
+                </p>
+                <p className="mt-1 text-[11px] text-[#8A776C]">
+                  Jumlah mitra pemasok kelapa
+                </p>
+              </div>
+
+              <div className="rounded-2xl bg-[#FAF8F5] p-5 border border-[#E5DEC9]/80 shadow-2xs">
+                <div className="flex items-center gap-2 text-xs font-semibold text-[#3B5B3D]">
+                  <ShoppingBag className="h-4 w-4" />
+                  <span>Produk Dipasarkan</span>
+                </div>
+                <p className="mt-3 font-serif text-3xl font-bold tabular-nums text-[#2C1E18]">
+                  {impactStats.totalProductsMarketed} <span className="text-sm font-sans font-medium text-[#6E5C52]">pcs</span>
+                </p>
+                <p className="mt-1 text-[11px] text-[#8A776C]">
+                  Jumlah produk yang berhasil dipasarkan
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* D. OUR SUSTAINABILITY GOALS (SDGs) */}
+          <div className="rounded-3xl bg-[#1A261C] text-[#FAF8F5] p-6 sm:p-10">
+            <div className="max-w-2xl space-y-2">
+              <span className="inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.18em] text-[#86C975]">
+                <Globe2 className="h-3.5 w-3.5" />
+                Global Sustainability Framework
+              </span>
+              <h4 className="font-serif text-2xl sm:text-3xl font-semibold tracking-tight text-white">
+                Our Sustainability Goals
+              </h4>
+              <p className="text-xs sm:text-sm text-[#D6CEBF] leading-relaxed">
+                Inovasi produk dan operasional CORA secara nyata mendukung agenda Tujuan Pembangunan Berkelanjutan (SDGs):
+              </p>
+            </div>
+
+            <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-5">
+              <div className="rounded-2xl border border-white/15 bg-white/5 p-5">
+                <div className="flex items-center gap-3">
+                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#BF8B2E] font-bold text-white text-sm">
+                    12
+                  </span>
+                  <div>
+                    <p className="text-[10px] uppercase font-bold tracking-wider text-[#EAD092]">SDGs 12</p>
+                    <h5 className="text-sm font-bold text-white">Responsible Consumption &amp; Production</h5>
+                  </div>
+                </div>
+                <p className="mt-3 text-xs leading-relaxed text-[#D6CEBF]">
+                  Mendukung efisiensi sumber daya dan pengurangan limbah pangan (food waste) melalui pengolahan ampas kelapa secara higienis menjadi tepung fungsional.
+                </p>
+              </div>
+
+              <div className="rounded-2xl border border-white/15 bg-white/5 p-5">
+                <div className="flex items-center gap-3">
+                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#A21942] font-bold text-white text-sm">
+                    8
+                  </span>
+                  <div>
+                    <p className="text-[10px] uppercase font-bold tracking-wider text-[#F294AE]">SDGs 8</p>
+                    <h5 className="text-sm font-bold text-white">Decent Work &amp; Economic Growth</h5>
+                  </div>
+                </div>
+                <p className="mt-3 text-xs leading-relaxed text-[#D6CEBF]">
+                  Memberdayakan para pemasok kelapa lokal dan pelaku UMKM dengan membuka sumber pendapatan baru melalui kemitraan sirkular yang adil.
+                </p>
+              </div>
+
+              <div className="rounded-2xl border border-white/15 bg-white/5 p-5">
+                <div className="flex items-center gap-3">
+                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#3F7E44] font-bold text-white text-sm">
+                    13
+                  </span>
+                  <div>
+                    <p className="text-[10px] uppercase font-bold tracking-wider text-[#98D89C]">SDGs 13</p>
+                    <h5 className="text-sm font-bold text-white">Climate Action</h5>
+                  </div>
+                </div>
+                <p className="mt-3 text-xs leading-relaxed text-[#D6CEBF]">
+                  Menurunkan jejak karbon dan gas rumah kaca metana yang umumnya dihasilkan dari pembusukan ampas kelapa basah di tempat pembuangan akhir (TPA).
+                </p>
               </div>
             </div>
           </div>
