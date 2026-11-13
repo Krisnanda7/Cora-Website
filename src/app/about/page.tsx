@@ -25,28 +25,28 @@ interface TeamMember {
 
 const TEAM_MEMBERS: TeamMember[] = [
   {
-    name: 'Diandra',
+    name: 'Anggota 1',
     role: 'Founder & Innovation Lead',
     responsibility: 'Mengembangkan strategi sirkular, arsitektur produk, dan visi teknologi ekosistem CORA.',
-    image: '/images/hero/hero.jpg',
+    image: '/images/hero/anggota1.jpg',
   },
   {
-    name: 'Nadia Laksmi',
+    name: 'Anggota 2',
     role: 'Food Tech & R&D Specialist',
     responsibility: 'Formulasi higienis tepung ampas kelapa, uji proksimat nutrisi, dan rekayasa pangan bebas gluten.',
-    image: '/images/products/brownies.jpg',
+    image: '/images/products/anggota2.jpg',
   },
   {
-    name: 'Putu Arya',
+    name: 'Anggota 3',
     role: 'Supply Chain & Community Lead',
     responsibility: 'Mengelola jaringan logistik penjemputan residu kelapa dan kemitraan UMKM pedagang santan.',
-    image: '/images/products/cookies.jpg',
+    image: '/images/products/anggota.jpg',
   },
   {
-    name: 'Siti Rahma',
+    name: 'Anggota 4',
     role: 'Sustainability & Impact Officer',
     responsibility: 'Memantau metrik pengurangan sampah, jejak karbon, dan kepatuhan standar SDGs perusahaan.',
-    image: '/images/products/coconut.jpg',
+    image: '/images/products/anggota.jpg',
   },
 ];
 
