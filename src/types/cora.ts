@@ -101,6 +101,8 @@ export interface PickupRequest {
   createdAt?: string;
 }
 
+export type SupplierStatus = 'ACTIVE' | 'PENDING' | 'INACTIVE';
+
 export interface Supplier {
   id: string;
   name: string;
@@ -110,6 +112,7 @@ export interface Supplier {
   estimatedKg: number;
   productionFrequency: string;
   createdAt: string;
+  status?: SupplierStatus;
 }
 
 export type RecipeCategory =
@@ -188,6 +191,7 @@ export interface RegisterSupplierInput {
   businessType: string;
   estimatedKg: number;
   productionFrequency: string;
+  status?: SupplierStatus;
 }
 
 export interface ImpactStatItem {

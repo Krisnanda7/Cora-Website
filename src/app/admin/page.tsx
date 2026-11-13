@@ -50,6 +50,7 @@ import type {
   Recipe,
   RecipeCategory,
   Supplier,
+  SupplierStatus,
 } from '@/types/cora';
 
 type AdminTab =
@@ -115,6 +116,30 @@ function getOrderBadge(status: OrderStatus): {
       return {
         label: 'Rejected',
         className: 'bg-red-50 text-red-700 ring-1 ring-red-200',
+      };
+  }
+}
+
+function getSupplierBadge(status?: SupplierStatus): {
+  label: string;
+  className: string;
+} {
+  switch (status) {
+    case 'PENDING':
+      return {
+        label: 'Pending Review',
+        className: 'bg-amber-50 text-amber-800 ring-1 ring-amber-200',
+      };
+    case 'INACTIVE':
+      return {
+        label: 'Inactive / On Hold',
+        className: 'bg-stone-100 text-stone-600 ring-1 ring-stone-200',
+      };
+    case 'ACTIVE':
+    default:
+      return {
+        label: 'Verified Active',
+        className: 'bg-[#3B5B3D]/12 text-[#3B5B3D] ring-1 ring-[#3B5B3D]/25',
       };
   }
 }
@@ -290,12 +315,14 @@ export default function AdminDashboardPage() {
   const [supType, setSupType] = useState('Pabrik Pengolahan Santan');
   const [supKg, setSupKg] = useState('25');
   const [supFreq, setSupFreq] = useState('Setiap Hari');
+  const [supStatus, setSupStatus] = useState<SupplierStatus>('ACTIVE');
 
   // Tab 4: Pickup State
   const [pickupFilter, setPickupFilter] = useState<PickupFilter>('ALL');
 
   // Tab 5: RecipeHub CMS State
   const [recipeFilterCategory, setRecipeFilterCategory] = useState<string>('ALL');
+  const [recipeSearch, setRecipeSearch] = useState('');
   const [showRecipeModal, setShowRecipeModal] = useState(false);
   const [editingRecipeId, setEditingRecipeId] = useState<string | null>(null);
   const [recTitle, setRecTitle] = useState('');
@@ -413,9 +440,19 @@ export default function AdminDashboardPage() {
 
   // Filtered Recipes
   const filteredRecipes = useMemo(() => {
-    if (recipeFilterCategory === 'ALL') return recipes;
-    return recipes.filter((r) => r.category === recipeFilterCategory);
-  }, [recipes, recipeFilterCategory]);
+    return recipes.filter((r) => {
+      const matchCat =
+        recipeFilterCategory === 'ALL' || r.category === recipeFilterCategory;
+      const q = recipeSearch.trim().toLowerCase();
+      const matchQuery =
+        !q ||
+        r.title.toLowerCase().includes(q) ||
+        r.summary.toLowerCase().includes(q) ||
+        r.coconutFlourUsed.toLowerCase().includes(q) ||
+        r.ingredients.some((ing) => ing.toLowerCase().includes(q));
+      return matchCat && matchQuery;
+    });
+  }, [recipes, recipeFilterCategory, recipeSearch]);
 
   // Financial KPIs
   const financeStats = useMemo(() => {
@@ -511,6 +548,43 @@ export default function AdminDashboardPage() {
     showToast(
       `Payment for #${order.orderNumber} approved. Inventory deducted & revenue recorded.`
     );
+  };
+
+  const handleDirectOrderStatusChange = (
+    order: Order,
+    newStatus: OrderStatus
+  ) => {
+    const resi =
+      trackingDrafts[order.id] !== undefined
+        ? trackingDrafts[order.id]
+        : order.trackingNumber ?? '';
+    updateOrderStatus(order.id, newStatus, resi);
+    const badge = getOrderBadge(newStatus);
+    showToast(`Order #${order.orderNumber} status changed to ${badge.label}.`);
+    if (proofModalOrder && proofModalOrder.id === order.id) {
+      setProofModalOrder({
+        ...proofModalOrder,
+        status: newStatus,
+        trackingNumber: resi,
+      });
+    }
+  };
+
+  const handleSaveTrackingResi = (order: Order) => {
+    const resi = trackingDrafts[order.id]?.trim() ?? '';
+    updateOrderStatus(order.id, order.status, resi);
+    showToast(`Tracking number for #${order.orderNumber} saved: ${resi || '(cleared)'}`);
+  };
+
+  const handleSupplierStatusChange = (
+    sup: Supplier,
+    newStatus: SupplierStatus
+  ) => {
+    saveSupplier({
+      ...sup,
+      status: newStatus,
+    });
+    showToast(`Partner "${sup.name}" status changed to ${getSupplierBadge(newStatus).label}.`);
   };
 
   const handleRejectOrder = (order: Order) => {
@@ -678,6 +752,7 @@ export default function AdminDashboardPage() {
     setSupType('Pabrik Pengolahan Santan');
     setSupKg('25');
     setSupFreq('Setiap Hari');
+    setSupStatus('ACTIVE');
     setShowSupplierModal(true);
   };
 
@@ -689,6 +764,7 @@ export default function AdminDashboardPage() {
     setSupType(sup.businessType);
     setSupKg(String(sup.estimatedKg));
     setSupFreq(sup.productionFrequency);
+    setSupStatus(sup.status ?? 'ACTIVE');
     setShowSupplierModal(true);
   };
 
@@ -708,6 +784,7 @@ export default function AdminDashboardPage() {
         businessType: supType,
         estimatedKg: Number(supKg) || 20,
         productionFrequency: supFreq,
+        status: supStatus,
         createdAt:
           suppliers.find((s) => s.id === editingSupplierId)?.createdAt ||
           new Date().toISOString(),
@@ -721,6 +798,7 @@ export default function AdminDashboardPage() {
         businessType: supType,
         estimatedKg: Number(supKg) || 20,
         productionFrequency: supFreq,
+        status: supStatus,
       });
       showToast('New supplier partner successfully registered to the CORA network.');
     }
@@ -1006,9 +1084,9 @@ export default function AdminDashboardPage() {
 
   return (
     <div className="min-h-screen bg-[#FAF8F5] text-[#2C1E18] flex flex-col lg:flex-row">
-      {/* CLEAN LIGHT MODE SIDEBAR (#F0ECE1) */}
-      <aside className="w-full shrink-0 border-b border-[#E5DEC9] bg-[#F0ECE1] lg:w-72 lg:border-r lg:border-b-0">
-        <div className="flex h-full flex-col justify-between p-5">
+      {/* CLEAN LIGHT MODE SIDEBAR (#F0ECE1) - FIXED ON DESKTOP */}
+      <aside className="w-full shrink-0 border-b border-[#E5DEC9] bg-[#F0ECE1] lg:fixed lg:inset-y-0 lg:left-0 lg:z-40 lg:w-72 lg:h-screen lg:overflow-y-auto lg:border-r lg:border-b-0">
+        <div className="flex h-full min-h-screen flex-col justify-between p-5">
           <div>
             {/* Brand Header */}
             <div className="flex items-center justify-between gap-2 pb-5 border-b border-[#E0D8C6]">
@@ -1082,8 +1160,8 @@ export default function AdminDashboardPage() {
         </div>
       </aside>
 
-      {/* MAIN WORKSPACE */}
-      <div className="flex-1 min-w-0">
+      {/* MAIN WORKSPACE - OFFSET BY SIDEBAR ON DESKTOP */}
+      <div className="flex-1 min-w-0 lg:ml-72">
         {/* Top Admin Header */}
         <header className="sticky top-0 z-30 border-b border-[#E5DEC9] bg-[#FAF8F5]/95 px-4 py-4 backdrop-blur-md sm:px-8">
           <div className="flex flex-wrap items-center justify-between gap-3">
@@ -1267,71 +1345,94 @@ export default function AdminDashboardPage() {
                               </td>
 
                               <td className="px-5 py-4">
-                                <span
-                                  className={`inline-flex rounded-full px-2.5 py-1 text-[11px] font-semibold whitespace-nowrap ${badge.className}`}
-                                >
-                                  {badge.label}
-                                </span>
-                                {order.trackingNumber && (
-                                  <p className="mt-1.5 font-mono text-[11px] font-semibold text-[#3B5B3D]">
-                                    Tracking: {order.trackingNumber}
-                                  </p>
-                                )}
+                                <div className="space-y-1.5 min-w-[180px]">
+                                  <select
+                                    value={order.status}
+                                    onChange={(e) =>
+                                      handleDirectOrderStatusChange(
+                                        order,
+                                        e.target.value as OrderStatus
+                                      )
+                                    }
+                                    className={`w-full cursor-pointer rounded-xl px-3 py-1.5 text-xs font-bold ring-1 transition focus:outline-none focus:ring-2 ${badge.className}`}
+                                    title="Click to change order status"
+                                  >
+                                    <option value="WAITING_VERIFICATION">Awaiting Verification</option>
+                                    <option value="PROCESSING">Processing</option>
+                                    <option value="SHIPPED">Shipped (In Transit)</option>
+                                    <option value="COMPLETED">Completed</option>
+                                    <option value="REJECTED">Rejected</option>
+                                  </select>
+                                  {order.trackingNumber && (
+                                    <p className="font-mono text-[11px] font-semibold text-[#3B5B3D]">
+                                      Resi: {order.trackingNumber}
+                                    </p>
+                                  )}
+                                </div>
                               </td>
 
-                              <td className="px-5 py-4 space-y-2.5 min-w-[230px]">
-                                {order.status === 'WAITING_VERIFICATION' && (
-                                  <div className="flex flex-wrap gap-1.5">
-                                    <button
-                                      type="button"
-                                      onClick={() => handleApproveOrder(order)}
-                                      className="inline-flex items-center gap-1 rounded-full bg-[#3B5B3D] px-3 py-1.5 text-[11px] font-semibold text-white transition hover:bg-[#2F4A31]"
-                                    >
-                                      <Check className="h-3.5 w-3.5" />
-                                      Approve Payment
-                                    </button>
-                                    <button
-                                      type="button"
-                                      onClick={() => handleRejectOrder(order)}
-                                      className="inline-flex items-center gap-1 rounded-full border border-red-200 bg-red-50 px-3 py-1.5 text-[11px] font-semibold text-red-700 transition hover:bg-red-100"
-                                    >
-                                      <XCircle className="h-3.5 w-3.5" />
-                                      Reject
-                                    </button>
-                                  </div>
-                                )}
+                              <td className="px-5 py-4 space-y-2.5 min-w-[240px]">
+                                <div className="flex items-center gap-1.5">
+                                  <input
+                                    type="text"
+                                    value={currentResi}
+                                    onChange={(e) =>
+                                      setTrackingDrafts((prev) => ({
+                                        ...prev,
+                                        [order.id]: e.target.value,
+                                      }))
+                                    }
+                                    placeholder="Tracking / Waybill No."
+                                    className="flex-1 rounded-xl border border-[#E5DEC9] bg-[#FAF8F5] px-3 py-1.5 text-[11px] text-[#2C1E18] focus:bg-white focus:ring-2 focus:ring-[#3B5B3D] focus:outline-none"
+                                  />
+                                  <button
+                                    type="button"
+                                    onClick={() => handleSaveTrackingResi(order)}
+                                    className="inline-flex items-center gap-1 rounded-xl border border-[#3B5B3D]/30 bg-white px-2.5 py-1.5 text-[11px] font-semibold text-[#3B5B3D] hover:bg-[#3B5B3D] hover:text-white transition"
+                                    title="Save tracking code"
+                                  >
+                                    <Save className="h-3 w-3" />
+                                    Save
+                                  </button>
+                                </div>
 
-                                {(order.status === 'PROCESSING' ||
-                                  order.status === 'SHIPPED') && (
-                                  <div className="space-y-2">
-                                    <input
-                                      type="text"
-                                      value={currentResi}
-                                      onChange={(e) =>
-                                        setTrackingDrafts((prev) => ({
-                                          ...prev,
-                                          [order.id]: e.target.value,
-                                        }))
-                                      }
-                                      placeholder="Tracking / Waybill No. (optional)"
-                                      className="w-full rounded-xl border border-[#E5DEC9] bg-[#FAF8F5] px-3 py-1.5 text-[11px] text-[#2C1E18] focus:bg-white focus:ring-2 focus:ring-[#3B5B3D] focus:outline-none"
-                                    />
-                                    <div className="flex flex-wrap gap-1.5">
-                                      {order.status === 'PROCESSING' && (
-                                        <button
-                                          type="button"
-                                          onClick={() =>
-                                            handleUpdateShippingStatus(
-                                              order,
-                                              'SHIPPED'
-                                            )
-                                          }
-                                          className="inline-flex items-center gap-1 rounded-full bg-indigo-600 px-3 py-1.5 text-[11px] font-semibold text-white transition hover:bg-indigo-700"
-                                        >
-                                          <Truck className="h-3 w-3" />
-                                          SHIPPED
-                                        </button>
-                                      )}
+                                <div className="flex flex-wrap gap-1.5">
+                                  {order.status === 'WAITING_VERIFICATION' && (
+                                    <>
+                                      <button
+                                        type="button"
+                                        onClick={() => handleApproveOrder(order)}
+                                        className="inline-flex items-center gap-1 rounded-full bg-[#3B5B3D] px-3 py-1.5 text-[11px] font-semibold text-white transition hover:bg-[#2F4A31]"
+                                      >
+                                        <Check className="h-3.5 w-3.5" />
+                                        Approve
+                                      </button>
+                                      <button
+                                        type="button"
+                                        onClick={() => handleRejectOrder(order)}
+                                        className="inline-flex items-center gap-1 rounded-full border border-red-200 bg-red-50 px-3 py-1.5 text-[11px] font-semibold text-red-700 transition hover:bg-red-100"
+                                      >
+                                        <XCircle className="h-3.5 w-3.5" />
+                                        Reject
+                                      </button>
+                                    </>
+                                  )}
+
+                                  {order.status === 'PROCESSING' && (
+                                    <>
+                                      <button
+                                        type="button"
+                                        onClick={() =>
+                                          handleUpdateShippingStatus(
+                                            order,
+                                            'SHIPPED'
+                                          )
+                                        }
+                                        className="inline-flex items-center gap-1 rounded-full bg-indigo-600 px-3 py-1.5 text-[11px] font-semibold text-white transition hover:bg-indigo-700"
+                                      >
+                                        <Truck className="h-3 w-3" />
+                                        Mark Shipped
+                                      </button>
                                       <button
                                         type="button"
                                         onClick={() =>
@@ -1343,18 +1444,50 @@ export default function AdminDashboardPage() {
                                         className="inline-flex items-center gap-1 rounded-full bg-[#4E9A34] px-3 py-1.5 text-[11px] font-semibold text-white transition hover:bg-[#3F8129]"
                                       >
                                         <BadgeCheck className="h-3 w-3" />
-                                        COMPLETED
+                                        Mark Completed
+                                      </button>
+                                    </>
+                                  )}
+
+                                  {order.status === 'SHIPPED' && (
+                                    <button
+                                      type="button"
+                                      onClick={() =>
+                                        handleUpdateShippingStatus(
+                                          order,
+                                          'COMPLETED'
+                                        )
+                                      }
+                                      className="inline-flex items-center gap-1 rounded-full bg-[#4E9A34] px-3 py-1.5 text-[11px] font-semibold text-white transition hover:bg-[#3F8129]"
+                                    >
+                                      <BadgeCheck className="h-3 w-3" />
+                                      Mark Completed
+                                    </button>
+                                  )}
+
+                                  {(order.status === 'COMPLETED' ||
+                                    order.status === 'REJECTED') && (
+                                    <div className="flex items-center gap-2">
+                                      <span className="text-[11px] text-[#8A776C]">
+                                        {order.status === 'COMPLETED'
+                                          ? 'Completed'
+                                          : 'Rejected'}
+                                      </span>
+                                      <button
+                                        type="button"
+                                        onClick={() =>
+                                          handleDirectOrderStatusChange(
+                                            order,
+                                            'PROCESSING'
+                                          )
+                                        }
+                                        className="text-[11px] font-semibold text-[#3B5B3D] underline hover:text-[#2C1E18]"
+                                      >
+                                        Re-open
                                       </button>
                                     </div>
-                                  </div>
-                                )}
-
-                                {(order.status === 'COMPLETED' ||
-                                  order.status === 'REJECTED') && (
-                                  <span className="text-[11px] text-[#8A776C]">
-                                    Final transaction
-                                  </span>
-                                )}
+                                  )}
+                                </div>
                               </td>
                             </tr>
                           );
@@ -1574,7 +1707,7 @@ export default function AdminDashboardPage() {
                               <td className="px-4 py-3.5 text-[#5C4B42]">
                                 <p>{product.weightGram}g</p>
                                 <p className="text-[11px] font-medium text-[#3B5B3D]">
-                                  ♻ {product.residueSavedGram}g residue
+                                  {product.residueSavedGram}g residue saved
                                 </p>
                               </td>
 
@@ -1685,19 +1818,28 @@ export default function AdminDashboardPage() {
                       </div>
 
                       <div className="flex items-center gap-2">
-                        <span
-                          className={`rounded-full px-2 py-0.5 text-[10px] font-bold ${
+                        <button
+                          type="button"
+                          onClick={() => {
+                            saveBankAccount({ ...bank, isActive: !bank.isActive });
+                            showToast(
+                              `${bank.bankName} is now ${!bank.isActive ? 'Active' : 'Inactive'}.`
+                            );
+                          }}
+                          className={`rounded-full px-2.5 py-1 text-[10px] font-bold transition ${
                             bank.isActive
-                              ? 'bg-[#3B5B3D]/12 text-[#3B5B3D]'
-                              : 'bg-stone-100 text-stone-500'
+                              ? 'bg-[#3B5B3D]/12 text-[#3B5B3D] hover:bg-[#3B5B3D]/20 ring-1 ring-[#3B5B3D]/25'
+                              : 'bg-stone-100 text-stone-500 hover:bg-stone-200 ring-1 ring-stone-200'
                           }`}
+                          title="Click to toggle activation"
                         >
                           {bank.isActive ? 'Active' : 'Inactive'}
-                        </span>
+                        </button>
                         <button
                           type="button"
                           onClick={() => handleEditBank(bank)}
                           className="rounded-full p-1.5 text-[#3B5B3D] hover:bg-[#3B5B3D]/10"
+                          title="Edit account"
                         >
                           <Edit3 className="h-4 w-4" />
                         </button>
@@ -1949,12 +2091,28 @@ export default function AdminDashboardPage() {
                               {sup.productionFrequency}
                             </td>
                             <td className="px-5 py-4">
-                              <span className="inline-flex rounded-full bg-[#3B5B3D]/12 px-2.5 py-0.5 text-[10px] font-bold text-[#3B5B3D]">
-                                Verified Active
-                              </span>
-                              <p className="mt-1 text-[11px] text-[#8A776C]">
-                                {formatDateTime(sup.createdAt)}
-                              </p>
+                              <div className="space-y-1 min-w-[150px]">
+                                <select
+                                  value={sup.status ?? 'ACTIVE'}
+                                  onChange={(e) =>
+                                    handleSupplierStatusChange(
+                                      sup,
+                                      e.target.value as SupplierStatus
+                                    )
+                                  }
+                                  className={`w-full cursor-pointer rounded-xl px-2.5 py-1 text-[11px] font-bold ring-1 transition focus:outline-none focus:ring-2 ${
+                                    getSupplierBadge(sup.status).className
+                                  }`}
+                                  title="Click to change partner verification status"
+                                >
+                                  <option value="ACTIVE">Verified Active</option>
+                                  <option value="PENDING">Pending Review</option>
+                                  <option value="INACTIVE">Inactive / On Hold</option>
+                                </select>
+                                <p className="text-[10px] text-[#8A776C]">
+                                  Joined: {formatDateTime(sup.createdAt)}
+                                </p>
+                              </div>
                             </td>
                             <td className="px-5 py-4 text-right">
                               <div className="inline-flex items-center gap-2">
@@ -2179,11 +2337,25 @@ export default function AdminDashboardPage() {
                                 </p>
                               </td>
                               <td className="px-5 py-4">
-                                <span
-                                  className={`inline-flex rounded-full px-3 py-1 text-[11px] font-semibold whitespace-nowrap ${badge.className}`}
-                                >
-                                  {badge.label}
-                                </span>
+                                <div className="space-y-1 min-w-[170px]">
+                                  <select
+                                    value={req.status}
+                                    onChange={(e) =>
+                                      advancePickupStatus(
+                                        req,
+                                        e.target.value as PickupRequestStatus
+                                      )
+                                    }
+                                    className={`w-full cursor-pointer rounded-xl px-3 py-1.5 text-xs font-bold ring-1 transition focus:outline-none focus:ring-2 ${badge.className}`}
+                                    title="Click to change pickup workflow stage"
+                                  >
+                                    <option value="REQUEST_SUBMITTED">1. Request Submitted</option>
+                                    <option value="REQUEST_CONFIRMED">2. Request Confirmed</option>
+                                    <option value="ON_THE_WAY">3. Driver Dispatched</option>
+                                    <option value="PICKED_UP">4. Residue Picked Up</option>
+                                    <option value="COMPLETED">5. Completed / Upcycled</option>
+                                  </select>
+                                </div>
                               </td>
                               <td className="px-5 py-4 text-right">
                                 <div className="inline-flex flex-wrap justify-end gap-1.5">
@@ -2304,9 +2476,30 @@ export default function AdminDashboardPage() {
                 </div>
               </div>
 
-              {/* Action Bar & Category Filters */}
-              <div className="flex flex-wrap items-center justify-between gap-3">
-                <div className="flex flex-wrap items-center gap-2">
+              {/* Top Bar: Title, Subtitle, and Add Recipe */}
+              <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                <div>
+                  <h2 className="font-serif text-xl font-bold text-[#2C1E18]">
+                    RecipeHub Catalog Management (List View)
+                  </h2>
+                  <p className="text-xs text-[#6E5C52]">
+                    Lightweight, high-performance table view to manage recipes, ingredients, flour measures, and baking guides.
+                  </p>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={openNewRecipeForm}
+                  className="inline-flex items-center gap-1.5 rounded-full bg-[#3B5B3D] px-5 py-2.5 text-xs font-semibold text-white transition hover:bg-[#2F4A31]"
+                >
+                  <Plus className="h-4 w-4" />
+                  Add New Recipe
+                </button>
+              </div>
+
+              {/* Filter & Search Bar */}
+              <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-[#E5DEC9] bg-white p-3.5 shadow-2xs">
+                <div className="flex flex-wrap items-center gap-1.5">
                   {[
                     'ALL',
                     'Cookies and Biscuits',
@@ -2320,10 +2513,10 @@ export default function AdminDashboardPage() {
                         key={cat}
                         type="button"
                         onClick={() => setRecipeFilterCategory(cat)}
-                        className={`rounded-full px-4 py-2 text-xs font-semibold transition ${
+                        className={`rounded-full px-3.5 py-1.5 text-xs font-semibold transition ${
                           active
                             ? 'bg-[#3B5B3D] text-white'
-                            : 'border border-[#E5DEC9] bg-white text-[#5C4B42] hover:bg-[#F0ECE1]'
+                            : 'bg-[#FAF8F5] text-[#5C4B42] hover:bg-[#EAE5D5]'
                         }`}
                       >
                         {cat === 'ALL' ? 'All Recipes' : cat}
@@ -2332,94 +2525,166 @@ export default function AdminDashboardPage() {
                   })}
                 </div>
 
-                <button
-                  type="button"
-                  onClick={openNewRecipeForm}
-                  className="inline-flex items-center gap-1.5 rounded-full bg-[#3B5B3D] px-5 py-2.5 text-xs font-semibold text-white transition hover:bg-[#2F4A31]"
-                >
-                  <Plus className="h-4 w-4" />
-                  Add New Recipe
-                </button>
+                <div className="relative min-w-[220px] flex-1 sm:max-w-xs">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-[#8A776C]" />
+                  <input
+                    type="text"
+                    value={recipeSearch}
+                    onChange={(e) => setRecipeSearch(e.target.value)}
+                    placeholder="Search recipes..."
+                    className="w-full rounded-full bg-[#FAF8F5] py-1.5 pl-8 pr-3 text-xs text-[#2C1E18] ring-1 ring-[#E5DEC9] focus:bg-white focus:ring-2 focus:ring-[#3B5B3D] focus:outline-none"
+                  />
+                </div>
               </div>
 
-              {/* Recipe Cards Grid */}
-              <div className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
-                {filteredRecipes.map((recipe) => (
-                  <div
-                    key={recipe.id}
-                    className="flex flex-col justify-between rounded-3xl border border-[#E5DEC9] bg-white p-5 shadow-xs transition hover:shadow-md"
-                  >
-                    <div>
-                      {/* Image Preview */}
-                      <div className="relative aspect-16/10 w-full overflow-hidden rounded-2xl border border-[#E5DEC9] bg-[#FAF8F5]">
-                        <Image
-                          src={recipe.image || RECIPE_IMAGE_PRESETS[0].value}
-                          alt={recipe.title}
-                          fill
-                          unoptimized
-                          className="object-cover"
-                        />
-                        <span className="absolute top-3 left-3 rounded-full bg-[#2C1E18]/80 px-2.5 py-1 text-[10px] font-bold text-white backdrop-blur-xs">
-                          {recipe.category}
-                        </span>
-                        <span className="absolute top-3 right-3 rounded-full bg-[#3B5B3D] px-2.5 py-1 text-[10px] font-bold text-white">
-                          {recipe.difficulty}
-                        </span>
-                      </div>
+              {/* COMPACT RECIPE LIST TABLE */}
+              <div className="overflow-hidden rounded-3xl border border-[#E5DEC9] bg-white shadow-xs">
+                <div className="overflow-x-auto">
+                  <table className="w-full min-w-[950px] border-collapse text-left text-xs">
+                    <thead>
+                      <tr className="border-b border-[#E5DEC9] bg-[#FAF8F5] text-[11px] font-bold uppercase tracking-wider text-[#6E5C52]">
+                        <th className="px-4 py-3.5">Recipe &amp; Photo</th>
+                        <th className="px-4 py-3.5">Category</th>
+                        <th className="px-4 py-3.5">Prep &amp; Cook Time</th>
+                        <th className="px-4 py-3.5">Servings &amp; Calories</th>
+                        <th className="px-4 py-3.5">Flour Measure</th>
+                        <th className="px-4 py-3.5">Difficulty</th>
+                        <th className="px-4 py-3.5">Ingredients &amp; Steps</th>
+                        <th className="px-4 py-3.5 text-right">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-[#F0EAE0]">
+                      {filteredRecipes.length === 0 ? (
+                        <tr>
+                          <td
+                            colSpan={8}
+                            className="px-6 py-12 text-center text-sm text-[#6E5C52]"
+                          >
+                            No recipes match the selected filter.
+                          </td>
+                        </tr>
+                      ) : (
+                        filteredRecipes.map((recipe) => (
+                          <tr
+                            key={recipe.id}
+                            className="transition hover:bg-[#FAF8F5]/60"
+                          >
+                            {/* Recipe Thumbnail & Title */}
+                            <td className="px-4 py-3.5">
+                              <div className="flex items-center gap-3">
+                                <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-xl border border-[#E5DEC9] bg-[#FAF8F5]">
+                                  <Image
+                                    src={recipe.image || RECIPE_IMAGE_PRESETS[0].value}
+                                    alt={recipe.title}
+                                    fill
+                                    unoptimized
+                                    className="object-cover"
+                                  />
+                                </div>
+                                <div className="min-w-0">
+                                  <p className="font-bold text-[#2C1E18] truncate max-w-[220px]">
+                                    {recipe.title}
+                                  </p>
+                                  <p className="text-[11px] text-[#6E5C52] truncate max-w-[220px]">
+                                    {recipe.summary}
+                                  </p>
+                                </div>
+                              </div>
+                            </td>
 
-                      <div className="mt-4">
-                        <h3 className="font-serif text-lg font-bold text-[#2C1E18]">
-                          {recipe.title}
-                        </h3>
-                        <p className="mt-1 line-clamp-2 text-xs text-[#6E5C52]">
-                          {recipe.summary}
-                        </p>
+                            {/* Category */}
+                            <td className="px-4 py-3.5">
+                              <span className="inline-flex rounded-full bg-[#3B5B3D]/10 px-2.5 py-0.5 text-[11px] font-semibold text-[#3B5B3D]">
+                                {recipe.category}
+                              </span>
+                            </td>
 
-                        <div className="mt-3 flex flex-wrap items-center gap-3 text-[11px] text-[#5C4B42]">
-                          <span className="inline-flex items-center gap-1">
-                            <Clock className="h-3.5 w-3.5 text-[#3B5B3D]" />
-                            {recipe.prepTime} prep • {recipe.cookTime} cook
-                          </span>
-                          <span className="inline-flex items-center gap-1">
-                            <Users className="h-3.5 w-3.5 text-[#3B5B3D]" />
-                            {recipe.servings}
-                          </span>
-                        </div>
+                            {/* Prep & Cook Time */}
+                            <td className="px-4 py-3.5 text-[#5C4B42]">
+                              <div className="flex items-center gap-1.5">
+                                <Clock className="h-3.5 w-3.5 text-[#3B5B3D]" />
+                                <span>{recipe.prepTime} prep • {recipe.cookTime} cook</span>
+                              </div>
+                            </td>
 
-                        <div className="mt-3 rounded-xl bg-[#FAF8F5] p-2.5 text-[11px] text-[#3B5B3D] ring-1 ring-[#E5DEC9]">
-                          🥥 {recipe.coconutFlourUsed}
-                        </div>
-                      </div>
-                    </div>
+                            {/* Servings & Calories */}
+                            <td className="px-4 py-3.5 text-[#5C4B42]">
+                              <div className="flex items-center gap-1.5">
+                                <Users className="h-3.5 w-3.5 text-[#3B5B3D]" />
+                                <span>{recipe.servings} • {recipe.calories} kcal</span>
+                              </div>
+                            </td>
 
-                    <div className="mt-5 flex items-center justify-between border-t border-[#F0EAE0] pt-4">
-                      <div className="text-[11px] text-[#8A776C]">
-                        {recipe.ingredients.length} ingredients •{' '}
-                        {recipe.steps.length} steps
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <button
-                          type="button"
-                          onClick={() => openEditRecipeForm(recipe)}
-                          className="inline-flex items-center gap-1 rounded-full border border-[#3B5B3D]/30 bg-[#3B5B3D]/8 px-3 py-1.5 text-xs font-semibold text-[#3B5B3D] hover:bg-[#3B5B3D] hover:text-white"
-                        >
-                          <Edit3 className="h-3.5 w-3.5" />
-                          Edit
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() =>
-                            handleDeleteRecipe(recipe.id, recipe.title)
-                          }
-                          className="rounded-full p-1.5 text-red-600 hover:bg-red-50"
-                          title="Delete Recipe"
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                ))}
+                            {/* Flour Measure */}
+                            <td className="px-4 py-3.5">
+                              <span className="inline-block rounded-lg bg-[#FAF8F5] px-2.5 py-1 text-[11px] font-medium text-[#3B5B3D] ring-1 ring-[#E5DEC9]">
+                                {recipe.coconutFlourUsed}
+                              </span>
+                            </td>
+
+                            {/* Difficulty */}
+                            <td className="px-4 py-3.5">
+                              <span
+                                className={`inline-flex rounded-full px-2.5 py-0.5 text-[10px] font-bold ${
+                                  recipe.difficulty === 'Easy'
+                                    ? 'bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200'
+                                    : recipe.difficulty === 'Medium'
+                                    ? 'bg-amber-50 text-amber-700 ring-1 ring-amber-200'
+                                    : 'bg-purple-50 text-purple-700 ring-1 ring-purple-200'
+                                }`}
+                              >
+                                {recipe.difficulty}
+                              </span>
+                            </td>
+
+                            {/* Ingredients & Steps count */}
+                            <td className="px-4 py-3.5 text-[11px] text-[#6E5C52]">
+                              {recipe.ingredients.length} ing. • {recipe.steps.length} steps
+                            </td>
+
+                            {/* Actions */}
+                            <td className="px-4 py-3.5 text-right">
+                              <div className="inline-flex items-center gap-1.5">
+                                <button
+                                  type="button"
+                                  onClick={() => openEditRecipeForm(recipe)}
+                                  className="inline-flex items-center gap-1 rounded-full border border-[#3B5B3D]/30 bg-[#3B5B3D]/8 px-2.5 py-1 text-[11px] font-semibold text-[#3B5B3D] hover:bg-[#3B5B3D] hover:text-white transition"
+                                  title="Edit Full Details"
+                                >
+                                  <Edit3 className="h-3 w-3" />
+                                  Edit
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={() =>
+                                    handleDeleteRecipe(recipe.id, recipe.title)
+                                  }
+                                  className="rounded-full p-1.5 text-red-600 hover:bg-red-50 transition"
+                                  title="Delete Recipe"
+                                >
+                                  <Trash2 className="h-3.5 w-3.5" />
+                                </button>
+                              </div>
+                            </td>
+                          </tr>
+                        ))
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+
+                {/* Table Summary Footer */}
+                <div className="flex flex-wrap items-center justify-between border-t border-[#E5DEC9] bg-[#FAF8F5] px-5 py-3 text-xs text-[#6E5C52]">
+                  <span>
+                    Total Recipes: <strong>{recipes.length} recipes</strong> ({filteredRecipes.length} displayed)
+                  </span>
+                  <span>
+                    Total Saved Bookmarks:{' '}
+                    <strong>
+                      {userProfile.favoriteRecipeIds.length} bookmarks
+                    </strong>
+                  </span>
+                </div>
               </div>
             </section>
           )}
@@ -2874,7 +3139,7 @@ export default function AdminDashboardPage() {
                 <div className="grid grid-cols-1 gap-3 sm:grid-cols-3 pt-2">
                   <div className="rounded-2xl border border-[#E5DEC9] bg-[#FAF8F5] p-3.5 text-xs">
                     <p className="font-bold text-[#3B5B3D]">
-                      🎯 SDG 12: Responsible Consumption
+                      SDG 12: Responsible Consumption
                     </p>
                     <p className="mt-1 text-[#6E5C52]">
                       Upcycling plant food byproducts into high-nutrition, gluten-free
@@ -2883,7 +3148,7 @@ export default function AdminDashboardPage() {
                   </div>
                   <div className="rounded-2xl border border-[#E5DEC9] bg-[#FAF8F5] p-3.5 text-xs">
                     <p className="font-bold text-[#3B5B3D]">
-                      🤝 SDG 8: Decent Work &amp; Economic Growth
+                      SDG 8: Decent Work &amp; Economic Growth
                     </p>
                     <p className="mt-1 text-[#6E5C52]">
                       Providing direct supplementary income to {suppliers.length}{' '}
@@ -2892,7 +3157,7 @@ export default function AdminDashboardPage() {
                   </div>
                   <div className="rounded-2xl border border-[#E5DEC9] bg-[#FAF8F5] p-3.5 text-xs">
                     <p className="font-bold text-[#3B5B3D]">
-                      🌱 SDG 13: Climate Action
+                      SDG 13: Climate Action
                     </p>
                     <p className="mt-1 text-[#6E5C52]">
                       Mitigating transportation carbon footprints and organic landfill
@@ -3447,36 +3712,58 @@ export default function AdminDashboardPage() {
                 />
               </div>
 
-              {proofModalOrder.status === 'WAITING_VERIFICATION' ? (
-                <div className="flex flex-wrap items-center justify-end gap-2.5 pt-2">
-                  <button
-                    type="button"
-                    onClick={() => handleRejectOrder(proofModalOrder)}
-                    className="inline-flex items-center gap-1.5 rounded-full border border-red-200 bg-red-50 px-4 py-2.5 text-xs font-semibold text-red-700 hover:bg-red-100"
+              <div className="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-[#F0EAE0]">
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-semibold text-[#5C4B42]">Change Status:</span>
+                  <select
+                    value={proofModalOrder.status}
+                    onChange={(e) =>
+                      handleDirectOrderStatusChange(
+                        proofModalOrder,
+                        e.target.value as OrderStatus
+                      )
+                    }
+                    className="rounded-xl border border-[#D6CCBA] bg-[#FAF8F5] px-3 py-1.5 text-xs font-bold text-[#2C1E18] focus:outline-none focus:ring-2 focus:ring-[#3B5B3D]"
                   >
-                    <XCircle className="h-4 w-4" />
-                    Reject
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => handleApproveOrder(proofModalOrder)}
-                    className="inline-flex items-center gap-1.5 rounded-full bg-[#3B5B3D] px-5 py-2.5 text-xs font-semibold text-white hover:bg-[#2F4A31]"
-                  >
-                    <Check className="h-4 w-4" />
-                    Approve Payment
-                  </button>
+                    <option value="WAITING_VERIFICATION">Awaiting Verification</option>
+                    <option value="PROCESSING">Processing</option>
+                    <option value="SHIPPED">Shipped</option>
+                    <option value="COMPLETED">Completed</option>
+                    <option value="REJECTED">Rejected</option>
+                  </select>
                 </div>
-              ) : (
-                <div className="flex justify-end pt-1">
-                  <button
-                    type="button"
-                    onClick={() => setProofModalOrder(null)}
-                    className="rounded-full bg-[#F0ECE1] px-5 py-2 text-xs font-semibold text-[#2C1E18] hover:bg-[#E5DEC9]"
-                  >
-                    Close
-                  </button>
+
+                <div className="flex items-center gap-2">
+                  {proofModalOrder.status === 'WAITING_VERIFICATION' ? (
+                    <>
+                      <button
+                        type="button"
+                        onClick={() => handleRejectOrder(proofModalOrder)}
+                        className="inline-flex items-center gap-1.5 rounded-full border border-red-200 bg-red-50 px-4 py-2 text-xs font-semibold text-red-700 hover:bg-red-100"
+                      >
+                        <XCircle className="h-4 w-4" />
+                        Reject
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleApproveOrder(proofModalOrder)}
+                        className="inline-flex items-center gap-1.5 rounded-full bg-[#3B5B3D] px-4 py-2 text-xs font-semibold text-white hover:bg-[#2F4A31]"
+                      >
+                        <Check className="h-4 w-4" />
+                        Approve Payment
+                      </button>
+                    </>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={() => setProofModalOrder(null)}
+                      className="rounded-full bg-[#F0ECE1] px-5 py-2 text-xs font-semibold text-[#2C1E18] hover:bg-[#E5DEC9]"
+                    >
+                      Close
+                    </button>
+                  )}
                 </div>
-              )}
+              </div>
             </div>
           </div>
         </div>
@@ -3600,20 +3887,37 @@ export default function AdminDashboardPage() {
               </div>
             </div>
 
-            <div>
-              <label className="block text-xs font-semibold text-[#2C1E18]">
-                Production Frequency
-              </label>
-              <select
-                value={supFreq}
-                onChange={(e) => setSupFreq(e.target.value)}
-                className="mt-1 w-full rounded-xl bg-[#FAF8F5] px-3 py-2 text-xs text-[#2C1E18] ring-1 ring-[#E5DEC9] focus:bg-white focus:ring-2 focus:ring-[#3B5B3D] focus:outline-none"
-              >
-                <option value="Setiap Hari">Daily</option>
-                <option value="3-4 Kali Seminggu">3-4 Times a Week</option>
-                <option value="1-2 Kali Seminggu">1-2 Times a Week</option>
-                <option value="Berdasarkan Pesanan">On-Demand / Per Order</option>
-              </select>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <label className="block text-xs font-semibold text-[#2C1E18]">
+                  Production Frequency
+                </label>
+                <select
+                  value={supFreq}
+                  onChange={(e) => setSupFreq(e.target.value)}
+                  className="mt-1 w-full rounded-xl bg-[#FAF8F5] px-3 py-2 text-xs text-[#2C1E18] ring-1 ring-[#E5DEC9] focus:bg-white focus:ring-2 focus:ring-[#3B5B3D] focus:outline-none"
+                >
+                  <option value="Setiap Hari">Daily</option>
+                  <option value="3-4 Kali Seminggu">3-4 Times a Week</option>
+                  <option value="1-2 Kali Seminggu">1-2 Times a Week</option>
+                  <option value="Berdasarkan Pesanan">On-Demand / Per Order</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-[#2C1E18]">
+                  Partner Verification Status
+                </label>
+                <select
+                  value={supStatus}
+                  onChange={(e) => setSupStatus(e.target.value as SupplierStatus)}
+                  className="mt-1 w-full rounded-xl bg-[#FAF8F5] px-3 py-2 text-xs text-[#2C1E18] ring-1 ring-[#E5DEC9] focus:bg-white focus:ring-2 focus:ring-[#3B5B3D] focus:outline-none"
+                >
+                  <option value="ACTIVE">Verified Active</option>
+                  <option value="PENDING">Pending Review</option>
+                  <option value="INACTIVE">Inactive / On Hold</option>
+                </select>
+              </div>
             </div>
 
             <div className="flex justify-end gap-2 border-t border-[#F0EAE0] pt-3">

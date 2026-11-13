@@ -145,9 +145,9 @@ function generateOrderNumber(): string {
 }
 
 const COMMON_BENEFITS = [
-  'Crafted from upcycled coconut pulp flour',
-  'Optimizes coconut milk production by-products',
-  'Innovative, high-fiber circular food alternative',
+  'Menggunakan tepung berbahan dasar ampas kelapa',
+  'Mengoptimalkan pemanfaatan hasil samping produksi santan',
+  'Menghadirkan alternatif bahan pangan yang inovatif',
 ];
 
 export const INITIAL_PRODUCTS: Product[] = [
@@ -410,6 +410,7 @@ export const INITIAL_SUPPLIERS: Supplier[] = [
     estimatedKg: 120,
     productionFrequency: 'Daily',
     createdAt: '2026-10-15T08:00:00.000Z',
+    status: 'ACTIVE',
   },
   {
     id: 'sup-002',
@@ -420,6 +421,7 @@ export const INITIAL_SUPPLIERS: Supplier[] = [
     estimatedKg: 65,
     productionFrequency: '3x / Week',
     createdAt: '2026-10-22T10:30:00.000Z',
+    status: 'ACTIVE',
   },
   {
     id: 'sup-003',
@@ -430,6 +432,7 @@ export const INITIAL_SUPPLIERS: Supplier[] = [
     estimatedKg: 95,
     productionFrequency: 'Daily',
     createdAt: '2026-11-01T09:15:00.000Z',
+    status: 'ACTIVE',
   },
 ];
 
@@ -514,7 +517,7 @@ const RECEIPT_ORD_002 = createDummyReceiptDataUrl({
   bankName: 'Bank Mandiri',
   accountNumber: '1450029381920',
   amountFormatted: 'Rp 75.000',
-  senderName: 'Raka Pratama',
+  senderName: 'User',
   dateText: '11 Nov 2026, 14:25 WIB',
   refNo: 'TRX-MDR-441820',
 });
@@ -558,7 +561,7 @@ export const INITIAL_ORDERS: Order[] = [
     proofImage: RECEIPT_ORD_001,
     status: 'WAITING_VERIFICATION',
     courier: 'JNE Regular',
-    notes: 'Please add protective bubble wrap packaging.',
+    notes: 'Mohon dibungkus bubble wrap tebal ya Kak.',
     createdAt: '2026-11-12T09:15:00.000Z',
   },
   {
@@ -582,7 +585,7 @@ export const INITIAL_ORDERS: Order[] = [
     proofImage: RECEIPT_ORD_002,
     status: 'PROCESSING',
     courier: 'SiCepat Best',
-    notes: 'Supplies for weekend home baking.',
+    notes: 'Untuk stok baking akhir pekan.',
     createdAt: '2026-11-11T14:30:00.000Z',
   },
   {
@@ -625,7 +628,7 @@ export const INITIAL_FINANCIAL_RECORDS: FinancialRecord[] = [
     id: 'fin-001',
     date: '2026-11-11T15:00:00.000Z',
     orderNumber: 'CORA-20261111-002',
-    description: 'Payment for Order #CORA-20261111-002 (Raka Pratama)',
+    description: 'Payment for Order #CORA-20261111-002 (user)',
     type: 'INCOME',
     amount: 75000,
     category: 'Product Sales',
@@ -650,7 +653,7 @@ export const INITIAL_PICKUP_REQUESTS: PickupRequest[] = [
     estimatedKg: 120,
     preferredDate: '2026-11-15',
     preferredTime: '08:00 - 10:00 WITA',
-    notes: 'Fresh morning coconut pulp stored in clean sealed food-grade containers.',
+    notes: 'Ampas kelapa dari parutan pagi hari, disimpan di tong bersih tertutup.',
     status: 'REQUEST_CONFIRMED',
     createdAt: '2026-11-12T07:30:00.000Z',
   },
@@ -674,7 +677,7 @@ export const INITIAL_PICKUP_REQUESTS: PickupRequest[] = [
     estimatedKg: 95,
     preferredDate: '2026-11-10',
     preferredTime: '09:00 - 11:00 WITA',
-    notes: 'Routine weekly collection.',
+    notes: 'Penjemputan rutin mingguan.',
     status: 'COMPLETED',
     createdAt: '2026-11-10T08:00:00.000Z',
   },
@@ -1224,6 +1227,10 @@ export function CoraProvider({ children }: { children: React.ReactNode }) {
             createdAt:
               prev.suppliers.find((s) => s.id === input.id)?.createdAt ||
               new Date().toISOString(),
+            status:
+              input.status ??
+              prev.suppliers.find((s) => s.id === input.id)?.status ??
+              'ACTIVE',
           };
           return {
             ...prev,
@@ -1242,6 +1249,7 @@ export function CoraProvider({ children }: { children: React.ReactNode }) {
           estimatedKg: Math.max(0, Number(input.estimatedKg)),
           productionFrequency: input.productionFrequency.trim(),
           createdAt: new Date().toISOString(),
+          status: input.status ?? 'ACTIVE',
         };
 
         return {
