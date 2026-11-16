@@ -102,7 +102,7 @@ function HeroProductShowcase() {
           className="object-cover object-center transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.03]"
         />
         <div className="pointer-events-none absolute inset-0 bg-black/20" />
-
+ 
         <div className="absolute top-4 left-4 sm:top-5 sm:left-5 flex flex-wrap items-center gap-2">
           <span className="inline-flex items-center gap-1.5 rounded-full bg-white/95 px-3 py-1 sm:px-3.5 sm:py-1.5 text-[11px] sm:text-xs font-bold text-[#3B5B3D] shadow-sm">
             <Sparkles className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
