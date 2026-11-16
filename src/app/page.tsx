@@ -210,6 +210,7 @@ function JourneyCircleVisual({ step }: { step: number }) {
 export default function HomePage() {
   const { products, orders, suppliers, pickupRequests, addToCart, impactSettings } = useCora();
   const [addedProductId, setAddedProductId] = useState<string | null>(null);
+  const [homeActivePhoto, setHomeActivePhoto] = useState<'front' | 'back'>('front');
 
   const impactStats = useMemo(() => {
     if (impactSettings?.useCustomStats) {
@@ -769,7 +770,9 @@ export default function HomePage() {
                     Circular Marketplace
                   </p>
                   <h2 className="mt-2 font-serif text-3xl font-semibold tracking-tight text-[#2C1E18] sm:text-4xl">
-                    Featured CORA Products
+                    {featuredProducts.length === 1
+                      ? 'Featured CORA Product'
+                      : 'Featured CORA Products'}
                   </h2>
                   <p className="mt-2 max-w-2xl text-sm text-[#6E5C52] sm:text-[15px]">
                     Every purchase directly reduces coconut residue waste while
@@ -780,129 +783,361 @@ export default function HomePage() {
                   href="/products"
                   className="group inline-flex items-center gap-2 self-start rounded-full border border-[#DDD4C1] bg-white px-5 py-2.5 text-xs font-semibold text-[#2C1E18] transition hover:border-[#3B5B3D] hover:text-[#3B5B3D] sm:self-auto"
                 >
-                  View All Products
+                  Detail & Katalog Lengkap
                   <ArrowRight className="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-0.5" />
                 </Link>
               </div>
             </Reveal>
 
-            <div className={`mt-10 grid gap-6 ${featuredProducts.length === 1 ? 'grid-cols-1 max-w-sm sm:max-w-md mx-auto' : 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-4'}`}>
-              {featuredProducts.map((product, idx) => {
+            {featuredProducts.length === 1 ? (
+              (() => {
+                const product = featuredProducts[0];
                 const isAdded = addedProductId === product.id;
                 const outOfStock = product.stock <= 0;
+                const currentImg =
+                  homeActivePhoto === 'back' && product.imageBack
+                    ? product.imageBack
+                    : product.image;
 
                 return (
-                  <Reveal key={product.id} delayMs={idx * 65}>
-                    <article className="group flex h-full flex-col overflow-hidden rounded-2xl border border-[#E5DEC9] bg-white transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-1 hover:border-[#CFC5B1] hover:shadow-md">
-                      <Link
-                        href="/products"
-                        className="relative block aspect-square overflow-hidden border-b border-[#EFEAE0] bg-[#F5F1EA] cursor-pointer"
-                      >
-                        <Image
-                          src={product.image}
-                          alt={product.name}
-                          fill
-                          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-                          className="object-contain p-5 transition-transform duration-300 ease-out group-hover:scale-[1.02]"
-                        />
-                        <span className="absolute top-3.5 left-3.5 rounded-full bg-[#3B5B3D] px-2.5 py-1 text-[10px] font-semibold tracking-wide text-white">
-                          {product.category}
-                        </span>
-                        {product.imageBack && (
-                          <span className="absolute bottom-3 left-3 inline-flex items-center gap-1 rounded-full bg-white/95 border border-[#E5DEC9] px-2.5 py-1 text-[10px] font-bold text-[#5C4B42] shadow-2xs">
-                            <Eye className="h-3 w-3 text-[#3B5B3D]" />
-                            Lihat Detail ↗
-                          </span>
-                        )}
-                      </Link>
-
-                      <div className="flex flex-1 flex-col p-5">
-                        <div className="flex-1">
-                          <div className="flex items-center justify-between gap-2 text-[11px] font-medium text-[#3B5B3D]">
-                            <span className="inline-flex items-center gap-1">
+                  <Reveal delayMs={80}>
+                    <div className="mt-10 mx-auto max-w-4xl lg:max-w-5xl overflow-hidden rounded-3xl border border-[#E5DEC9] bg-white shadow-sm transition-all duration-300 hover:shadow-md">
+                      <div className="grid grid-cols-1 md:grid-cols-12">
+                        {/* Left: Product Image & Interactive Angles (5 cols) */}
+                        <div className="md:col-span-5 relative flex flex-col justify-between border-b md:border-b-0 md:border-r border-[#EFEAE0] bg-gradient-to-b from-[#FAF8F5] to-[#F3EDE2] p-6 sm:p-7">
+                          {/* Top Badges */}
+                          <div className="flex items-center justify-between gap-2">
+                            <span className="inline-flex items-center gap-1.5 rounded-full bg-[#3B5B3D] px-3 py-1 text-[11px] font-semibold text-white shadow-xs">
                               <Leaf className="h-3 w-3" />
                               Saves {product.residueSavedGram}g residue
                             </span>
-                            <span className="text-[#6E5C52]">
-                              {product.weightGram}g
+                            <span className="rounded-full bg-white/95 border border-[#E5DEC9] px-2.5 py-0.5 text-[10px] font-bold text-[#6E5C52]">
+                              {product.netWeight || `${product.weightGram}g`}
                             </span>
                           </div>
-                          <h3 className="mt-2 text-base font-bold leading-snug text-[#2C1E18]">
-                            {product.name}
-                          </h3>
-                          <p className="mt-0.5 text-xs font-medium text-[#7A675D]">
-                            {product.subtitle}
-                          </p>
-                          <p className="mt-2.5 line-clamp-2 text-xs leading-relaxed text-[#6E5C52]">
-                            {product.description}
-                          </p>
+
+                          {/* Centered Image with balanced max size */}
+                          <Link
+                            href="/products"
+                            className="group relative my-4 block h-[260px] sm:h-[300px] w-full max-w-[240px] sm:max-w-[280px] mx-auto overflow-hidden cursor-pointer"
+                          >
+                            <Image
+                              src={currentImg}
+                              alt={product.name}
+                              fill
+                              sizes="(max-width: 768px) 260px, 300px"
+                              className="object-contain transition-transform duration-300 group-hover:scale-105 drop-shadow-sm"
+                            />
+                          </Link>
+
+                          {/* Bottom Interactive Angle Toggle & Detail Link */}
+                          {product.imageBack && (
+                            <div className="flex items-center justify-between gap-2 pt-3 border-t border-[#EAE3D4]/80">
+                              <div className="flex items-center gap-1.5">
+                                <button
+                                  type="button"
+                                  onClick={() => setHomeActivePhoto('front')}
+                                  className={`rounded-full px-3 py-1 text-[11px] font-semibold transition ${
+                                    homeActivePhoto === 'front'
+                                      ? 'bg-[#3B5B3D] text-white shadow-2xs'
+                                      : 'bg-white/80 text-[#5C4B42] border border-[#DDD4C1] hover:bg-white'
+                                  }`}
+                                >
+                                  Tampak Depan
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={() => setHomeActivePhoto('back')}
+                                  className={`rounded-full px-3 py-1 text-[11px] font-semibold transition ${
+                                    homeActivePhoto === 'back'
+                                      ? 'bg-[#3B5B3D] text-white shadow-2xs'
+                                      : 'bg-white/80 text-[#5C4B42] border border-[#DDD4C1] hover:bg-white'
+                                  }`}
+                                >
+                                  Tampak Belakang
+                                </button>
+                              </div>
+
+                              <Link
+                                href="/products"
+                                className="inline-flex items-center gap-1 text-[11px] font-bold text-[#3B5B3D] hover:underline"
+                              >
+                                Detail
+                                <Eye className="h-3 w-3" />
+                              </Link>
+                            </div>
+                          )}
                         </div>
 
-                        <div className="mt-5 border-t border-[#F0EAE0] pt-4">
-                          <div className="flex items-baseline justify-between">
-                            <span className="text-lg font-bold tabular-nums text-[#2C1E18]">
-                              {formatRupiah(product.price)}
-                            </span>
-                            <span
-                              className={`text-[11px] font-semibold tabular-nums ${
-                                outOfStock ? 'text-red-600' : 'text-[#3B5B3D]'
-                              }`}
-                            >
-                              {outOfStock ? 'Out of Stock' : `Stock ${product.stock}`}
-                            </span>
+                        {/* Right: Product Narrative, Specs & Actions (7 cols) */}
+                        <div className="md:col-span-7 flex flex-col justify-between p-6 sm:p-8 lg:p-9">
+                          <div>
+                            {/* Category & Status */}
+                            <div className="flex flex-wrap items-center justify-between gap-2">
+                              <span className="text-[11px] font-bold uppercase tracking-[0.16em] text-[#3B5B3D]">
+                                Circular Flagship Flour
+                              </span>
+                              <span
+                                className={`inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-[11px] font-semibold ${
+                                  outOfStock
+                                    ? 'bg-red-50 text-red-600 border border-red-200'
+                                    : 'bg-[#3B5B3D]/10 text-[#3B5B3D]'
+                                }`}
+                              >
+                                {outOfStock
+                                  ? 'Stok Habis'
+                                  : `Ready Stock (${product.stock} pcs)`}
+                              </span>
+                            </div>
+
+                            {/* Product Title & Subtitle */}
+                            <h3 className="mt-2 text-2xl sm:text-3xl font-serif font-bold tracking-tight text-[#2C1E18]">
+                              {product.name}
+                            </h3>
+                            <p className="mt-1 text-xs sm:text-sm font-medium text-[#7A675D]">
+                              {product.subtitle || '100% Upcycled Natural Coconut Flour'}
+                            </p>
+
+                            {/* Description */}
+                            <p className="mt-3 text-xs sm:text-sm leading-relaxed text-[#6E5C52]">
+                              {product.description}
+                            </p>
+
+                            {/* Key Value Badges */}
+                            <div className="mt-5 grid grid-cols-2 gap-2 sm:gap-2.5">
+                              <div className="flex items-center gap-2 rounded-xl bg-[#FAF8F5] border border-[#EFEAE0] p-2.5">
+                                <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-[#3B5B3D]/10 text-[#3B5B3D]">
+                                  <Leaf className="h-3.5 w-3.5" />
+                                </span>
+                                <div className="min-w-0">
+                                  <p className="text-[11px] font-bold text-[#2C1E18] truncate">100% Upcycled</p>
+                                  <p className="text-[10px] text-[#7A675D] truncate">Ampas Kelapa Segar</p>
+                                </div>
+                              </div>
+
+                              <div className="flex items-center gap-2 rounded-xl bg-[#FAF8F5] border border-[#EFEAE0] p-2.5">
+                                <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-[#3B5B3D]/10 text-[#3B5B3D]">
+                                  <Sparkles className="h-3.5 w-3.5" />
+                                </span>
+                                <div className="min-w-0">
+                                  <p className="text-[11px] font-bold text-[#2C1E18] truncate">Tinggi Serat</p>
+                                  <p className="text-[10px] text-[#7A675D] truncate">Indeks Glikemik Rendah</p>
+                                </div>
+                              </div>
+
+                              <div className="flex items-center gap-2 rounded-xl bg-[#FAF8F5] border border-[#EFEAE0] p-2.5">
+                                <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-[#3B5B3D]/10 text-[#3B5B3D]">
+                                  <Scale className="h-3.5 w-3.5" />
+                                </span>
+                                <div className="min-w-0">
+                                  <p className="text-[11px] font-bold text-[#2C1E18] truncate">Kemasan Pouch 100g</p>
+                                  <p className="text-[10px] text-[#7A675D] truncate">Praktis & Higienis</p>
+                                </div>
+                              </div>
+
+                              <div className="flex items-center gap-2 rounded-xl bg-[#FAF8F5] border border-[#EFEAE0] p-2.5">
+                                <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-[#3B5B3D]/10 text-[#3B5B3D]">
+                                  <Recycle className="h-3.5 w-3.5" />
+                                </span>
+                                <div className="min-w-0">
+                                  <p className="text-[11px] font-bold text-[#2C1E18] truncate">Dampak Sirkular</p>
+                                  <p className="text-[10px] text-[#7A675D] truncate">150g Residu Tereduksi</p>
+                                </div>
+                              </div>
+                            </div>
                           </div>
 
-                          <div className="mt-3.5 flex items-center gap-2">
-                            <Link
-                              href="/products"
-                              className="inline-flex items-center justify-center gap-1.5 rounded-full border border-[#DDD4C1] bg-white px-3.5 py-2.5 text-xs font-semibold text-[#2C1E18] transition hover:border-[#3B5B3D] hover:text-[#3B5B3D]"
-                            >
-                              <Eye className="h-3.5 w-3.5 text-[#3B5B3D]" />
-                              Detail
-                            </Link>
-                            <button
-                              type="button"
-                              disabled={outOfStock}
-                              onClick={() => handleQuickAdd(product)}
-                              className={`flex flex-1 items-center justify-center gap-1.5 rounded-full px-4 py-2.5 text-xs font-semibold transition-all duration-200 ${
-                                isAdded
-                                  ? 'bg-[#4E9A34] text-white'
-                                  : 'bg-[#3B5B3D] text-white hover:bg-[#2F4A31] disabled:cursor-not-allowed disabled:bg-[#C7BEB1]'
-                              }`}
-                            >
-                              {isAdded ? (
-                                <>
-                                  <Check className="h-3.5 w-3.5" />
-                                  Added
-                                </>
-                              ) : (
-                                <>
-                                  <ShoppingBag className="h-3.5 w-3.5" />
-                                  Add to Cart
-                                </>
-                              )}
-                            </button>
-                            {isAdded && (
+                          {/* Pricing & Call to Actions */}
+                          <div className="mt-6 pt-5 border-t border-[#F0EAE0]">
+                            <div className="flex items-baseline justify-between mb-4">
+                              <div>
+                                <span className="text-xs text-[#8A776C]">Harga:</span>
+                                <div className="text-2xl sm:text-3xl font-bold tabular-nums text-[#2C1E18]">
+                                  {formatRupiah(product.price)}
+                                </div>
+                              </div>
+                              <span className="text-xs font-medium text-[#6E5C52]">
+                                Isi bersih: <strong className="text-[#2C1E18]">{product.netWeight || '100g'}</strong>
+                              </span>
+                            </div>
+
+                            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
                               <button
                                 type="button"
-                                onClick={() =>
-                                  window.dispatchEvent(
-                                    new CustomEvent('cora:open-cart')
-                                  )
-                                }
-                                className="rounded-full border border-[#3B5B3D]/30 bg-[#3B5B3D]/8 px-3 py-2.5 text-xs font-semibold text-[#3B5B3D] transition hover:bg-[#3B5B3D] hover:text-white"
+                                disabled={outOfStock}
+                                onClick={() => handleQuickAdd(product)}
+                                className={`flex flex-1 items-center justify-center gap-2 rounded-full py-3 px-6 text-xs sm:text-sm font-bold shadow-xs transition-all duration-200 ${
+                                  isAdded
+                                    ? 'bg-[#4E9A34] text-white scale-[1.01]'
+                                    : 'bg-[#3B5B3D] text-white hover:bg-[#2F4A31] hover:scale-[1.01] active:scale-95 disabled:cursor-not-allowed disabled:bg-[#C7BEB1]'
+                                }`}
                               >
-                                View
+                                {isAdded ? (
+                                  <>
+                                    <Check className="h-4 w-4" />
+                                    Berhasil Ditambahkan!
+                                  </>
+                                ) : (
+                                  <>
+                                    <ShoppingBag className="h-4 w-4" />
+                                    + Tambah ke Keranjang
+                                  </>
+                                )}
                               </button>
-                            )}
+
+                              {isAdded && (
+                                <button
+                                  type="button"
+                                  onClick={() =>
+                                    window.dispatchEvent(
+                                      new CustomEvent('cora:open-cart')
+                                    )
+                                  }
+                                  className="inline-flex items-center justify-center gap-1.5 rounded-full border border-[#3B5B3D]/30 bg-[#3B5B3D]/10 py-3 px-5 text-xs sm:text-sm font-semibold text-[#3B5B3D] transition hover:bg-[#3B5B3D] hover:text-white"
+                                >
+                                  Buka Keranjang
+                                  <ArrowRight className="h-3.5 w-3.5" />
+                                </button>
+                              )}
+
+                              <Link
+                                href="/products"
+                                className="inline-flex items-center justify-center gap-1.5 rounded-full border border-[#DDD4C1] bg-white py-3 px-5 text-xs sm:text-sm font-semibold text-[#2C1E18] transition hover:border-[#3B5B3D] hover:text-[#3B5B3D]"
+                              >
+                                <Eye className="h-3.5 w-3.5 text-[#3B5B3D]" />
+                                Lihat Detail
+                              </Link>
+                            </div>
+
+                            <p className="mt-3 text-center sm:text-left text-[11px] text-[#8A776C]">
+                              ✓ Pengiriman ke seluruh Indonesia &bull; 100% Produk Alami Tanpa Pengawet
+                            </p>
                           </div>
                         </div>
                       </div>
-                    </article>
+                    </div>
                   </Reveal>
                 );
-              })}
-            </div>
+              })()
+            ) : (
+              <div className="mt-10 grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
+                {featuredProducts.map((product, idx) => {
+                  const isAdded = addedProductId === product.id;
+                  const outOfStock = product.stock <= 0;
+
+                  return (
+                    <Reveal key={product.id} delayMs={idx * 65}>
+                      <article className="group flex h-full flex-col overflow-hidden rounded-2xl border border-[#E5DEC9] bg-white transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-1 hover:border-[#CFC5B1] hover:shadow-md">
+                        <Link
+                          href="/products"
+                          className="relative block aspect-square overflow-hidden border-b border-[#EFEAE0] bg-[#F5F1EA] cursor-pointer"
+                        >
+                          <Image
+                            src={product.image}
+                            alt={product.name}
+                            fill
+                            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                            className="object-contain p-5 transition-transform duration-300 ease-out group-hover:scale-[1.02]"
+                          />
+                          <span className="absolute top-3.5 left-3.5 rounded-full bg-[#3B5B3D] px-2.5 py-1 text-[10px] font-semibold tracking-wide text-white">
+                            {product.category}
+                          </span>
+                          {product.imageBack && (
+                            <span className="absolute bottom-3 left-3 inline-flex items-center gap-1 rounded-full bg-white/95 border border-[#E5DEC9] px-2.5 py-1 text-[10px] font-bold text-[#5C4B42] shadow-2xs">
+                              <Eye className="h-3 w-3 text-[#3B5B3D]" />
+                              Lihat Detail ↗
+                            </span>
+                          )}
+                        </Link>
+
+                        <div className="flex flex-1 flex-col p-5">
+                          <div className="flex-1">
+                            <div className="flex items-center justify-between gap-2 text-[11px] font-medium text-[#3B5B3D]">
+                              <span className="inline-flex items-center gap-1">
+                                <Leaf className="h-3 w-3" />
+                                Saves {product.residueSavedGram}g residue
+                              </span>
+                              <span className="text-[#6E5C52]">
+                                {product.weightGram}g
+                              </span>
+                            </div>
+                            <h3 className="mt-2 text-base font-bold leading-snug text-[#2C1E18]">
+                              {product.name}
+                            </h3>
+                            <p className="mt-0.5 text-xs font-medium text-[#7A675D]">
+                              {product.subtitle}
+                            </p>
+                            <p className="mt-2.5 line-clamp-2 text-xs leading-relaxed text-[#6E5C52]">
+                              {product.description}
+                            </p>
+                          </div>
+
+                          <div className="mt-5 border-t border-[#F0EAE0] pt-4">
+                            <div className="flex items-baseline justify-between">
+                              <span className="text-lg font-bold tabular-nums text-[#2C1E18]">
+                                {formatRupiah(product.price)}
+                              </span>
+                              <span
+                                className={`text-[11px] font-semibold tabular-nums ${
+                                  outOfStock ? 'text-red-600' : 'text-[#3B5B3D]'
+                                }`}
+                              >
+                                {outOfStock ? 'Out of Stock' : `Stock ${product.stock}`}
+                              </span>
+                            </div>
+
+                            <div className="mt-3.5 flex items-center gap-2">
+                              <Link
+                                href="/products"
+                                className="inline-flex items-center justify-center gap-1.5 rounded-full border border-[#DDD4C1] bg-white px-3.5 py-2.5 text-xs font-semibold text-[#2C1E18] transition hover:border-[#3B5B3D] hover:text-[#3B5B3D]"
+                              >
+                                <Eye className="h-3.5 w-3.5 text-[#3B5B3D]" />
+                                Detail
+                              </Link>
+                              <button
+                                type="button"
+                                disabled={outOfStock}
+                                onClick={() => handleQuickAdd(product)}
+                                className={`flex flex-1 items-center justify-center gap-1.5 rounded-full px-4 py-2.5 text-xs font-semibold transition-all duration-200 ${
+                                  isAdded
+                                    ? 'bg-[#4E9A34] text-white'
+                                    : 'bg-[#3B5B3D] text-white hover:bg-[#2F4A31] disabled:cursor-not-allowed disabled:bg-[#C7BEB1]'
+                                }`}
+                              >
+                                {isAdded ? (
+                                  <>
+                                    <Check className="h-3.5 w-3.5" />
+                                    Added
+                                  </>
+                                ) : (
+                                  <>
+                                    <ShoppingBag className="h-3.5 w-3.5" />
+                                    Add to Cart
+                                  </>
+                                )}
+                              </button>
+                              {isAdded && (
+                                <button
+                                  type="button"
+                                  onClick={() =>
+                                    window.dispatchEvent(
+                                      new CustomEvent('cora:open-cart')
+                                    )
+                                  }
+                                  className="rounded-full border border-[#3B5B3D]/30 bg-[#3B5B3D]/8 px-3 py-2.5 text-xs font-semibold text-[#3B5B3D] transition hover:bg-[#3B5B3D] hover:text-white"
+                                >
+                                  View
+                                </button>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                      </article>
+                    </Reveal>
+                  );
+                })}
+              </div>
+            )}
           </div>
         </section>
       </main>

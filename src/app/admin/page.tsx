@@ -3533,7 +3533,7 @@ export default function AdminDashboardPage() {
                         type="text"
                         value={prodImage}
                         onChange={(e) => setProdImage(e.target.value)}
-                        placeholder="/images/products/halamanDepan.jpg"
+                        placeholder="/images/products/halaman1.jpg"
                         className="w-full rounded-xl bg-[#FAF8F5] px-3 py-1.5 text-xs text-[#2C1E18] ring-1 ring-[#E5DEC9] focus:bg-white focus:ring-2 focus:ring-[#3B5B3D] focus:outline-none"
                       />
                       <div className="flex flex-wrap items-center gap-1">

@@ -473,7 +473,7 @@ export const INITIAL_ORDERS: Order[] = [
         productName: 'CORA Pure Coconut Flour (100g)',
         price: 18000,
         qty: 2,
-        image: '/images/products/halamanDepan.jpg',
+        image: '/images/products/halaman1.jpg',
         variant: 'Pouch 100g',
       },
     ],
@@ -497,7 +497,7 @@ export const INITIAL_ORDERS: Order[] = [
         productName: 'CORA Pure Coconut Flour (100g)',
         price: 18000,
         qty: 3,
-        image: '/images/products/halamanDepan.jpg',
+        image: '/images/products/halaman1.jpg',
         variant: 'Pouch 100g',
       },
     ],
@@ -521,7 +521,7 @@ export const INITIAL_ORDERS: Order[] = [
         productName: 'CORA Pure Coconut Flour (100g)',
         price: 18000,
         qty: 4,
-        image: '/images/products/halamanDepan.jpg',
+        image: '/images/products/halaman1.jpg',
         variant: 'Twin Pack (2 x 100g)',
       },
     ],
@@ -637,14 +637,15 @@ function parseStoredState(raw: string | null): CoraStoreState | null {
           isDefaultFlour ||
           !p.image ||
           p.image === '/images/products/coconut.jpg' ||
-          p.image === '/images/products/halamanBelakang.jpg'
-            ? found?.image || '/images/products/halamanDepan.jpg'
+          p.image === '/images/products/halamanBelakang.jpg' ||
+          p.image === '/images/products/halaman2.jpg'
+            ? found?.image || '/images/products/halaman1.jpg'
             : p.image;
         const resolvedImageBack =
           isDefaultFlour ||
           !p.imageBack ||
           p.imageBack === '/images/products/coconut.jpg' ||
-          p.imageBack === '/images/products/halamanDepan.jpg'
+          p.imageBack === '/images/products/halaman1.jpg'
             ? found?.imageBack || '/images/products/halamanBelakang.jpg'
             : p.imageBack;
         const rawImages = isDefaultFlour
@@ -652,7 +653,7 @@ function parseStoredState(raw: string | null): CoraStoreState | null {
           : Array.isArray(p.images) && p.images.length > 0
           ? p.images.map((img) =>
               img === '/images/products/coconut.jpg'
-                ? '/images/products/halamanDepan.jpg'
+                ? '/images/products/halaman1.jpg'
                 : img
             )
           : found?.images ?? [resolvedImage, resolvedImageBack];
