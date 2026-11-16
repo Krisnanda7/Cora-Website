@@ -30,7 +30,7 @@ import type {
   UserProfile,
 } from '@/types/cora';
 
-const STORAGE_KEY = 'cora_circular_store_v6';
+const STORAGE_KEY = 'cora_circular_store_v9';
 
 interface CoraStoreState {
   products: Product[];
@@ -160,11 +160,11 @@ export const INITIAL_PRODUCTS: Product[] = [
     stock: 95,
     weightGram: 100,
     residueSavedGram: 150,
-    image: '/images/products/coconut.jpg',
-    imageBack: '/images/ingredients/coconut-flour.jpg',
+    image: '/images/products/halaman1.jpg',
+    imageBack: '/images/products/halamanBelakang.jpg',
     images: [
-      '/images/products/coconut.jpg',
-      '/images/ingredients/coconut-flour.jpg',
+      '/images/products/halaman1.jpg',
+      '/images/products/halamanBelakang.jpg',
     ],
     description:
       'Hygienically dehydrated and finely milled from fresh upcycled coconut milk residue. Rich in natural dietary fiber, low glycemic index, and ideal for everyday circular baking and culinary creations.',
@@ -208,7 +208,7 @@ export const INITIAL_RECIPES: Recipe[] = [
       'Whisk well and let rest for 3 minutes so the coconut flour absorbs the liquids.',
       'Pour batter into the preheated waffle iron and cook for 4-5 minutes until steam subsides and waffles are crisp and golden.',
     ],
-    image: '/images/products/coconut.jpg',
+    image: '/images/ingredients/coconut-flour.jpg',
   },
   {
     id: 'rec-flatbread',
@@ -295,7 +295,7 @@ export const INITIAL_RECIPES: Recipe[] = [
       'Divide batter evenly into the 6 muffin cups.',
       'Bake for 18–20 minutes until golden on top and a toothpick comes out clean.',
     ],
-    image: '/images/products/coconut.jpg',
+    image: '/images/ingredients/coconut-flour.jpg',
   },
   {
     id: 'rec-banana-cake',
@@ -473,7 +473,7 @@ export const INITIAL_ORDERS: Order[] = [
         productName: 'CORA Pure Coconut Flour (100g)',
         price: 18000,
         qty: 2,
-        image: '/images/products/coconut.jpg',
+        image: '/images/products/halamanDepan.jpg',
         variant: 'Pouch 100g',
       },
     ],
@@ -497,7 +497,7 @@ export const INITIAL_ORDERS: Order[] = [
         productName: 'CORA Pure Coconut Flour (100g)',
         price: 18000,
         qty: 3,
-        image: '/images/products/coconut.jpg',
+        image: '/images/products/halamanDepan.jpg',
         variant: 'Pouch 100g',
       },
     ],
@@ -521,7 +521,7 @@ export const INITIAL_ORDERS: Order[] = [
         productName: 'CORA Pure Coconut Flour (100g)',
         price: 18000,
         qty: 4,
-        image: '/images/products/coconut.jpg',
+        image: '/images/products/halamanDepan.jpg',
         variant: 'Twin Pack (2 x 100g)',
       },
     ],
@@ -632,20 +632,36 @@ function parseStoredState(raw: string | null): CoraStoreState | null {
     return {
       products: parsed.products.map((p) => {
         const found = INITIAL_PRODUCTS.find((init) => init.id === p.id);
-        const imagesList =
-          Array.isArray(p.images) && p.images.length > 0
-            ? p.images
-            : found?.images ??
-              ([p.image || found?.image, p.imageBack || found?.imageBack].filter(
-                Boolean
-              ) as string[]);
+        const isDefaultFlour = p.id === 'prod-flour-100';
+        const resolvedImage =
+          isDefaultFlour ||
+          !p.image ||
+          p.image === '/images/products/coconut.jpg' ||
+          p.image === '/images/products/halamanBelakang.jpg'
+            ? found?.image || '/images/products/halamanDepan.jpg'
+            : p.image;
+        const resolvedImageBack =
+          isDefaultFlour ||
+          !p.imageBack ||
+          p.imageBack === '/images/products/coconut.jpg' ||
+          p.imageBack === '/images/products/halamanDepan.jpg'
+            ? found?.imageBack || '/images/products/halamanBelakang.jpg'
+            : p.imageBack;
+        const rawImages = isDefaultFlour
+          ? found?.images ?? [resolvedImage, resolvedImageBack]
+          : Array.isArray(p.images) && p.images.length > 0
+          ? p.images.map((img) =>
+              img === '/images/products/coconut.jpg'
+                ? '/images/products/halamanDepan.jpg'
+                : img
+            )
+          : found?.images ?? [resolvedImage, resolvedImageBack];
         return {
           ...found,
           ...p,
-          image: p.image || found?.image || '/images/products/coconut.jpg',
-          imageBack:
-            p.imageBack || found?.imageBack || '/images/ingredients/coconut-flour.jpg',
-          images: imagesList,
+          image: resolvedImage,
+          imageBack: resolvedImageBack,
+          images: rawImages,
           benefits: p.benefits ?? found?.benefits ?? COMMON_BENEFITS,
           ingredients: p.ingredients ?? found?.ingredients,
           variants: p.variants ?? found?.variants,

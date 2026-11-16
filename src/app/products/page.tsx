@@ -571,7 +571,12 @@ export default function ProductsPage() {
                   </span>
                   {modalImages.length > 1 && (
                     <span className="absolute top-3 right-3 rounded-full bg-white/95 border border-[#E5DEC9] px-2.5 py-0.5 text-[10px] font-bold text-[#5C4B42] shadow-xs pointer-events-none">
-                      {activeImageIndex + 1} / {modalImages.length}
+                      {activeImageIndex === 0
+                        ? 'Halaman Depan'
+                        : activeImageIndex === 1
+                        ? 'Halaman Belakang'
+                        : `Foto ${activeImageIndex + 1}`}{' '}
+                      ({activeImageIndex + 1}/{modalImages.length})
                     </span>
                   )}
 
@@ -614,29 +619,44 @@ export default function ProductsPage() {
                 {modalImages.length > 1 && (
                   <div className="space-y-2.5">
                     {/* Thumbnail Row */}
-                    <div className="flex items-center justify-center gap-2.5">
+                    <div className="flex items-center justify-center gap-3">
                       {modalImages.map((imgSrc, imgIdx) => {
                         const isSelected = activeImageIndex === imgIdx;
+                        const label =
+                          imgIdx === 0
+                            ? 'Halaman Depan'
+                            : imgIdx === 1
+                            ? 'Halaman Belakang'
+                            : `Foto ${imgIdx + 1}`;
                         return (
                           <button
                             key={imgSrc + imgIdx}
                             type="button"
                             onClick={() => setActiveImageIndex(imgIdx)}
-                            className={`group relative h-16 w-16 sm:h-18 sm:w-18 shrink-0 overflow-hidden rounded-xl border-2 bg-white p-1 transition-all duration-200 ${
-                              isSelected
-                                ? 'border-[#3B5B3D] ring-2 ring-[#3B5B3D]/30 shadow-xs scale-105'
-                                : 'border-[#E5DEC9] opacity-60 hover:opacity-100 hover:border-[#8C7A6B]'
-                            }`}
+                            className="group flex flex-col items-center gap-1 shrink-0 transition-all duration-200"
                           >
-                            <div className="relative h-full w-full">
+                            <div
+                              className={`relative h-16 w-16 sm:h-18 sm:w-18 overflow-hidden rounded-xl border-2 bg-white p-1 transition-all ${
+                                isSelected
+                                  ? 'border-[#3B5B3D] ring-2 ring-[#3B5B3D]/30 shadow-xs scale-105'
+                                  : 'border-[#E5DEC9] opacity-60 hover:opacity-100 hover:border-[#8C7A6B]'
+                              }`}
+                            >
                               <Image
                                 src={imgSrc}
-                                alt={`Thumbnail ${imgIdx + 1}`}
+                                alt={label}
                                 fill
                                 sizes="80px"
                                 className="object-contain"
                               />
                             </div>
+                            <span
+                              className={`text-[10px] font-semibold transition ${
+                                isSelected ? 'text-[#3B5B3D]' : 'text-[#8A776C]'
+                              }`}
+                            >
+                              {label}
+                            </span>
                           </button>
                         );
                       })}

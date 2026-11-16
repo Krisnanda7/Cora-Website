@@ -181,8 +181,8 @@ function getPickupBadge(status: PickupRequestStatus): {
 }
 
 const IMAGE_PRESETS: { label: string; value: string }[] = [
-  { label: 'CORA Coconut Flour 100g (Front)', value: '/images/products/coconut.jpg' },
-  { label: 'CORA Coconut Flour 100g (Back)', value: '/images/products/coconut.jpg' },
+  { label: 'CORA Coconut Flour 100g (Halaman Depan)', value: '/images/products/halaman1.jpg' },
+  { label: 'CORA Coconut Flour 100g (Halaman Belakang)', value: '/images/products/halamanBelakang.jpg' },
   { label: 'CORA Natural Flour', value: '/images/ingredients/coconut-flour.jpg' },
   { label: 'CORA Upcycled Coconut', value: '/images/ingredients/coconut.jpg' },
   { label: 'CORA Hero Overview', value: '/images/hero/hero.jpg' },
@@ -933,7 +933,7 @@ export default function AdminDashboardPage() {
         `Delicious, fiber-rich recipe made with CORA upcycled circular coconut flour.`,
       ingredients,
       steps,
-      image: existingRecipe?.image || '/images/products/coconut.jpg',
+      image: existingRecipe?.image || '/images/ingredients/coconut-flour.jpg',
     };
 
     saveRecipe(recipeData);
@@ -3533,7 +3533,7 @@ export default function AdminDashboardPage() {
                         type="text"
                         value={prodImage}
                         onChange={(e) => setProdImage(e.target.value)}
-                        placeholder="/images/products/coconut.jpg"
+                        placeholder="/images/products/halamanDepan.jpg"
                         className="w-full rounded-xl bg-[#FAF8F5] px-3 py-1.5 text-xs text-[#2C1E18] ring-1 ring-[#E5DEC9] focus:bg-white focus:ring-2 focus:ring-[#3B5B3D] focus:outline-none"
                       />
                       <div className="flex flex-wrap items-center gap-1">
@@ -3575,7 +3575,7 @@ export default function AdminDashboardPage() {
                         src={
                           prodImageBack ||
                           IMAGE_PRESETS[1]?.value ||
-                          '/images/ingredients/coconut-flour.jpg'
+                          '/images/products/halamanBelakang.jpg'
                         }
                         alt="Tampak Belakang"
                         fill
@@ -3604,7 +3604,7 @@ export default function AdminDashboardPage() {
                         type="text"
                         value={prodImageBack}
                         onChange={(e) => setProdImageBack(e.target.value)}
-                        placeholder="/images/ingredients/coconut-flour.jpg"
+                        placeholder="/images/products/halamanBelakang.jpg"
                         className="w-full rounded-xl bg-[#FAF8F5] px-3 py-1.5 text-xs text-[#2C1E18] ring-1 ring-[#E5DEC9] focus:bg-white focus:ring-2 focus:ring-[#3B5B3D] focus:outline-none"
                       />
                       <div className="flex flex-wrap items-center gap-1">
