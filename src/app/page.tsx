@@ -5,7 +5,10 @@ import Image from 'next/image';
 import Link from 'next/link';
 import {
   ArrowRight,
+  Bot,
   Check,
+  ChefHat,
+  Clock,
   Eye,
   Globe2,
   Handshake,
@@ -1138,6 +1141,177 @@ export default function HomePage() {
                 })}
               </div>
             )}
+          </div>
+        </section>
+
+        {/* 5. RECIPE & AI ASSISTANT HOOK SECTION */}
+        <section className="border-t border-[#E5DEC9] bg-[#FAF8F5] py-16 sm:py-24">
+          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            <Reveal>
+              <div className="relative overflow-hidden rounded-3xl border border-[#D5CCB6] bg-gradient-to-br from-[#1E3422] via-[#16291B] to-[#0E1A11] p-8 sm:p-12 lg:p-14 text-white shadow-xl transition-all duration-300 hover:border-[#86C975]/40 hover:shadow-2xl">
+                {/* Subtle Decorative Ambient Glow */}
+                <div
+                  className="pointer-events-none absolute -right-20 -top-20 h-80 w-80 rounded-full bg-[#4E9A34]/20 blur-3xl"
+                  aria-hidden="true"
+                />
+                <div
+                  className="pointer-events-none absolute -bottom-24 -left-20 h-72 w-72 rounded-full bg-[#86C975]/15 blur-3xl"
+                  aria-hidden="true"
+                />
+
+                <div className="relative z-10 grid items-center gap-10 lg:grid-cols-12 lg:gap-12">
+                  {/* Left Column: Hook Copy & Call-to-Action */}
+                  <div className="lg:col-span-7 space-y-5">
+                    <div className="inline-flex items-center gap-2 rounded-full bg-white/10 px-3.5 py-1 text-xs font-semibold text-[#86C975] backdrop-blur-xs border border-white/15">
+                      <Sparkles className="h-3.5 w-3.5" />
+                      <span>Smart Foodtech Assistant</span>
+                    </div>
+
+                    <h2 className="font-serif text-3xl sm:text-4xl lg:text-[40px] font-bold leading-[1.15] tracking-tight text-[#FAF8F5]">
+                      Bingung Mau Masak Apa? Biarkan Chef AI Kami yang Meraciknya.
+                    </h2>
+
+                    <p className="text-sm sm:text-base leading-relaxed text-[#D0C7B7] max-w-xl">
+                      Tepung kelapa sirkular CORA memiliki daya serap cairan tinggi dan sifat khusus. Gunakan kalkulator resep pintar berbasis AI kami untuk mengubah bahan dapur apa pun menjadi kreasi kue, roti, dan camilan sehat yang pasti jadi.
+                    </p>
+
+                    {/* 3 Quick Value Highlights */}
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2">
+                      <div className="rounded-2xl border border-white/10 bg-white/5 p-3.5 backdrop-blur-xs">
+                        <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-[#86C975]/20 text-[#86C975] mb-2">
+                          <Bot className="h-4 w-4" />
+                        </span>
+                        <h3 className="text-xs font-bold text-white">Rasio Hidrasi Pas</h3>
+                        <p className="mt-1 text-[11px] text-[#B8AF9F] leading-snug">
+                          Kalkulasi cairan &amp; telur otomatis agar adonan tidak bantat.
+                        </p>
+                      </div>
+
+                      <div className="rounded-2xl border border-white/10 bg-white/5 p-3.5 backdrop-blur-xs">
+                        <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-[#86C975]/20 text-[#86C975] mb-2">
+                          <ChefHat className="h-4 w-4" />
+                        </span>
+                        <h3 className="text-xs font-bold text-white">Bahan yang Ada</h3>
+                        <p className="mt-1 text-[11px] text-[#B8AF9F] leading-snug">
+                          Cukup pilih bahan di kulkas, AI buatkan resep instan.
+                        </p>
+                      </div>
+
+                      <div className="rounded-2xl border border-white/10 bg-white/5 p-3.5 backdrop-blur-xs">
+                        <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-[#86C975]/20 text-[#86C975] mb-2">
+                          <Clock className="h-4 w-4" />
+                        </span>
+                        <h3 className="text-xs font-bold text-white">Katalog Resep</h3>
+                        <p className="mt-1 text-[11px] text-[#B8AF9F] leading-snug">
+                          Tersedia panduan langkah-demi-langkah siap panggang.
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="pt-3 flex flex-wrap items-center gap-4">
+                      <Link
+                        href="/ecosystem"
+                        className="group inline-flex items-center gap-2.5 rounded-full bg-[#4E9A34] px-7 py-3.5 text-sm font-bold text-white shadow-md transition-all duration-300 hover:bg-[#43882C] hover:shadow-xl hover:-translate-y-0.5 active:translate-y-0"
+                      >
+                        Buka RecipeHub &amp; Coba AI
+                        <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
+                      </Link>
+
+                      <span className="text-xs text-[#A89F90]">
+                        Gratis &bull; Tanpa perlu registrasi
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Right Column: Interactive Hook Preview Card */}
+                  <div className="lg:col-span-5">
+                    <Link
+                      href="/ecosystem"
+                      aria-label="Coba Chef AI Baking Assistant di RecipeHub"
+                      className="group block rounded-2xl border border-white/15 bg-white/10 p-5 sm:p-6 backdrop-blur-md transition-all duration-300 hover:border-[#86C975]/60 hover:bg-white/[0.14] hover:shadow-2xl"
+                    >
+                      {/* Card Header */}
+                      <div className="flex items-center justify-between border-b border-white/10 pb-3.5 mb-4">
+                        <div className="flex items-center gap-3">
+                          <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-[#4E9A34] to-[#2F5E24] text-white shadow-xs">
+                            <Bot className="h-5 w-5" />
+                          </span>
+                          <div>
+                            <p className="text-sm font-bold text-white">
+                              Chef AI Baking Assistant
+                            </p>
+                            <p className="text-[10px] text-[#86C975] font-semibold flex items-center gap-1.5">
+                              <span className="h-1.5 w-1.5 rounded-full bg-[#86C975] animate-pulse" />
+                              Online &amp; Siap Meracik Resep
+                            </p>
+                          </div>
+                        </div>
+
+                        <span className="rounded-full bg-white/15 px-2.5 py-1 text-[10px] font-bold text-white/90">
+                          Interactive Preview
+                        </span>
+                      </div>
+
+                      {/* Simulated Interactive Prompt */}
+                      <div className="space-y-3">
+                        <div className="rounded-xl bg-white/5 border border-white/10 p-3 text-xs">
+                          <p className="text-[10px] font-bold uppercase tracking-wider text-[#B8AF9F] mb-1">
+                            Input Bahan Anda di Dapur:
+                          </p>
+                          <div className="flex flex-wrap gap-1.5">
+                            <span className="rounded-md bg-white/15 px-2 py-0.5 text-[11px] font-medium text-white">
+                              CORA Coconut Flour 70g
+                            </span>
+                            <span className="rounded-md bg-white/15 px-2 py-0.5 text-[11px] font-medium text-white">
+                              3 Pisang Matang
+                            </span>
+                            <span className="rounded-md bg-white/15 px-2 py-0.5 text-[11px] font-medium text-white">
+                              4 Telur
+                            </span>
+                          </div>
+                        </div>
+
+                        {/* Simulated AI Result Box */}
+                        <div className="rounded-xl bg-[#2A4830]/80 border border-[#86C975]/30 p-3.5 space-y-2">
+                          <div className="flex items-center justify-between">
+                            <span className="text-[10px] font-bold uppercase tracking-wide text-[#86C975]">
+                              Resep Rekomendasi AI
+                            </span>
+                            <span className="text-[10px] text-[#D0C7B7] font-medium">
+                              ⏱ 20m prep &bull; 8 porsi
+                            </span>
+                          </div>
+                          <p className="text-sm font-bold text-white">
+                            Coconut Flour Banana Loaf
+                          </p>
+                          <p className="text-xs leading-relaxed text-[#D0C7B7] line-clamp-2">
+                            Bolu pisang lembut beraroma tropis alami, kaya serat pangan, tanpa minyak berlebih.
+                          </p>
+                          <div className="pt-1.5 border-t border-white/10 flex items-center justify-between text-[11px]">
+                            <span className="text-[#86C975] font-semibold flex items-center gap-1">
+                              <Sparkles className="h-3 w-3" />
+                              Hidrasi 100% Pas
+                            </span>
+                            <span className="text-white font-bold group-hover:underline flex items-center gap-1">
+                              Coba Sekarang &rarr;
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Teaser Footer Bar */}
+                      <div className="mt-4 pt-3 border-t border-white/10 flex items-center justify-between text-xs text-[#D0C7B7]">
+                        <span>Punya bahan lain di kulkas?</span>
+                        <span className="font-bold text-[#86C975] flex items-center gap-1 group-hover:translate-x-0.5 transition-transform">
+                          Mulai Racik Resep
+                          <ArrowRight className="h-3.5 w-3.5" />
+                        </span>
+                      </div>
+                    </Link>
+                  </div>
+                </div>
+              </div>
+            </Reveal>
           </div>
         </section>
       </main>
