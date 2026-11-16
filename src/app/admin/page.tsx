@@ -188,14 +188,6 @@ const IMAGE_PRESETS: { label: string; value: string }[] = [
   { label: 'CORA Hero Overview', value: '/images/hero/hero.jpg' },
 ];
 
-const RECIPE_IMAGE_PRESETS: { label: string; value: string }[] = [
-  { label: 'Coconut Flour Pack', value: '/images/products/coconut.jpg' },
-  { label: 'Pure Flour Bowl', value: '/images/ingredients/coconut-flour.jpg' },
-  { label: 'Fluffy Pancakes / Waffles', value: '/images/ingredients/coconut-flour.jpg' },
-  { label: 'Banana Loaf / Muffins', value: '/images/hero/hero.jpg' },
-  { label: 'Fresh Coconut Meat', value: '/images/ingredients/coconut.jpg' },
-];
-
 async function productImageFileToDataUrl(file: File): Promise<string> {
   const rawDataUrl = await new Promise<string>((resolve, reject) => {
     const reader = new FileReader();
@@ -341,7 +333,6 @@ export default function AdminDashboardPage() {
   const [recSummary, setRecSummary] = useState('');
   const [recIngredientsText, setRecIngredientsText] = useState('');
   const [recStepsText, setRecStepsText] = useState('');
-  const [recImage, setRecImage] = useState(RECIPE_IMAGE_PRESETS[0].value);
 
   // Tab 6: Our Impact CMS State
   const [impactUseCustom, setImpactUseCustom] = useState(
@@ -888,7 +879,6 @@ export default function AdminDashboardPage() {
     setRecStepsText(
       'Whisk eggs, plant milk, and honey until smooth.\nFold in CORA coconut flour, baking powder, and pinch of sea salt.\nLet batter rest for 3 minutes to hydrate.\nCook on a non-stick skillet for 2-3 minutes per side until golden.'
     );
-    setRecImage(RECIPE_IMAGE_PRESETS[0].value);
     setShowRecipeModal(true);
   };
 
@@ -905,7 +895,6 @@ export default function AdminDashboardPage() {
     setRecSummary(recipe.summary);
     setRecIngredientsText(recipe.ingredients.join('\n'));
     setRecStepsText(recipe.steps.join('\n'));
-    setRecImage(recipe.image || RECIPE_IMAGE_PRESETS[0].value);
     setShowRecipeModal(true);
   };
 
@@ -925,6 +914,10 @@ export default function AdminDashboardPage() {
       .map((s) => s.trim())
       .filter(Boolean);
 
+    const existingRecipe = editingRecipeId
+      ? recipes.find((r) => r.id === editingRecipeId)
+      : undefined;
+
     const recipeData: Recipe = {
       id: editingRecipeId ?? `recipe-${Date.now()}`,
       title: recTitle.trim(),
@@ -940,7 +933,7 @@ export default function AdminDashboardPage() {
         `Delicious, fiber-rich recipe made with CORA upcycled circular coconut flour.`,
       ingredients,
       steps,
-      image: recImage.trim() || RECIPE_IMAGE_PRESETS[0].value,
+      image: existingRecipe?.image || '/images/products/coconut.jpg',
     };
 
     saveRecipe(recipeData);
@@ -2587,7 +2580,7 @@ export default function AdminDashboardPage() {
                   <table className="w-full min-w-[950px] border-collapse text-left text-xs">
                     <thead>
                       <tr className="border-b border-[#E5DEC9] bg-[#FAF8F5] text-[11px] font-bold uppercase tracking-wider text-[#6E5C52]">
-                        <th className="px-4 py-3.5">Recipe &amp; Photo</th>
+                        <th className="px-4 py-3.5">Recipe &amp; Description</th>
                         <th className="px-4 py-3.5">Category</th>
                         <th className="px-4 py-3.5">Prep &amp; Cook Time</th>
                         <th className="px-4 py-3.5">Servings &amp; Calories</th>
@@ -2613,24 +2606,17 @@ export default function AdminDashboardPage() {
                             key={recipe.id}
                             className="transition hover:bg-[#FAF8F5]/60"
                           >
-                            {/* Recipe Thumbnail & Title */}
+                            {/* Recipe Title & Description (Text-focused) */}
                             <td className="px-4 py-3.5">
                               <div className="flex items-center gap-3">
-                                <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-xl border border-[#E5DEC9] bg-[#FAF8F5]">
-                                  <Image
-                                    src={recipe.image || RECIPE_IMAGE_PRESETS[0].value}
-                                    alt={recipe.title}
-                                    fill
-                                    sizes="48px"
-                                    unoptimized
-                                    className="object-cover"
-                                  />
+                                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#3B5B3D]/10 text-[#3B5B3D] border border-[#3B5B3D]/20">
+                                  <ChefHat className="h-5 w-5" />
                                 </div>
                                 <div className="min-w-0">
-                                  <p className="font-bold text-[#2C1E18] truncate max-w-[220px]">
+                                  <p className="font-bold text-[#2C1E18] truncate max-w-[240px]">
                                     {recipe.title}
                                   </p>
-                                  <p className="text-[11px] text-[#6E5C52] truncate max-w-[220px]">
+                                  <p className="text-[11px] text-[#6E5C52] truncate max-w-[240px]">
                                     {recipe.summary}
                                   </p>
                                 </div>
@@ -4276,37 +4262,6 @@ export default function AdminDashboardPage() {
                   placeholder="Preheat oven to 175°C.&#10;Mix dry ingredients together.&#10;Bake for 15 minutes..."
                   className="mt-1 w-full font-mono rounded-xl bg-[#FAF8F5] px-3.5 py-2 text-xs text-[#2C1E18] ring-1 ring-[#E5DEC9] focus:bg-white focus:ring-2 focus:ring-[#3B5B3D] focus:outline-none"
                 />
-              </div>
-            </div>
-
-            {/* Recipe Image URL & Presets */}
-            <div>
-              <label className="block text-xs font-semibold text-[#2C1E18]">
-                Recipe Image (URL / Preset)
-              </label>
-              <input
-                type="text"
-                value={recImage}
-                onChange={(e) => setRecImage(e.target.value)}
-                placeholder="/images/products/coconut.jpg"
-                className="mt-1 w-full rounded-xl bg-[#FAF8F5] px-3.5 py-2 text-xs ring-1 ring-[#E5DEC9] focus:ring-2 focus:ring-[#3B5B3D] focus:outline-none"
-              />
-              <div className="mt-2 flex flex-wrap items-center gap-1.5">
-                <span className="text-[11px] text-[#6E5C52]">Quick Select:</span>
-                {RECIPE_IMAGE_PRESETS.map((p) => (
-                  <button
-                    key={p.value}
-                    type="button"
-                    onClick={() => setRecImage(p.value)}
-                    className={`rounded-full px-2.5 py-0.5 text-[10px] font-semibold transition ${
-                      recImage === p.value
-                        ? 'bg-[#3B5B3D] text-white'
-                        : 'border border-[#E5DEC9] bg-white text-[#5C4B42]'
-                    }`}
-                  >
-                    {p.label}
-                  </button>
-                ))}
               </div>
             </div>
 
