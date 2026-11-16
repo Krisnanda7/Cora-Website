@@ -185,7 +185,7 @@ const IMAGE_PRESETS: { label: string; value: string }[] = [
   { label: 'CORA Coconut Flour 100g (Halaman Belakang)', value: '/images/products/halamanBelakang.jpg' },
   { label: 'CORA Natural Flour', value: '/images/ingredients/coconut-flour.jpg' },
   { label: 'CORA Upcycled Coconut', value: '/images/ingredients/coconut.jpg' },
-  { label: 'CORA Hero Overview', value: '/images/hero/hero.jpg' },
+  { label: 'CORA Hero Overview', value: '/images/hero/hero.png' },
 ];
 
 async function productImageFileToDataUrl(file: File): Promise<string> {
@@ -3463,11 +3463,11 @@ export default function AdminDashboardPage() {
               <div>
                 <h3 className="font-serif text-lg font-bold text-[#2C1E18]">
                   {editingProductId
-                    ? 'Edit Product Details & Packaging Image'
+                    ? 'Edit Product'
                     : 'Add New Product'}
                 </h3>
                 <p className="text-xs text-[#6E5C52]">
-                  Manage product name, price, stock, weight, and packaging image.
+                  Kelola nama produk, harga, stok, berat, dan foto kemasan (Depan &amp; Belakang).
                 </p>
               </div>
               <button
@@ -3480,173 +3480,114 @@ export default function AdminDashboardPage() {
               </button>
             </div>
 
-            <div className="space-y-5 p-6">
-              {/* Multi-Photo Packaging Manager Section */}
-              <div className="space-y-4 rounded-2xl border border-[#E5DEC9] bg-[#FAF8F5] p-4">
-                <div className="flex items-center justify-between">
-                  <span className="block text-xs font-bold uppercase tracking-wider text-[#3B5B3D]">
-                    Product Packaging Images (Front &amp; Back View)
-                  </span>
-                  <span className="rounded-full bg-white px-2.5 py-0.5 text-[10px] font-semibold text-[#6E5C52] border border-[#E5DEC9]">
-                    Multi-Photo Enabled
-                  </span>
-                </div>
-
-                {/* 1. Tampak Depan */}
-                <div className="rounded-xl border border-[#E5DEC9] bg-white p-3.5 shadow-2xs">
+            <div className="space-y-4 p-5 sm:p-6">
+              {/* Clean Packaging Photos (Front & Back) */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                {/* 1. Foto Tampak Depan */}
+                <div className="rounded-xl border border-[#E5DEC9] bg-[#FAF8F5] p-3 flex flex-col justify-between">
                   <div className="flex items-center justify-between mb-2">
                     <span className="text-xs font-bold text-[#2C1E18]">
-                      1. Foto Tampak Depan (Front Packaging - Utama)
+                      Foto Depan (Utama)
                     </span>
-                    <span className="text-[10px] font-medium text-[#3B5B3D]">
-                      Foto Pertama / Thumbnail
-                    </span>
+                    <button
+                      type="button"
+                      onClick={() => setProdImage('/images/products/halaman1.jpg')}
+                      className="text-[10px] font-semibold text-[#3B5B3D] hover:underline"
+                    >
+                      Default
+                    </button>
                   </div>
-                  <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-                    <div className="relative h-24 w-24 shrink-0 overflow-hidden rounded-xl border border-[#E5DEC9] bg-[#F7F5EE]">
+
+                  <div className="flex items-center gap-3">
+                    <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-xl border border-[#E5DEC9] bg-white">
                       <Image
-                        src={prodImage || IMAGE_PRESETS[0].value}
+                        src={prodImage || '/images/products/halaman1.jpg'}
                         alt="Tampak Depan"
                         fill
-                        sizes="96px"
+                        sizes="80px"
                         unoptimized
-                        className="object-contain p-2"
+                        className="object-contain p-1.5"
                       />
                     </div>
-                    <div className="flex-1 space-y-2">
-                      <div className="flex flex-wrap items-center gap-2">
-                        <label className="inline-flex cursor-pointer items-center gap-1.5 rounded-full bg-[#3B5B3D] px-3.5 py-1.5 text-xs font-semibold text-white transition hover:bg-[#2F4A31]">
-                          <UploadCloud className="h-3.5 w-3.5" />
-                          Upload Foto Depan
-                          <input
-                            type="file"
-                            accept="image/*"
-                            onChange={handleModalPhotoUpload}
-                            className="sr-only"
-                          />
-                        </label>
-                        <span className="text-[11px] text-[#6E5C52]">
-                          File gambar dari HP / Laptop
-                        </span>
-                      </div>
+                    <div className="flex-1 space-y-1.5 min-w-0">
+                      <label className="inline-flex cursor-pointer items-center gap-1.5 rounded-lg bg-[#3B5B3D] px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-[#2F4A31]">
+                        <UploadCloud className="h-3.5 w-3.5" />
+                        Upload Foto
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={handleModalPhotoUpload}
+                          className="sr-only"
+                        />
+                      </label>
                       <input
                         type="text"
                         value={prodImage}
                         onChange={(e) => setProdImage(e.target.value)}
                         placeholder="/images/products/halaman1.jpg"
-                        className="w-full rounded-xl bg-[#FAF8F5] px-3 py-1.5 text-xs text-[#2C1E18] ring-1 ring-[#E5DEC9] focus:bg-white focus:ring-2 focus:ring-[#3B5B3D] focus:outline-none"
+                        className="w-full rounded-lg bg-white px-2.5 py-1 text-xs text-[#2C1E18] ring-1 ring-[#E5DEC9] focus:ring-2 focus:ring-[#3B5B3D] focus:outline-none truncate"
                       />
-                      <div className="flex flex-wrap items-center gap-1">
-                        <span className="text-[10px] font-medium text-[#6E5C52]">
-                          Preset:
-                        </span>
-                        {IMAGE_PRESETS.slice(0, 3).map((preset) => (
-                          <button
-                            key={preset.value}
-                            type="button"
-                            onClick={() => setProdImage(preset.value)}
-                            className={`rounded-full px-2 py-0.5 text-[10px] font-semibold transition ${
-                              prodImage === preset.value
-                                ? 'bg-[#3B5B3D] text-white'
-                                : 'bg-[#FAF8F5] text-[#5C4B42] border border-[#E5DEC9] hover:bg-[#EAE4D6]'
-                            }`}
-                          >
-                            {preset.label}
-                          </button>
-                        ))}
-                      </div>
                     </div>
                   </div>
                 </div>
 
-                {/* 2. Tampak Belakang */}
-                <div className="rounded-xl border border-[#E5DEC9] bg-white p-3.5 shadow-2xs">
+                {/* 2. Foto Tampak Belakang */}
+                <div className="rounded-xl border border-[#E5DEC9] bg-[#FAF8F5] p-3 flex flex-col justify-between">
                   <div className="flex items-center justify-between mb-2">
                     <span className="text-xs font-bold text-[#2C1E18]">
-                      2. Foto Tampak Belakang (Back Packaging / Label Nutrisi)
+                      Foto Belakang
                     </span>
-                    <span className="text-[10px] font-medium text-[#3B5B3D]">
-                      Foto Kedua
-                    </span>
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setProdImageBack('/images/products/halamanBelakang.jpg')
+                      }
+                      className="text-[10px] font-semibold text-[#3B5B3D] hover:underline"
+                    >
+                      Default
+                    </button>
                   </div>
-                  <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-                    <div className="relative h-24 w-24 shrink-0 overflow-hidden rounded-xl border border-[#E5DEC9] bg-[#F7F5EE]">
+
+                  <div className="flex items-center gap-3">
+                    <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-xl border border-[#E5DEC9] bg-white">
                       <Image
                         src={
                           prodImageBack ||
-                          IMAGE_PRESETS[1]?.value ||
                           '/images/products/halamanBelakang.jpg'
                         }
                         alt="Tampak Belakang"
                         fill
-                        sizes="96px"
+                        sizes="80px"
                         unoptimized
-                        className="object-contain p-2"
+                        className="object-contain p-1.5"
                       />
                     </div>
-                    <div className="flex-1 space-y-2">
-                      <div className="flex flex-wrap items-center gap-2">
-                        <label className="inline-flex cursor-pointer items-center gap-1.5 rounded-full bg-[#3B5B3D] px-3.5 py-1.5 text-xs font-semibold text-white transition hover:bg-[#2F4A31]">
-                          <UploadCloud className="h-3.5 w-3.5" />
-                          Upload Foto Belakang
-                          <input
-                            type="file"
-                            accept="image/*"
-                            onChange={handleModalBackPhotoUpload}
-                            className="sr-only"
-                          />
-                        </label>
-                        <span className="text-[11px] text-[#6E5C52]">
-                          File gambar dari HP / Laptop
-                        </span>
-                      </div>
+                    <div className="flex-1 space-y-1.5 min-w-0">
+                      <label className="inline-flex cursor-pointer items-center gap-1.5 rounded-lg border border-[#DDD4C1] bg-white px-3 py-1.5 text-xs font-semibold text-[#2C1E18] transition hover:border-[#3B5B3D] hover:text-[#3B5B3D]">
+                        <UploadCloud className="h-3.5 w-3.5 text-[#3B5B3D]" />
+                        Upload Foto
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={handleModalBackPhotoUpload}
+                          className="sr-only"
+                        />
+                      </label>
                       <input
                         type="text"
                         value={prodImageBack}
                         onChange={(e) => setProdImageBack(e.target.value)}
                         placeholder="/images/products/halamanBelakang.jpg"
-                        className="w-full rounded-xl bg-[#FAF8F5] px-3 py-1.5 text-xs text-[#2C1E18] ring-1 ring-[#E5DEC9] focus:bg-white focus:ring-2 focus:ring-[#3B5B3D] focus:outline-none"
+                        className="w-full rounded-lg bg-white px-2.5 py-1 text-xs text-[#2C1E18] ring-1 ring-[#E5DEC9] focus:ring-2 focus:ring-[#3B5B3D] focus:outline-none truncate"
                       />
-                      <div className="flex flex-wrap items-center gap-1">
-                        <span className="text-[10px] font-medium text-[#6E5C52]">
-                          Preset:
-                        </span>
-                        {IMAGE_PRESETS.slice(1, 4).map((preset) => (
-                          <button
-                            key={preset.value}
-                            type="button"
-                            onClick={() => setProdImageBack(preset.value)}
-                            className={`rounded-full px-2 py-0.5 text-[10px] font-semibold transition ${
-                              prodImageBack === preset.value
-                                ? 'bg-[#3B5B3D] text-white'
-                                : 'bg-[#FAF8F5] text-[#5C4B42] border border-[#E5DEC9] hover:bg-[#EAE4D6]'
-                            }`}
-                          >
-                            {preset.label}
-                          </button>
-                        ))}
-                      </div>
                     </div>
                   </div>
                 </div>
-
-                {/* 3. Foto Tambahan (Opsional) */}
-                <div>
-                  <label className="block text-[11px] font-semibold text-[#5C4B42]">
-                    Foto Tambahan (Opsional - URL atau path dipisah koma / baris baru)
-                  </label>
-                  <input
-                    type="text"
-                    value={prodExtraImages}
-                    onChange={(e) => setProdExtraImages(e.target.value)}
-                    placeholder="e.g. /images/ingredients/coconut.jpg, /images/hero/hero.jpg"
-                    className="mt-1 w-full rounded-xl bg-white px-3 py-1.5 text-xs text-[#2C1E18] ring-1 ring-[#E5DEC9] focus:ring-2 focus:ring-[#3B5B3D] focus:outline-none"
-                  />
-                </div>
               </div>
 
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                <div>
+              {/* Product Name & Subtitle */}
+              <div className="grid grid-cols-1 sm:grid-cols-12 gap-3">
+                <div className="sm:col-span-7">
                   <label className="block text-xs font-semibold text-[#2C1E18]">
                     Product Name *
                   </label>
@@ -3656,10 +3597,10 @@ export default function AdminDashboardPage() {
                     value={prodName}
                     onChange={(e) => setProdName(e.target.value)}
                     placeholder="e.g. CORA Pure Coconut Flour 100g"
-                    className="mt-1 w-full rounded-xl bg-[#FAF8F5] px-3.5 py-2 text-sm ring-1 ring-[#E5DEC9] focus:bg-white focus:ring-2 focus:ring-[#3B5B3D] focus:outline-none"
+                    className="mt-1 w-full rounded-xl bg-[#FAF8F5] px-3 py-2 text-xs sm:text-sm ring-1 ring-[#E5DEC9] focus:bg-white focus:ring-2 focus:ring-[#3B5B3D] focus:outline-none"
                   />
                 </div>
-                <div>
+                <div className="sm:col-span-5">
                   <label className="block text-xs font-semibold text-[#2C1E18]">
                     Subtitle
                   </label>
@@ -3667,30 +3608,17 @@ export default function AdminDashboardPage() {
                     type="text"
                     value={prodSubtitle}
                     onChange={(e) => setProdSubtitle(e.target.value)}
-                    placeholder="e.g. Upcycled Coconut Bites"
-                    className="mt-1 w-full rounded-xl bg-[#FAF8F5] px-3.5 py-2 text-sm ring-1 ring-[#E5DEC9] focus:bg-white focus:ring-2 focus:ring-[#3B5B3D] focus:outline-none"
+                    placeholder="e.g. 100% Upcycled Flour"
+                    className="mt-1 w-full rounded-xl bg-[#FAF8F5] px-3 py-2 text-xs sm:text-sm ring-1 ring-[#E5DEC9] focus:bg-white focus:ring-2 focus:ring-[#3B5B3D] focus:outline-none"
                   />
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+              {/* Price, Stock, Net Weight & Residue Saved */}
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                 <div>
                   <label className="block text-xs font-semibold text-[#2C1E18]">
-                    Category
-                  </label>
-                  <select
-                    value={prodCategory}
-                    onChange={(e) =>
-                      setProdCategory(e.target.value as ProductCategory)
-                    }
-                    className="mt-1 w-full rounded-xl bg-[#FAF8F5] px-3 py-2 text-sm ring-1 ring-[#E5DEC9] focus:bg-white focus:ring-2 focus:ring-[#3B5B3D] focus:outline-none"
-                  >
-                    <option value="Flour">Coconut Flour</option>
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-xs font-semibold text-[#2C1E18]">
-                    Unit Price (IDR) *
+                    Price (IDR) *
                   </label>
                   <input
                     type="number"
@@ -3698,13 +3626,13 @@ export default function AdminDashboardPage() {
                     required
                     value={prodPrice}
                     onChange={(e) => setProdPrice(e.target.value)}
-                    placeholder="38000"
-                    className="mt-1 w-full rounded-xl bg-[#FAF8F5] px-3.5 py-2 text-sm ring-1 ring-[#E5DEC9] focus:bg-white focus:ring-2 focus:ring-[#3B5B3D] focus:outline-none"
+                    placeholder="18000"
+                    className="mt-1 w-full rounded-xl bg-[#FAF8F5] px-3 py-2 text-xs sm:text-sm ring-1 ring-[#E5DEC9] focus:bg-white focus:ring-2 focus:ring-[#3B5B3D] focus:outline-none"
                   />
                 </div>
                 <div>
                   <label className="block text-xs font-semibold text-[#2C1E18]">
-                    Stock *
+                    Stock (pcs) *
                   </label>
                   <input
                     type="number"
@@ -3712,41 +3640,39 @@ export default function AdminDashboardPage() {
                     required
                     value={prodStock}
                     onChange={(e) => setProdStock(e.target.value)}
-                    placeholder="40"
-                    className="mt-1 w-full rounded-xl bg-[#FAF8F5] px-3.5 py-2 text-sm ring-1 ring-[#E5DEC9] focus:bg-white focus:ring-2 focus:ring-[#3B5B3D] focus:outline-none"
+                    placeholder="95"
+                    className="mt-1 w-full rounded-xl bg-[#FAF8F5] px-3 py-2 text-xs sm:text-sm ring-1 ring-[#E5DEC9] focus:bg-white focus:ring-2 focus:ring-[#3B5B3D] focus:outline-none"
                   />
                 </div>
-              </div>
-
-              <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label className="block text-xs font-semibold text-[#2C1E18]">
-                    Net Weight (grams)
+                    Net Weight (g)
                   </label>
                   <input
                     type="number"
                     min={0}
                     value={prodWeight}
                     onChange={(e) => setProdWeight(e.target.value)}
-                    placeholder="200"
-                    className="mt-1 w-full rounded-xl bg-[#FAF8F5] px-3 py-2 text-sm ring-1 ring-[#E5DEC9] focus:bg-white focus:ring-2 focus:ring-[#3B5B3D] focus:outline-none"
+                    placeholder="100"
+                    className="mt-1 w-full rounded-xl bg-[#FAF8F5] px-3 py-2 text-xs sm:text-sm ring-1 ring-[#E5DEC9] focus:bg-white focus:ring-2 focus:ring-[#3B5B3D] focus:outline-none"
                   />
                 </div>
                 <div>
                   <label className="block text-xs font-semibold text-[#2C1E18]">
-                    Residue Saved (grams)
+                    Residue Saved (g)
                   </label>
                   <input
                     type="number"
                     min={0}
                     value={prodResidue}
                     onChange={(e) => setProdResidue(e.target.value)}
-                    placeholder="250"
-                    className="mt-1 w-full rounded-xl bg-[#FAF8F5] px-3 py-2 text-sm ring-1 ring-[#E5DEC9] focus:bg-white focus:ring-2 focus:ring-[#3B5B3D] focus:outline-none"
+                    placeholder="150"
+                    className="mt-1 w-full rounded-xl bg-[#FAF8F5] px-3 py-2 text-xs sm:text-sm ring-1 ring-[#E5DEC9] focus:bg-white focus:ring-2 focus:ring-[#3B5B3D] focus:outline-none"
                   />
                 </div>
               </div>
 
+              {/* Short Description */}
               <div>
                 <label className="block text-xs font-semibold text-[#2C1E18]">
                   Short Description
@@ -3756,7 +3682,7 @@ export default function AdminDashboardPage() {
                   value={prodDescription}
                   onChange={(e) => setProdDescription(e.target.value)}
                   placeholder="Summary of taste, profile, and circular benefits..."
-                  className="mt-1 w-full rounded-xl bg-[#FAF8F5] px-3.5 py-2 text-sm ring-1 ring-[#E5DEC9] focus:bg-white focus:ring-2 focus:ring-[#3B5B3D] focus:outline-none"
+                  className="mt-1 w-full rounded-xl bg-[#FAF8F5] px-3.5 py-2 text-xs sm:text-sm ring-1 ring-[#E5DEC9] focus:bg-white focus:ring-2 focus:ring-[#3B5B3D] focus:outline-none resize-none"
                 />
               </div>
 

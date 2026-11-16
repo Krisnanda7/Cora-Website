@@ -294,7 +294,7 @@ export default function EcosystemPage() {
         <section className="relative overflow-hidden bg-[#121B13] text-[#FAF8F5]">
           <div className="pointer-events-none absolute inset-0 z-0 select-none">
             <Image
-              src="/images/hero/hero.jpg"
+              src="/images/hero/hero.png"
               alt="Natural raw coconut background"
               fill
               priority

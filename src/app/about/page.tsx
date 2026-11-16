@@ -36,7 +36,7 @@ const TEAM_MEMBERS: TeamMember[] = [
     role: 'Financial Management & Business Development Specialist',
     responsibility:
       'Directing financial strategy, circular economic modeling, supplier partnership feasibility, and enterprise business development.',
-    image: '/images/hero/hero.jpg',
+    image: '/images/hero/hero.png',
   },
 ];
 
@@ -131,7 +131,7 @@ export default function AboutPage() {
         <section className="relative overflow-hidden bg-[#121B13] text-[#FAF8F5]">
           <div className="pointer-events-none absolute inset-0 z-0 select-none">
             <Image
-              src="/images/hero/hero.jpg"
+              src="/images/hero/hero.png"
               alt="Natural raw coconut background"
               fill
               priority
@@ -205,7 +205,7 @@ export default function AboutPage() {
             <div className="lg:col-span-6">
               <div className="relative aspect-[4/3] rounded-3xl overflow-hidden border border-[#E5DEC9] shadow-lg">
                 <Image
-                  src="/images/hero/hero.jpg"
+                  src="/images/hero/hero.png"
                   alt="CORA Innovation Journey"
                   fill
                   sizes="(max-width: 1024px) 100vw, 50vw"

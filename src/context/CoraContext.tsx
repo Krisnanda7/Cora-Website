@@ -30,7 +30,7 @@ import type {
   UserProfile,
 } from '@/types/cora';
 
-const STORAGE_KEY = 'cora_circular_store_v9';
+const STORAGE_KEY = 'cora_circular_store_v10';
 
 interface CoraStoreState {
   products: Product[];
@@ -325,7 +325,7 @@ export const INITIAL_RECIPES: Recipe[] = [
       'Garnish top with banana slices, bake at 170°C for 30–35 minutes.',
       'Check with a wooden skewer. Remove and let cool before slicing.',
     ],
-    image: '/images/hero/hero.jpg',
+    image: '/images/hero/hero.png',
   },
 ];
 

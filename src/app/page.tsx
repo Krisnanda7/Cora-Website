@@ -91,7 +91,7 @@ function HeroProductShowcase() {
     <div className="group relative overflow-hidden rounded-3xl border border-white/20 bg-stone-900/90 shadow-md ring-1 ring-white/10 transform-gpu transition-[border-color,box-shadow] duration-300 hover:border-white/35 hover:shadow-lg">
       <div className="relative aspect-[16/10] w-full overflow-hidden">
         <Image
-          src="/images/hero/hero.jpg"
+          src="/images/hero/hero.png"
           alt="CORA Circular Food Product Showcase - Pure Upcycled Coconut Flour"
           fill
           priority
@@ -297,7 +297,7 @@ export default function HomePage() {
         <section className="relative overflow-hidden bg-[#121B13] text-[#FAF8F5]">
           <div className="pointer-events-none absolute inset-0 z-0 select-none transform-gpu">
             <Image
-              src="/images/hero/hero.jpg"
+              src="/images/hero/hero.png"
               alt="Natural raw coconut background"
               fill
               priority
