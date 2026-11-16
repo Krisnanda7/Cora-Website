@@ -799,11 +799,29 @@ export default function HomePage() {
                           alt={product.name}
                           fill
                           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-                          className="object-contain p-5 transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.04]"
+                          className={`object-contain p-5 transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+                            product.imageBack
+                              ? 'group-hover:opacity-0'
+                              : 'group-hover:scale-[1.04]'
+                          }`}
                         />
+                        {product.imageBack && (
+                          <Image
+                            src={product.imageBack}
+                            alt={`${product.name} - Tampak Belakang`}
+                            fill
+                            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                            className="object-contain p-5 transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] opacity-0 group-hover:opacity-100 group-hover:scale-[1.04]"
+                          />
+                        )}
                         <span className="absolute top-3.5 left-3.5 rounded-full bg-[#3B5B3D] px-2.5 py-1 text-[10px] font-semibold tracking-wide text-white">
                           {product.category}
                         </span>
+                        {product.imageBack && (
+                          <span className="absolute bottom-3 left-3 rounded-full bg-white/95 border border-[#E5DEC9] px-2 py-0.5 text-[9px] font-bold text-[#5C4B42] shadow-2xs">
+                            Front &amp; Back View
+                          </span>
+                        )}
                       </div>
 
                       <div className="flex flex-1 flex-col p-5">

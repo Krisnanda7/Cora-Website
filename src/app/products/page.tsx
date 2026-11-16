@@ -6,9 +6,12 @@ import Link from 'next/link';
 import {
   ArrowRight,
   Check,
+  ChevronLeft,
+  ChevronRight,
   Clock,
   Eye,
   Info,
+  Layers,
   Leaf,
   Minus,
   PackageCheck,
@@ -49,12 +52,15 @@ export default function ProductsPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [addedId, setAddedId] = useState<string | null>(null);
 
+  // Card Multi-Photo state (per product id)
+  const [cardPhotoMap, setCardPhotoMap] = useState<Record<string, number>>({});
+
   // Product Details Modal State
   const [detailProduct, setDetailProduct] = useState<Product | null>(null);
   const [activeVariant, setActiveVariant] = useState<string>('');
   const [modalQty, setModalQty] = useState<number>(1);
   const [modalAddedFeedback, setModalAddedFeedback] = useState(false);
-  const [activePhotoView, setActivePhotoView] = useState<'front' | 'back'>('front');
+  const [activeImageIndex, setActiveImageIndex] = useState<number>(0);
 
   const filteredProducts = useMemo(() => {
     const query = searchQuery.trim().toLowerCase();
@@ -78,7 +84,7 @@ export default function ProductsPage() {
     setActiveVariant(product.variants?.[0] || 'Original');
     setModalQty(1);
     setModalAddedFeedback(false);
-    setActivePhotoView('front');
+    setActiveImageIndex(0);
   };
 
   const handleAddToCart = (product: Product, variant?: string, qty = 1) => {
@@ -97,6 +103,21 @@ export default function ProductsPage() {
       setModalAddedFeedback(false);
     }, 1800);
   };
+
+  const modalImages = useMemo(() => {
+    if (!detailProduct) return [];
+    if (Array.isArray(detailProduct.images) && detailProduct.images.length > 0) {
+      return detailProduct.images;
+    }
+    return [detailProduct.image, detailProduct.imageBack].filter(
+      Boolean
+    ) as string[];
+  }, [detailProduct]);
+
+  const activeModalImage =
+    modalImages[activeImageIndex] ||
+    detailProduct?.image ||
+    '/images/products/coconut.jpg';
 
   return (
     <div className="flex min-h-screen flex-col bg-[#FAF8F5] text-[#2C1E18]">
@@ -251,34 +272,137 @@ export default function ProductsPage() {
               {filteredProducts.map((product, idx) => {
                 const isAdded = addedId === product.id;
                 const isOutOfStock = product.stock <= 0;
+                const cardImages =
+                  Array.isArray(product.images) && product.images.length > 0
+                    ? product.images
+                    : ([product.image, product.imageBack].filter(
+                        Boolean
+                      ) as string[]);
+                const cardIdx = cardPhotoMap[product.id] || 0;
+                const currentImg = cardImages[cardIdx] || product.image;
 
                 return (
                   <Reveal key={product.id} delayMs={idx * 60}>
                     <article className="group flex h-full flex-col overflow-hidden rounded-2xl border border-[#E5DEC9]/80 bg-white transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-1 hover:border-[#CFC5B1] hover:shadow-md">
-                      {/* Packaging Image with Click to Detail */}
+                      {/* Packaging Image with Click to Detail & Interactive Photo Switcher */}
                       <div
                         onClick={() => handleOpenDetailModal(product)}
-                        className="relative aspect-[4/3] overflow-hidden border-b border-[#F0EAE0] bg-[#F5F1EA] p-5 cursor-pointer"
+                        className="group/img relative aspect-[4/3] overflow-hidden border-b border-[#F0EAE0] bg-[#F5F1EA] p-5 cursor-pointer select-none"
                       >
                         <Image
-                          src={product.image}
-                          alt={product.name}
+                          src={currentImg}
+                          alt={`${product.name} - ${
+                            cardIdx === 0
+                              ? 'Tampak Depan'
+                              : cardIdx === 1
+                              ? 'Tampak Belakang'
+                              : `Foto ${cardIdx + 1}`
+                          }`}
                           fill
                           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                          className="object-contain p-5 transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.04]"
+                          className="object-contain p-5 transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover/img:scale-[1.04]"
                         />
-                        <span className="absolute top-3.5 left-3.5 inline-flex items-center gap-1 rounded-full bg-[#3B5B3D] px-2.5 py-1 text-[10px] font-semibold tracking-wide text-white">
+                        <span className="absolute top-3.5 left-3.5 inline-flex items-center gap-1 rounded-full bg-[#3B5B3D] px-2.5 py-1 text-[10px] font-semibold tracking-wide text-white shadow-xs">
                           <Leaf className="h-3 w-3" />
                           Saves {product.residueSavedGram}g Residue
                         </span>
 
-                        <span className="absolute bottom-3 left-3 rounded-full bg-white/95 border border-[#E5DEC9] px-2 py-0.5 text-[10px] font-bold text-[#5C4B42] shadow-2xs">
-                          Front &amp; Back View ↗
-                        </span>
+                        {/* Photo Count Indicator */}
+                        {cardImages.length > 1 && (
+                          <span className="absolute top-3.5 right-3.5 inline-flex items-center gap-1 rounded-full bg-black/60 backdrop-blur-xs px-2 py-0.5 text-[10px] font-semibold text-white shadow-xs">
+                            <Layers className="h-3 w-3" />
+                            {cardIdx + 1}/{cardImages.length}
+                          </span>
+                        )}
 
-                        <span className="absolute bottom-3 right-3 rounded-full bg-white/90 p-1.5 text-[#3B5B3D] opacity-0 shadow-sm transition-opacity group-hover:opacity-100">
-                          <Eye className="h-4 w-4" />
-                        </span>
+                        {/* Arrow Next / Prev Buttons on Card */}
+                        {cardImages.length > 1 && (
+                          <div className="absolute inset-y-0 left-2 right-2 flex items-center justify-between pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                            <button
+                              type="button"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setCardPhotoMap((prev) => ({
+                                  ...prev,
+                                  [product.id]:
+                                    (cardIdx - 1 + cardImages.length) %
+                                    cardImages.length,
+                                }));
+                              }}
+                              aria-label="Previous packaging view"
+                              className="pointer-events-auto flex h-7 w-7 items-center justify-center rounded-full bg-white/95 text-[#2C1E18] shadow-sm hover:bg-white hover:scale-105 transition"
+                            >
+                              <ChevronLeft className="h-4 w-4" />
+                            </button>
+                            <button
+                              type="button"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setCardPhotoMap((prev) => ({
+                                  ...prev,
+                                  [product.id]:
+                                    (cardIdx + 1) % cardImages.length,
+                                }));
+                              }}
+                              aria-label="Next packaging view"
+                              className="pointer-events-auto flex h-7 w-7 items-center justify-center rounded-full bg-white/95 text-[#2C1E18] shadow-sm hover:bg-white hover:scale-105 transition"
+                            >
+                              <ChevronRight className="h-4 w-4" />
+                            </button>
+                          </div>
+                        )}
+
+                        {/* Front / Back Switcher Pills on bottom */}
+                        {cardImages.length > 1 ? (
+                          <div
+                            onClick={(e) => e.stopPropagation()}
+                            className="absolute bottom-3 left-3 right-3 flex items-center justify-between pointer-events-auto"
+                          >
+                            <div className="inline-flex rounded-full bg-white/95 p-0.5 border border-[#E5DEC9] shadow-2xs backdrop-blur-xs">
+                              <button
+                                type="button"
+                                onClick={() =>
+                                  setCardPhotoMap((prev) => ({
+                                    ...prev,
+                                    [product.id]: 0,
+                                  }))
+                                }
+                                className={`rounded-full px-2.5 py-0.5 text-[10px] font-bold transition ${
+                                  cardIdx === 0
+                                    ? 'bg-[#3B5B3D] text-white shadow-2xs'
+                                    : 'text-[#5C4B42] hover:text-[#2C1E18]'
+                                }`}
+                              >
+                                Depan
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() =>
+                                  setCardPhotoMap((prev) => ({
+                                    ...prev,
+                                    [product.id]: 1,
+                                  }))
+                                }
+                                className={`rounded-full px-2.5 py-0.5 text-[10px] font-bold transition ${
+                                  cardIdx === 1
+                                    ? 'bg-[#3B5B3D] text-white shadow-2xs'
+                                    : 'text-[#5C4B42] hover:text-[#2C1E18]'
+                                }`}
+                              >
+                                Belakang
+                              </button>
+                            </div>
+
+                            <span className="inline-flex items-center gap-1 rounded-full bg-white/95 border border-[#E5DEC9] px-2 py-0.5 text-[10px] font-bold text-[#3B5B3D] shadow-2xs">
+                              <Eye className="h-3 w-3" />
+                              Detail
+                            </span>
+                          </div>
+                        ) : (
+                          <span className="absolute bottom-3 right-3 rounded-full bg-white/90 p-1.5 text-[#3B5B3D] opacity-0 shadow-sm transition-opacity group-hover:opacity-100">
+                            <Eye className="h-4 w-4" />
+                          </span>
+                        )}
                       </div>
 
                       {/* Product Details */}
@@ -455,19 +579,18 @@ export default function ProductsPage() {
             </button>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 items-start">
-              {/* Product Image Showcase with Front / Back Switcher */}
+              {/* Product Multi-Image Showcase & Gallery */}
               <div className="space-y-3">
+                {/* Main Image Stage */}
                 <div className="relative aspect-square overflow-hidden rounded-2xl border border-[#E5DEC9] bg-white p-4">
                   <Image
-                    src={
-                      activePhotoView === 'back' && detailProduct.imageBack
-                        ? detailProduct.imageBack
-                        : detailProduct.image
-                    }
+                    src={activeModalImage}
                     alt={`${detailProduct.name} - ${
-                      activePhotoView === 'front'
-                        ? 'Front Packaging View'
-                        : 'Back Packaging / Nutrition View'
+                      activeImageIndex === 0
+                        ? 'Tampak Depan'
+                        : activeImageIndex === 1
+                        ? 'Tampak Belakang & Label Nutrisi'
+                        : `Foto ${activeImageIndex + 1}`
                     }`}
                     fill
                     sizes="(max-width: 640px) 100vw, 400px"
@@ -477,35 +600,122 @@ export default function ProductsPage() {
                     Saves {detailProduct.residueSavedGram}g Residue
                   </span>
                   <span className="absolute top-3 right-3 rounded-full bg-white/95 border border-[#E5DEC9] px-2.5 py-0.5 text-[10px] font-bold text-[#5C4B42] shadow-xs">
-                    {activePhotoView === 'front' ? 'Front Packaging' : 'Back / Nutrition'}
+                    {activeImageIndex === 0
+                      ? 'Tampak Depan (Packaging Front)'
+                      : activeImageIndex === 1
+                      ? 'Tampak Belakang (Nutrisi & Manfaat)'
+                      : `Foto ${activeImageIndex + 1} dari ${modalImages.length}`}
                   </span>
+
+                  {/* Previous / Next Navigation Arrows */}
+                  {modalImages.length > 1 && (
+                    <>
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setActiveImageIndex(
+                            (prev) =>
+                              (prev - 1 + modalImages.length) %
+                              modalImages.length
+                          )
+                        }
+                        aria-label="Previous image"
+                        className="absolute left-2.5 top-1/2 -translate-y-1/2 flex h-8 w-8 items-center justify-center rounded-full bg-white/90 border border-[#E5DEC9] text-[#2C1E18] shadow-sm hover:bg-white hover:scale-105 transition"
+                      >
+                        <ChevronLeft className="h-4 w-4" />
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setActiveImageIndex(
+                            (prev) => (prev + 1) % modalImages.length
+                          )
+                        }
+                        aria-label="Next image"
+                        className="absolute right-2.5 top-1/2 -translate-y-1/2 flex h-8 w-8 items-center justify-center rounded-full bg-white/90 border border-[#E5DEC9] text-[#2C1E18] shadow-sm hover:bg-white hover:scale-105 transition"
+                      >
+                        <ChevronRight className="h-4 w-4" />
+                      </button>
+                    </>
+                  )}
                 </div>
 
-                {/* Front / Back Toggle Buttons */}
-                <div className="flex items-center justify-center gap-2">
-                  <button
-                    type="button"
-                    onClick={() => setActivePhotoView('front')}
-                    className={`inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-xs font-semibold transition ${
-                      activePhotoView === 'front'
-                        ? 'bg-[#3B5B3D] text-white shadow-xs'
-                        : 'bg-white border border-[#E5DEC9] text-[#5C4B42] hover:bg-[#FAF8F5]'
-                    }`}
-                  >
-                    <span>Packaging Front</span>
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setActivePhotoView('back')}
-                    className={`inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-xs font-semibold transition ${
-                      activePhotoView === 'back'
-                        ? 'bg-[#3B5B3D] text-white shadow-xs'
-                        : 'bg-white border border-[#E5DEC9] text-[#5C4B42] hover:bg-[#FAF8F5]'
-                    }`}
-                  >
-                    <span>Packaging Back</span>
-                  </button>
-                </div>
+                {/* Interactive Thumbnail Gallery Strip */}
+                {modalImages.length > 1 && (
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-center gap-2.5 overflow-x-auto pb-1">
+                      {modalImages.map((imgSrc, imgIdx) => {
+                        const isSelected = activeImageIndex === imgIdx;
+                        return (
+                          <button
+                            key={imgSrc + imgIdx}
+                            type="button"
+                            onClick={() => setActiveImageIndex(imgIdx)}
+                            className={`group relative h-16 w-16 sm:h-18 sm:w-18 shrink-0 overflow-hidden rounded-xl border-2 bg-white p-1 transition-all duration-200 ${
+                              isSelected
+                                ? 'border-[#3B5B3D] ring-2 ring-[#3B5B3D]/30 shadow-xs scale-105'
+                                : 'border-[#E5DEC9] opacity-70 hover:opacity-100 hover:border-[#8C7A6B]'
+                            }`}
+                          >
+                            <div className="relative h-full w-full">
+                              <Image
+                                src={imgSrc}
+                                alt={`Thumbnail ${imgIdx + 1}`}
+                                fill
+                                sizes="80px"
+                                className="object-contain"
+                              />
+                            </div>
+                            <span
+                              className={`absolute bottom-0 inset-x-0 text-center text-[9px] font-bold py-0.5 ${
+                                isSelected
+                                  ? 'bg-[#3B5B3D] text-white'
+                                  : 'bg-black/60 text-white'
+                              }`}
+                            >
+                              {imgIdx === 0
+                                ? 'Depan'
+                                : imgIdx === 1
+                                ? 'Belakang'
+                                : `#${imgIdx + 1}`}
+                            </span>
+                          </button>
+                        );
+                      })}
+                    </div>
+
+                    {/* Quick Pill Buttons */}
+                    <div className="flex items-center justify-center gap-2">
+                      <button
+                        type="button"
+                        onClick={() => setActiveImageIndex(0)}
+                        className={`inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-xs font-semibold transition ${
+                          activeImageIndex === 0
+                            ? 'bg-[#3B5B3D] text-white shadow-xs'
+                            : 'bg-white border border-[#E5DEC9] text-[#5C4B42] hover:bg-[#FAF8F5]'
+                        }`}
+                      >
+                        <span>Tampak Depan</span>
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setActiveImageIndex(1)}
+                        className={`inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-xs font-semibold transition ${
+                          activeImageIndex === 1
+                            ? 'bg-[#3B5B3D] text-white shadow-xs'
+                            : 'bg-white border border-[#E5DEC9] text-[#5C4B42] hover:bg-[#FAF8F5]'
+                        }`}
+                      >
+                        <span>Tampak Belakang</span>
+                      </button>
+                      {modalImages.length > 2 && (
+                        <span className="text-[11px] font-medium text-[#6E5C52]">
+                          +{modalImages.length - 2} foto lain
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                )}
               </div>
 
               {/* Product Info */}

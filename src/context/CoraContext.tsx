@@ -632,9 +632,20 @@ function parseStoredState(raw: string | null): CoraStoreState | null {
     return {
       products: parsed.products.map((p) => {
         const found = INITIAL_PRODUCTS.find((init) => init.id === p.id);
+        const imagesList =
+          Array.isArray(p.images) && p.images.length > 0
+            ? p.images
+            : found?.images ??
+              ([p.image || found?.image, p.imageBack || found?.imageBack].filter(
+                Boolean
+              ) as string[]);
         return {
           ...found,
           ...p,
+          image: p.image || found?.image || '/images/products/coconut.jpg',
+          imageBack:
+            p.imageBack || found?.imageBack || '/images/ingredients/coconut-flour.jpg',
+          images: imagesList,
           benefits: p.benefits ?? found?.benefits ?? COMMON_BENEFITS,
           ingredients: p.ingredients ?? found?.ingredients,
           variants: p.variants ?? found?.variants,
@@ -959,6 +970,14 @@ export function CoraProvider({ children }: { children: React.ReactNode }) {
       updateStore((prev) => {
         if (input.id) {
           const existing = prev.products.find((p) => p.id === input.id);
+          const imagesList =
+            Array.isArray(input.images) && input.images.length > 0
+              ? input.images
+              : [
+                  input.image.trim(),
+                  input.imageBack?.trim() ?? existing?.imageBack,
+                ].filter(Boolean) as string[];
+
           savedProduct = {
             id: input.id,
             name: input.name.trim(),
@@ -969,6 +988,8 @@ export function CoraProvider({ children }: { children: React.ReactNode }) {
             weightGram: Math.max(0, Number(input.weightGram)),
             residueSavedGram: Math.max(0, Number(input.residueSavedGram)),
             image: input.image.trim(),
+            imageBack: input.imageBack?.trim() ?? existing?.imageBack,
+            images: imagesList,
             description: input.description.trim(),
             ingredients: input.ingredients ?? existing?.ingredients,
             netWeight: input.netWeight ?? existing?.netWeight,
@@ -985,6 +1006,13 @@ export function CoraProvider({ children }: { children: React.ReactNode }) {
           };
         }
 
+        const imagesList =
+          Array.isArray(input.images) && input.images.length > 0
+            ? input.images
+            : [input.image.trim(), input.imageBack?.trim()].filter(
+                Boolean
+              ) as string[];
+
         savedProduct = {
           id: generateId('prod'),
           name: input.name.trim(),
@@ -995,6 +1023,8 @@ export function CoraProvider({ children }: { children: React.ReactNode }) {
           weightGram: Math.max(0, Number(input.weightGram)),
           residueSavedGram: Math.max(0, Number(input.residueSavedGram)),
           image: input.image.trim(),
+          imageBack: input.imageBack?.trim(),
+          images: imagesList,
           description: input.description.trim(),
           ingredients: input.ingredients,
           netWeight: input.netWeight,

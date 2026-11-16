@@ -292,6 +292,10 @@ export default function AdminDashboardPage() {
   const [prodWeight, setProdWeight] = useState('');
   const [prodResidue, setProdResidue] = useState('');
   const [prodImage, setProdImage] = useState(IMAGE_PRESETS[0].value);
+  const [prodImageBack, setProdImageBack] = useState(
+    IMAGE_PRESETS[1]?.value || '/images/ingredients/coconut-flour.jpg'
+  );
+  const [prodExtraImages, setProdExtraImages] = useState('');
   const [prodDescription, setProdDescription] = useState('');
 
   const [editingBankId, setEditingBankId] = useState<string | null>(null);
@@ -614,9 +618,11 @@ export default function AdminDashboardPage() {
     setProdCategory('Flour');
     setProdPrice('');
     setProdStock('');
-    setProdWeight('200');
-    setProdResidue('250');
+    setProdWeight('100');
+    setProdResidue('150');
     setProdImage(IMAGE_PRESETS[0].value);
+    setProdImageBack(IMAGE_PRESETS[1]?.value || '/images/ingredients/coconut-flour.jpg');
+    setProdExtraImages('');
     setProdDescription('');
     setShowProductForm(true);
   };
@@ -631,6 +637,16 @@ export default function AdminDashboardPage() {
     setProdWeight(String(product.weightGram));
     setProdResidue(String(product.residueSavedGram));
     setProdImage(product.image);
+    setProdImageBack(
+      product.imageBack ||
+        product.images?.[1] ||
+        '/images/ingredients/coconut-flour.jpg'
+    );
+    setProdExtraImages(
+      product.images && product.images.length > 2
+        ? product.images.slice(2).join('\n')
+        : ''
+    );
     setProdDescription(product.description);
     setShowProductForm(true);
   };
@@ -638,6 +654,17 @@ export default function AdminDashboardPage() {
   const handleSaveProductForm = (e: React.FormEvent) => {
     e.preventDefault();
     if (!prodName.trim() || !prodPrice || !prodStock) return;
+
+    const extraList = prodExtraImages
+      .split(/[\n,]/)
+      .map((s) => s.trim())
+      .filter(Boolean);
+    const allImages = [
+      prodImage.trim() || IMAGE_PRESETS[0].value,
+      prodImageBack.trim(),
+      ...extraList,
+    ].filter(Boolean);
+
     saveProduct({
       id: editingProductId ?? undefined,
       name: prodName.trim(),
@@ -645,9 +672,11 @@ export default function AdminDashboardPage() {
       category: prodCategory,
       price: Number(prodPrice),
       stock: Number(prodStock),
-      weightGram: Number(prodWeight) || 200,
-      residueSavedGram: Number(prodResidue) || 200,
+      weightGram: Number(prodWeight) || 100,
+      residueSavedGram: Number(prodResidue) || 150,
       image: prodImage.trim() || IMAGE_PRESETS[0].value,
+      imageBack: prodImageBack.trim() || undefined,
+      images: allImages,
       description:
         prodDescription.trim() ||
         'Nutritious circular food product handcrafted from CORA coconut residue.',
@@ -709,6 +738,23 @@ export default function AdminDashboardPage() {
       setProdImage(dataUrl);
     } catch {
       showToast('Failed to process product photo.');
+    }
+  };
+
+  const handleModalBackPhotoUpload = async (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const file = e.target.files?.[0];
+    e.target.value = '';
+    if (!file || !file.type.startsWith('image/')) {
+      showToast('Please select a valid image file (PNG, JPG, WebP, SVG).');
+      return;
+    }
+    try {
+      const dataUrl = await productImageFileToDataUrl(file);
+      setProdImageBack(dataUrl);
+    } catch {
+      showToast('Failed to process back packaging photo.');
     }
   };
 
@@ -3449,73 +3495,167 @@ export default function AdminDashboardPage() {
             </div>
 
             <div className="space-y-5 p-6">
-              {/* Photo Editor Section */}
-              <div className="rounded-2xl border border-[#E5DEC9] bg-[#FAF8F5] p-4">
-                <span className="block text-xs font-bold uppercase tracking-wider text-[#3B5B3D]">
-                  Product Packaging Image
-                </span>
-                <div className="mt-3 flex flex-col gap-4 sm:flex-row sm:items-center">
-                  <div className="relative h-28 w-28 shrink-0 overflow-hidden rounded-2xl border border-[#E5DEC9] bg-white">
-                    <Image
-                      src={prodImage || IMAGE_PRESETS[0].value}
-                      alt={prodName || 'Product preview'}
-                      fill
-                      sizes="112px"
-                      unoptimized
-                      className="object-contain p-2"
-                    />
+              {/* Multi-Photo Packaging Manager Section */}
+              <div className="space-y-4 rounded-2xl border border-[#E5DEC9] bg-[#FAF8F5] p-4">
+                <div className="flex items-center justify-between">
+                  <span className="block text-xs font-bold uppercase tracking-wider text-[#3B5B3D]">
+                    Product Packaging Images (Front &amp; Back View)
+                  </span>
+                  <span className="rounded-full bg-white px-2.5 py-0.5 text-[10px] font-semibold text-[#6E5C52] border border-[#E5DEC9]">
+                    Multi-Photo Enabled
+                  </span>
+                </div>
+
+                {/* 1. Tampak Depan */}
+                <div className="rounded-xl border border-[#E5DEC9] bg-white p-3.5 shadow-2xs">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-xs font-bold text-[#2C1E18]">
+                      1. Foto Tampak Depan (Front Packaging - Utama)
+                    </span>
+                    <span className="text-[10px] font-medium text-[#3B5B3D]">
+                      Foto Pertama / Thumbnail
+                    </span>
                   </div>
-
-                  <div className="flex-1 space-y-3">
-                    <div className="flex flex-wrap items-center gap-2">
-                      <label className="inline-flex cursor-pointer items-center gap-1.5 rounded-full bg-[#3B5B3D] px-4 py-2 text-xs font-semibold text-white transition hover:bg-[#2F4A31]">
-                        <UploadCloud className="h-3.5 w-3.5" />
-                        Upload Image from Device
-                        <input
-                          type="file"
-                          accept="image/*"
-                          onChange={handleModalPhotoUpload}
-                          className="sr-only"
-                        />
-                      </label>
-                      <span className="text-[11px] text-[#6E5C52]">
-                        PNG, JPG, WebP, SVG
-                      </span>
+                  <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+                    <div className="relative h-24 w-24 shrink-0 overflow-hidden rounded-xl border border-[#E5DEC9] bg-[#F7F5EE]">
+                      <Image
+                        src={prodImage || IMAGE_PRESETS[0].value}
+                        alt="Tampak Depan"
+                        fill
+                        sizes="96px"
+                        unoptimized
+                        className="object-contain p-2"
+                      />
                     </div>
-
-                    <div>
-                      <label className="block text-[11px] font-semibold text-[#5C4B42]">
-                        Or Enter Image URL / Path
-                      </label>
+                    <div className="flex-1 space-y-2">
+                      <div className="flex flex-wrap items-center gap-2">
+                        <label className="inline-flex cursor-pointer items-center gap-1.5 rounded-full bg-[#3B5B3D] px-3.5 py-1.5 text-xs font-semibold text-white transition hover:bg-[#2F4A31]">
+                          <UploadCloud className="h-3.5 w-3.5" />
+                          Upload Foto Depan
+                          <input
+                            type="file"
+                            accept="image/*"
+                            onChange={handleModalPhotoUpload}
+                            className="sr-only"
+                          />
+                        </label>
+                        <span className="text-[11px] text-[#6E5C52]">
+                          File gambar dari HP / Laptop
+                        </span>
+                      </div>
                       <input
                         type="text"
                         value={prodImage}
                         onChange={(e) => setProdImage(e.target.value)}
                         placeholder="/images/products/coconut.jpg"
-                        className="mt-1 w-full rounded-xl bg-white px-3 py-1.5 text-xs text-[#2C1E18] ring-1 ring-[#E5DEC9] focus:ring-2 focus:ring-[#3B5B3D] focus:outline-none"
+                        className="w-full rounded-xl bg-[#FAF8F5] px-3 py-1.5 text-xs text-[#2C1E18] ring-1 ring-[#E5DEC9] focus:bg-white focus:ring-2 focus:ring-[#3B5B3D] focus:outline-none"
                       />
-                    </div>
-
-                    <div className="flex flex-wrap items-center gap-1.5">
-                      <span className="text-[11px] font-medium text-[#6E5C52]">
-                        Quick Presets:
-                      </span>
-                      {IMAGE_PRESETS.map((preset) => (
-                        <button
-                          key={preset.value}
-                          type="button"
-                          onClick={() => setProdImage(preset.value)}
-                          className={`rounded-full px-2.5 py-1 text-[11px] font-semibold transition ${
-                            prodImage === preset.value
-                              ? 'bg-[#2C1E18] text-white'
-                              : 'bg-white text-[#5C4B42] ring-1 ring-[#E5DEC9] hover:bg-[#E6E3D8]'
-                          }`}
-                        >
-                          {preset.label}
-                        </button>
-                      ))}
+                      <div className="flex flex-wrap items-center gap-1">
+                        <span className="text-[10px] font-medium text-[#6E5C52]">
+                          Preset:
+                        </span>
+                        {IMAGE_PRESETS.slice(0, 3).map((preset) => (
+                          <button
+                            key={preset.value}
+                            type="button"
+                            onClick={() => setProdImage(preset.value)}
+                            className={`rounded-full px-2 py-0.5 text-[10px] font-semibold transition ${
+                              prodImage === preset.value
+                                ? 'bg-[#3B5B3D] text-white'
+                                : 'bg-[#FAF8F5] text-[#5C4B42] border border-[#E5DEC9] hover:bg-[#EAE4D6]'
+                            }`}
+                          >
+                            {preset.label}
+                          </button>
+                        ))}
+                      </div>
                     </div>
                   </div>
+                </div>
+
+                {/* 2. Tampak Belakang */}
+                <div className="rounded-xl border border-[#E5DEC9] bg-white p-3.5 shadow-2xs">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-xs font-bold text-[#2C1E18]">
+                      2. Foto Tampak Belakang (Back Packaging / Label Nutrisi)
+                    </span>
+                    <span className="text-[10px] font-medium text-[#3B5B3D]">
+                      Foto Kedua
+                    </span>
+                  </div>
+                  <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+                    <div className="relative h-24 w-24 shrink-0 overflow-hidden rounded-xl border border-[#E5DEC9] bg-[#F7F5EE]">
+                      <Image
+                        src={
+                          prodImageBack ||
+                          IMAGE_PRESETS[1]?.value ||
+                          '/images/ingredients/coconut-flour.jpg'
+                        }
+                        alt="Tampak Belakang"
+                        fill
+                        sizes="96px"
+                        unoptimized
+                        className="object-contain p-2"
+                      />
+                    </div>
+                    <div className="flex-1 space-y-2">
+                      <div className="flex flex-wrap items-center gap-2">
+                        <label className="inline-flex cursor-pointer items-center gap-1.5 rounded-full bg-[#3B5B3D] px-3.5 py-1.5 text-xs font-semibold text-white transition hover:bg-[#2F4A31]">
+                          <UploadCloud className="h-3.5 w-3.5" />
+                          Upload Foto Belakang
+                          <input
+                            type="file"
+                            accept="image/*"
+                            onChange={handleModalBackPhotoUpload}
+                            className="sr-only"
+                          />
+                        </label>
+                        <span className="text-[11px] text-[#6E5C52]">
+                          File gambar dari HP / Laptop
+                        </span>
+                      </div>
+                      <input
+                        type="text"
+                        value={prodImageBack}
+                        onChange={(e) => setProdImageBack(e.target.value)}
+                        placeholder="/images/ingredients/coconut-flour.jpg"
+                        className="w-full rounded-xl bg-[#FAF8F5] px-3 py-1.5 text-xs text-[#2C1E18] ring-1 ring-[#E5DEC9] focus:bg-white focus:ring-2 focus:ring-[#3B5B3D] focus:outline-none"
+                      />
+                      <div className="flex flex-wrap items-center gap-1">
+                        <span className="text-[10px] font-medium text-[#6E5C52]">
+                          Preset:
+                        </span>
+                        {IMAGE_PRESETS.slice(1, 4).map((preset) => (
+                          <button
+                            key={preset.value}
+                            type="button"
+                            onClick={() => setProdImageBack(preset.value)}
+                            className={`rounded-full px-2 py-0.5 text-[10px] font-semibold transition ${
+                              prodImageBack === preset.value
+                                ? 'bg-[#3B5B3D] text-white'
+                                : 'bg-[#FAF8F5] text-[#5C4B42] border border-[#E5DEC9] hover:bg-[#EAE4D6]'
+                            }`}
+                          >
+                            {preset.label}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 3. Foto Tambahan (Opsional) */}
+                <div>
+                  <label className="block text-[11px] font-semibold text-[#5C4B42]">
+                    Foto Tambahan (Opsional - URL atau path dipisah koma / baris baru)
+                  </label>
+                  <input
+                    type="text"
+                    value={prodExtraImages}
+                    onChange={(e) => setProdExtraImages(e.target.value)}
+                    placeholder="e.g. /images/ingredients/coconut.jpg, /images/hero/hero.jpg"
+                    className="mt-1 w-full rounded-xl bg-white px-3 py-1.5 text-xs text-[#2C1E18] ring-1 ring-[#E5DEC9] focus:ring-2 focus:ring-[#3B5B3D] focus:outline-none"
+                  />
                 </div>
               </div>
 
