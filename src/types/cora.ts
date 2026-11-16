@@ -1,4 +1,4 @@
-export type ProductCategory = 'Cookies' | 'Brownies' | 'Flour';
+export type ProductCategory = 'Flour';
 
 export interface Product {
   id: string;
@@ -10,6 +10,8 @@ export interface Product {
   weightGram: number;
   residueSavedGram: number;
   image: string;
+  imageBack?: string;
+  images?: string[];
   description: string;
   // Enhanced Product Details
   ingredients?: string[];
@@ -116,8 +118,8 @@ export interface Supplier {
 }
 
 export type RecipeCategory =
-  | 'Cookies and Biscuits'
-  | 'Cakes and Brownies'
+  | 'Pancakes and Waffles'
+  | 'Breads and Muffins'
   | 'Healthy Snacks'
   | 'Creative Recipes';
 

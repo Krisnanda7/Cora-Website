@@ -31,7 +31,7 @@ import type {
   RecipeCategory,
 } from '@/types/cora';
 
-type DishType = 'Cookies' | 'Muffin' | 'Pancake' | 'Brownies' | 'Banana Cake';
+type DishType = 'Waffle' | 'Muffin' | 'Pancake' | 'Flatbread' | 'Banana Bread';
 
 interface GeneratedRecipe {
   title: string;
@@ -64,17 +64,17 @@ const HOME_INGREDIENTS = [
 ] as const;
 
 const DISH_TYPES: { id: DishType; label: string; subtitle: string }[] = [
-  { id: 'Cookies', label: 'Cookies', subtitle: 'Crisp edges & tender center' },
-  { id: 'Brownies', label: 'Brownies', subtitle: 'Fudgy dark & gluten-free' },
   { id: 'Pancake', label: 'Pancake', subtitle: 'Nutritious high-fiber breakfast' },
+  { id: 'Waffle', label: 'Waffle', subtitle: 'Crispy exterior & fluffy center' },
   { id: 'Muffin', label: 'Muffin', subtitle: 'Moist & rich in dietary fiber' },
-  { id: 'Banana Cake', label: 'Banana Cake', subtitle: 'Tender tropical banana loaf' },
+  { id: 'Flatbread', label: 'Flatbread', subtitle: 'Savory & pliable wholesome wraps' },
+  { id: 'Banana Bread', label: 'Banana Bread', subtitle: 'Tender tropical banana loaf' },
 ];
 
 const RECIPE_CATEGORIES: { label: string; value: 'ALL' | RecipeCategory }[] = [
   { label: 'All Recipes', value: 'ALL' },
-  { label: 'Cookies & Biscuits', value: 'Cookies and Biscuits' },
-  { label: 'Cakes & Brownies', value: 'Cakes and Brownies' },
+  { label: 'Pancakes & Waffles', value: 'Pancakes and Waffles' },
+  { label: 'Breads & Muffins', value: 'Breads and Muffins' },
   { label: 'Healthy Snacks', value: 'Healthy Snacks' },
   { label: 'Creative Recipes', value: 'Creative Recipes' },
 ];
@@ -82,7 +82,7 @@ const RECIPE_CATEGORIES: { label: string; value: 'ALL' | RecipeCategory }[] = [
 const PRESET_CHAT_QUESTIONS = [
   'What is the conversion ratio of coconut flour compared to all-purpose flour?',
   'How many eggs and liquids are needed when baking with coconut flour?',
-  'Is CORA coconut flour 100% gluten-free and diet-friendly?',
+  'What are the key nutritional benefits of CORA coconut flour?',
   'How can I prevent coconut flour baked goods from turning out too dry?',
 ];
 
@@ -90,13 +90,13 @@ const FAQ_KNOWLEDGE_BASE: Record<string, string> = {
   rasio:
     'The substitution ratio for CORA coconut flour is 1:3 to 1:4 of all-purpose wheat flour (e.g., 100g wheat flour can be replaced with only 25g - 35g of CORA coconut flour). This is because coconut flour contains exceptionally high dietary fiber that absorbs 3-4 times more moisture than wheat flour.',
   telur:
-    'Because coconut flour is naturally gluten-free, eggs serve as the primary structural binder. A practical rule: for every 30g of CORA coconut flour, add 1 egg and let the batter rest for 3–5 minutes so the fiber fully hydrates.',
-  gluten:
-    'Yes, 100% Gluten-Free! CORA coconut flour is milled purely from fresh upcycled coconut residue without wheat, grain, or chemical additives—making it ideal for celiac disease, gluten intolerance, keto, and low-carb lifestyles.',
+    'Because coconut flour has unique high-fiber density, eggs serve as the primary structural binder. A practical rule: for every 30g of CORA coconut flour, add 1 egg and let the batter rest for 3–5 minutes so the fiber fully hydrates.',
+  nutrisi:
+    'CORA coconut flour is milled purely from fresh upcycled coconut residue without grains or chemical additives. It is rich in dietary fiber, low glycemic index, and packed with plant-based nutrition for mindful cooking and baking.',
   kering:
     'To avoid dryness: (1) Do not over-measure coconut flour, (2) Incorporate healthy fats like coconut oil or butter, (3) Add natural moisturisers such as mashed banana, applesauce, or yogurt, and (4) Do not overbake (typically bakes 5 minutes faster than conventional flour).',
   produk:
-    'CORA transforms coconut milk production residue into hygienic all-purpose flour, artisanal brownies, and crunchy cookies in airtight packaging. Every product directly rescues organic waste and empowers local coconut suppliers.',
+    'CORA transforms coconut milk production residue into pure, hygienic, fiber-rich coconut flour (100g). Every pack directly rescues organic waste and empowers local coconut suppliers in Bali.',
 };
 
 export default function EcosystemPage() {
@@ -114,7 +114,7 @@ export default function EcosystemPage() {
     'Banana',
     'Dark Chocolate',
   ]);
-  const [selectedDish, setSelectedDish] = useState<DishType>('Brownies');
+  const [selectedDish, setSelectedDish] = useState<DishType>('Pancake');
   const [portionSize, setPortionSize] = useState<string>('4 Servings');
   const [tastePreference, setTastePreference] =
     useState<string>('Naturally Sweet & Moist');
@@ -131,7 +131,7 @@ export default function EcosystemPage() {
   >([
     {
       sender: 'bot',
-      text: 'Hello! I am your CORA Baking Assistant 🥥. Feel free to ask about coconut flour baking, wheat conversion ratios, or healthy gluten-free tips!',
+      text: 'Hello! I am your CORA Baking Assistant 🥥. Feel free to ask about coconut flour baking, wheat conversion ratios, or high-fiber recipe ideas!',
       time: 'Just now',
     },
   ]);
@@ -185,10 +185,10 @@ export default function EcosystemPage() {
 
     window.setTimeout(() => {
       const flourGrams =
-        selectedDish === 'Cookies'
-          ? '55g'
-          : selectedDish === 'Brownies'
-          ? '65g'
+        selectedDish === 'Waffle'
+          ? '50g'
+          : selectedDish === 'Flatbread'
+          ? '60g'
           : selectedDish === 'Pancake'
           ? '45g'
           : selectedDish === 'Muffin'
@@ -196,9 +196,9 @@ export default function EcosystemPage() {
           : '70g';
 
       const wheatEquiv =
-        selectedDish === 'Cookies'
+        selectedDish === 'Waffle'
           ? '180g All-Purpose Flour'
-          : selectedDish === 'Brownies'
+          : selectedDish === 'Flatbread'
           ? '200g All-Purpose Flour'
           : selectedDish === 'Pancake'
           ? '150g All-Purpose Flour'
@@ -257,17 +257,17 @@ export default function EcosystemPage() {
     window.setTimeout(() => {
       const lower = query.toLowerCase();
       let reply =
-        'CORA coconut flour is exceptionally high in natural fiber and 100% gluten-free! Use 1/4 to 1/3 the amount of regular wheat flour and add 1 extra egg for optimal tenderness.';
+        'CORA coconut flour is exceptionally high in natural fiber and pure plant-based goodness! Use 1/4 to 1/3 the amount of regular wheat flour and add 1 extra egg for optimal tenderness.';
 
-      if (lower.includes('rasio') || lower.includes('banding') || lower.includes('takaran')) {
+      if (lower.includes('rasio') || lower.includes('ratio') || lower.includes('banding') || lower.includes('takaran') || lower.includes('conversion')) {
         reply = FAQ_KNOWLEDGE_BASE.rasio;
-      } else if (lower.includes('telur') || lower.includes('cairan') || lower.includes('air')) {
+      } else if (lower.includes('telur') || lower.includes('egg') || lower.includes('cairan') || lower.includes('liquid') || lower.includes('air')) {
         reply = FAQ_KNOWLEDGE_BASE.telur;
-      } else if (lower.includes('gluten') || lower.includes('sehat') || lower.includes('diet') || lower.includes('alergi')) {
-        reply = FAQ_KNOWLEDGE_BASE.gluten;
-      } else if (lower.includes('kering') || lower.includes('keras') || lower.includes('tips')) {
+      } else if (lower.includes('nutrisi') || lower.includes('nutrition') || lower.includes('sehat') || lower.includes('diet') || lower.includes('fiber') || lower.includes('manfaat')) {
+        reply = FAQ_KNOWLEDGE_BASE.nutrisi;
+      } else if (lower.includes('kering') || lower.includes('dry') || lower.includes('keras') || lower.includes('tips')) {
         reply = FAQ_KNOWLEDGE_BASE.kering;
-      } else if (lower.includes('cora') || lower.includes('produk') || lower.includes('ampas')) {
+      } else if (lower.includes('cora') || lower.includes('produk') || lower.includes('product') || lower.includes('ampas') || lower.includes('flour')) {
         reply = FAQ_KNOWLEDGE_BASE.produk;
       }
 
@@ -318,7 +318,7 @@ export default function EcosystemPage() {
                 RecipeHub &amp; CoraBlendAI™
               </h1>
               <p className="text-sm leading-relaxed text-[#E2DACF] sm:text-base">
-                A curated collection of gluten-free upcycled coconut flour recipes and an interactive AI assistant to calibrate your kitchen ratios seamlessly.
+                A curated collection of wholesome upcycled coconut flour recipes and an interactive AI assistant to calibrate your kitchen ratios seamlessly.
               </p>
             </div>
           </div>
@@ -718,7 +718,7 @@ export default function EcosystemPage() {
                   RecipeHub: Upcycled Coconut Flour Creations
                 </h2>
                 <p className="mt-1.5 max-w-2xl text-xs sm:text-sm text-[#6E5C52]">
-                  A curated collection of cookies, brownies, cakes, pancakes, and wholesome snacks crafted with 100% upcycled coconut flour. Save favorites to your profile!
+                  A curated collection of pancakes, waffles, muffins, wholesome breads, and creative recipes crafted with 100% upcycled coconut flour. Save favorites to your profile!
                 </p>
               </div>
 

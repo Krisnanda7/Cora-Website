@@ -25,28 +25,18 @@ interface TeamMember {
 
 const TEAM_MEMBERS: TeamMember[] = [
   {
-    name: 'Member 1',
-    role: 'Founder & Innovation Lead',
-    responsibility: 'Spearheading circular strategy, product architecture, and CORA ecosystem technology vision.',
-    image: '/images/hero/anggota1.jpg',
+    name: 'Zilan Dwi Cahya Rifai',
+    role: 'Foodtech & R&D Specialist',
+    responsibility:
+      'Formulating hygienic coconut pulp flour, proximate nutrient testing, drying parameters, and functional food quality assurance.',
+    image: '/images/ingredients/coconut-flour.jpg',
   },
   {
-    name: 'Member 2',
-    role: 'Food Tech & R&D Specialist',
-    responsibility: 'Formulating hygienic coconut pulp flour, proximate nutrient testing, and gluten-free food engineering.',
-    image: '/images/products/anggota2.jpg',
-  },
-  {
-    name: 'Member 3',
-    role: 'Supply Chain & Community Lead',
-    responsibility: 'Managing coconut residue pickup logistics, micro-routes, and coconut vendor MSME partnerships.',
-    image: '/images/products/anggota.jpg',
-  },
-  {
-    name: 'Member 4',
-    role: 'Sustainability & Impact Officer',
-    responsibility: 'Monitoring waste reduction metrics, carbon footprint prevention, and corporate SDGs compliance standards.',
-    image: '/images/products/anggota.jpg',
+    name: 'I Komang Diandra Jaya Kusuma',
+    role: 'Financial Management & Business Development Specialist',
+    responsibility:
+      'Directing financial strategy, circular economic modeling, supplier partnership feasibility, and enterprise business development.',
+    image: '/images/hero/hero.jpg',
   },
 ];
 
@@ -61,13 +51,13 @@ const FAQ_LIST: FAQItem[] = [
     category: 'product',
     question: 'What are CORA circular food products?',
     answer:
-      'CORA products are crafted from upcycled coconut pulp—a natural byproduct of fresh coconut milk extraction that is typically discarded. We hygienically dehydrate it under controlled temperatures and mill it into nutrient-dense coconut flour, fudgy brownies, and fiber-rich cookies.',
+      'CORA products are crafted from upcycled coconut pulp—a natural byproduct of fresh coconut milk extraction that is typically discarded. We hygienically dehydrate it under controlled temperatures and mill it into pure, nutrient-dense, fiber-rich coconut flour.',
   },
   {
     category: 'product',
-    question: 'Are CORA products gluten-free?',
+    question: 'What makes CORA coconut flour special?',
     answer:
-      'Yes! Pure coconut pulp flour and all CORA snacks are naturally 100% gluten-free, rich in prebiotic dietary fiber, and safe for celiac diets and healthy lifestyle choices.',
+      'CORA coconut flour is milled purely from fresh upcycled coconut pulp without grains or chemical additives. It is naturally packed with dietary fiber, provides a low glycemic index, and supports sustainable local food systems.',
   },
   {
     category: 'purchase',
@@ -192,7 +182,7 @@ export default function AboutPage() {
                   <strong className="text-[#2C1E18]">The Waste Crisis:</strong> However, fresh pressing leaves behind mountains of wet coconut pulp often discarded as valueless waste. Thousands of tons rot in landfills every month, releasing harmful methane gas and polluting local ecosystems.
                 </p>
                 <p>
-                  <strong className="text-[#2C1E18]">The CORA Innovation:</strong> This is where CORA steps in. We view coconut pulp not as waste, but as an undervalued superfood ingredient. Through food-grade hygienic dehydration and ultra-fine milling, we transform residue into fiber-packed <em>Upcycled Coconut Flour</em>, artisanal chocolate brownies, and crunchy nutrient-dense cookies.
+                  <strong className="text-[#2C1E18]">The CORA Innovation:</strong> This is where CORA steps in. We view coconut pulp not as waste, but as an undervalued superfood ingredient. Through food-grade hygienic dehydration and ultra-fine milling, we transform residue into pure, fiber-packed <em>Upcycled Coconut Flour (100g)</em> for wholesome home baking and versatile culinary creations.
                 </p>
               </div>
 
@@ -203,7 +193,7 @@ export default function AboutPage() {
                 </div>
                 <div className="rounded-2xl border border-[#E5DEC9] bg-white p-4 text-center">
                   <p className="font-serif text-2xl font-bold text-[#3B5B3D]">0%</p>
-                  <p className="text-[11px] text-[#6E5C52]">Gluten Content</p>
+                  <p className="text-[11px] text-[#6E5C52]">Preservatives</p>
                 </div>
                 <div className="rounded-2xl border border-[#E5DEC9] bg-white p-4 text-center">
                   <p className="font-serif text-2xl font-bold text-[#3B5B3D]">High</p>
@@ -296,7 +286,7 @@ export default function AboutPage() {
                     </li>
                     <li className="flex items-start gap-2.5">
                       <CheckCircle2 className="h-4 w-4 shrink-0 text-[#3B5B3D] mt-0.5" />
-                      <span><strong>Nutritional Diversity:</strong> Providing delicious, fiber-rich, gluten-free food alternatives that empower healthy lifestyles.</span>
+                      <span><strong>Nutritional Diversity:</strong> Providing wholesome, fiber-rich plant-based food alternatives that empower healthy lifestyles.</span>
                     </li>
                     <li className="flex items-start gap-2.5">
                       <CheckCircle2 className="h-4 w-4 shrink-0 text-[#3B5B3D] mt-0.5" />
@@ -326,31 +316,33 @@ export default function AboutPage() {
             </p>
           </div>
 
-          <div className="mt-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="mt-10 grid grid-cols-1 sm:grid-cols-2 max-w-3xl mx-auto gap-8">
             {TEAM_MEMBERS.map((member) => (
               <div
                 key={member.name}
-                className="group rounded-3xl border border-[#E5DEC9] bg-white overflow-hidden p-5 shadow-xs transition hover:-translate-y-1 hover:shadow-md"
+                className="group rounded-3xl border border-[#E5DEC9] bg-white overflow-hidden p-6 shadow-xs transition hover:-translate-y-1 hover:shadow-md flex flex-col justify-between"
               >
-                <div className="relative aspect-square w-full rounded-2xl overflow-hidden bg-[#FAF8F5] border border-[#E5DEC9]">
-                  <Image
-                    src={member.image}
-                    alt={member.name}
-                    fill
-                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-                    className="object-cover object-center transition duration-500 group-hover:scale-105"
-                  />
-                </div>
-                <div className="mt-4">
-                  <h3 className="font-bold text-[#2C1E18] text-base">
-                    {member.name}
-                  </h3>
-                  <p className="text-xs font-semibold text-[#3B5B3D]">
-                    {member.role}
-                  </p>
-                  <p className="mt-2 text-[11px] text-[#6E5C52] leading-relaxed">
-                    {member.responsibility}
-                  </p>
+                <div>
+                  <div className="relative aspect-[4/3] w-full rounded-2xl overflow-hidden bg-[#FAF8F5] border border-[#E5DEC9]">
+                    <Image
+                      src={member.image}
+                      alt={member.name}
+                      fill
+                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 360px"
+                      className="object-cover object-center transition duration-500 group-hover:scale-105"
+                    />
+                  </div>
+                  <div className="mt-5">
+                    <h3 className="font-bold text-[#2C1E18] text-lg">
+                      {member.name}
+                    </h3>
+                    <p className="mt-1 text-xs font-semibold text-[#3B5B3D]">
+                      {member.role}
+                    </p>
+                    <p className="mt-2.5 text-xs text-[#6E5C52] leading-relaxed">
+                      {member.responsibility}
+                    </p>
+                  </div>
                 </div>
               </div>
             ))}

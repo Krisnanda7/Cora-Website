@@ -181,22 +181,19 @@ function getPickupBadge(status: PickupRequestStatus): {
 }
 
 const IMAGE_PRESETS: { label: string; value: string }[] = [
-  { label: 'CORA Brownies Box', value: '/images/products/brownies.jpg' },
-  { label: 'CORA Cookies Pouch', value: '/images/products/cookies.jpg' },
-  { label: 'CORA Coconut Flour', value: '/images/products/coconut.jpg' },
-  { label: 'CORA Hero Trio', value: '/images/hero/hero.jpg' },
-  { label: 'Brownies Cubes', value: '/images/journey/brownies.jpg' },
-  { label: 'Cookies Stack', value: '/images/journey/cookies.jpg' },
-  { label: 'Raw Coconut', value: '/images/ingredients/coconut.jpg' },
-  { label: 'Flour Bowl', value: '/images/ingredients/coconut-flour.jpg' },
+  { label: 'CORA Coconut Flour 100g (Front)', value: '/images/products/coconut.jpg' },
+  { label: 'CORA Coconut Flour 100g (Back)', value: '/images/products/coconut.jpg' },
+  { label: 'CORA Natural Flour', value: '/images/ingredients/coconut-flour.jpg' },
+  { label: 'CORA Upcycled Coconut', value: '/images/ingredients/coconut.jpg' },
+  { label: 'CORA Hero Overview', value: '/images/hero/hero.jpg' },
 ];
 
 const RECIPE_IMAGE_PRESETS: { label: string; value: string }[] = [
-  { label: 'Crispy Cookies', value: '/images/products/cookies.jpg' },
-  { label: 'Fudgy Brownies', value: '/images/products/brownies.jpg' },
-  { label: 'Fluffy Pancakes', value: '/images/journey/cookies.jpg' },
-  { label: 'Banana Cake / Muffins', value: '/images/journey/brownies.jpg' },
   { label: 'Coconut Flour Pack', value: '/images/products/coconut.jpg' },
+  { label: 'Pure Flour Bowl', value: '/images/ingredients/coconut-flour.jpg' },
+  { label: 'Fluffy Pancakes / Waffles', value: '/images/ingredients/coconut-flour.jpg' },
+  { label: 'Banana Loaf / Muffins', value: '/images/hero/hero.jpg' },
+  { label: 'Fresh Coconut Meat', value: '/images/ingredients/coconut.jpg' },
 ];
 
 async function productImageFileToDataUrl(file: File): Promise<string> {
@@ -289,7 +286,7 @@ export default function AdminDashboardPage() {
   const [editingProductId, setEditingProductId] = useState<string | null>(null);
   const [prodName, setProdName] = useState('');
   const [prodSubtitle, setProdSubtitle] = useState('');
-  const [prodCategory, setProdCategory] = useState<ProductCategory>('Brownies');
+  const [prodCategory, setProdCategory] = useState<ProductCategory>('Flour');
   const [prodPrice, setProdPrice] = useState('');
   const [prodStock, setProdStock] = useState('');
   const [prodWeight, setProdWeight] = useState('');
@@ -327,7 +324,7 @@ export default function AdminDashboardPage() {
   const [editingRecipeId, setEditingRecipeId] = useState<string | null>(null);
   const [recTitle, setRecTitle] = useState('');
   const [recCategory, setRecCategory] = useState<RecipeCategory>(
-    'Cookies and Biscuits'
+    'Pancakes and Waffles'
   );
   const [recPrepTime, setRecPrepTime] = useState('15 mins');
   const [recCookTime, setRecCookTime] = useState('20 mins');
@@ -614,7 +611,7 @@ export default function AdminDashboardPage() {
     setEditingProductId(null);
     setProdName('');
     setProdSubtitle('');
-    setProdCategory('Brownies');
+    setProdCategory('Flour');
     setProdPrice('');
     setProdStock('');
     setProdWeight('200');
@@ -831,7 +828,7 @@ export default function AdminDashboardPage() {
   const openNewRecipeForm = () => {
     setEditingRecipeId(null);
     setRecTitle('');
-    setRecCategory('Cookies and Biscuits');
+    setRecCategory('Pancakes and Waffles');
     setRecPrepTime('15 mins');
     setRecCookTime('20 mins');
     setRecServings('4-6 portions');
@@ -840,10 +837,10 @@ export default function AdminDashboardPage() {
     setRecCoconutFlour('50g Upcycled Coconut Flour');
     setRecSummary('');
     setRecIngredientsText(
-      '50g CORA upcycled coconut flour\n100g oat flour\n40ml coconut oil\n3 tbsp coconut sugar\n1 tsp vanilla extract\nPinch of sea salt'
+      '50g CORA upcycled coconut flour\n2 eggs\n60ml plant milk\n1 tbsp raw honey\n1/2 tsp baking powder\nPinch of sea salt'
     );
     setRecStepsText(
-      'Preheat the oven to 175°C and line a baking sheet.\nMix coconut flour and oat flour in a dry bowl.\nFold in coconut oil and coconut sugar until dough forms.\nScoop into 12 balls and flatten lightly.\nBake for 14-16 minutes until edges are golden brown.'
+      'Whisk eggs, plant milk, and honey until smooth.\nFold in CORA coconut flour, baking powder, and pinch of sea salt.\nLet batter rest for 3 minutes to hydrate.\nCook on a non-stick skillet for 2-3 minutes per side until golden.'
     );
     setRecImage(RECIPE_IMAGE_PRESETS[0].value);
     setShowRecipeModal(true);
@@ -1530,7 +1527,7 @@ export default function AdminDashboardPage() {
               {/* Filter & Search Bar */}
               <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-[#E5DEC9] bg-white p-3.5 shadow-2xs">
                 <div className="flex flex-wrap items-center gap-1.5">
-                  {['ALL', 'Brownies', 'Cookies', 'Coconut Flour'].map((cat) => {
+                  {['ALL', 'Coconut Flour'].map((cat) => {
                     const active = productCategoryFilter === cat;
                     return (
                       <button
@@ -2461,7 +2458,7 @@ export default function AdminDashboardPage() {
                     4 Categories
                   </p>
                   <p className="mt-1 text-[11px] text-[#6E5C52]">
-                    Cookies, Brownies, Healthy Snacks, Creative
+                    Pancakes, Breads, Healthy Snacks, Creative
                   </p>
                 </div>
                 <div className="rounded-3xl border border-[#E5DEC9] bg-white p-5 shadow-xs">
@@ -2503,8 +2500,8 @@ export default function AdminDashboardPage() {
                 <div className="flex flex-wrap items-center gap-1.5">
                   {[
                     'ALL',
-                    'Cookies and Biscuits',
-                    'Cakes and Brownies',
+                    'Pancakes and Waffles',
+                    'Breads and Muffins',
                     'Healthy Snacks',
                     'Creative Recipes',
                   ].map((cat) => {
@@ -3144,7 +3141,7 @@ export default function AdminDashboardPage() {
                       SDG 12: Responsible Consumption
                     </p>
                     <p className="mt-1 text-[#6E5C52]">
-                      Upcycling plant food byproducts into high-nutrition, gluten-free
+                      Upcycling plant food byproducts into high-nutrition, fiber-rich
                       superfood ingredients.
                     </p>
                   </div>
@@ -3494,7 +3491,7 @@ export default function AdminDashboardPage() {
                         type="text"
                         value={prodImage}
                         onChange={(e) => setProdImage(e.target.value)}
-                        placeholder="/images/products/brownies.jpg"
+                        placeholder="/images/products/coconut.jpg"
                         className="mt-1 w-full rounded-xl bg-white px-3 py-1.5 text-xs text-[#2C1E18] ring-1 ring-[#E5DEC9] focus:ring-2 focus:ring-[#3B5B3D] focus:outline-none"
                       />
                     </div>
@@ -3532,7 +3529,7 @@ export default function AdminDashboardPage() {
                     required
                     value={prodName}
                     onChange={(e) => setProdName(e.target.value)}
-                    placeholder="e.g. CORA Artisan Cookies"
+                    placeholder="e.g. CORA Pure Coconut Flour 100g"
                     className="mt-1 w-full rounded-xl bg-[#FAF8F5] px-3.5 py-2 text-sm ring-1 ring-[#E5DEC9] focus:bg-white focus:ring-2 focus:ring-[#3B5B3D] focus:outline-none"
                   />
                 </div>
@@ -3562,9 +3559,7 @@ export default function AdminDashboardPage() {
                     }
                     className="mt-1 w-full rounded-xl bg-[#FAF8F5] px-3 py-2 text-sm ring-1 ring-[#E5DEC9] focus:bg-white focus:ring-2 focus:ring-[#3B5B3D] focus:outline-none"
                   >
-                    <option value="Brownies">Brownies</option>
-                    <option value="Cookies">Cookies</option>
-                    <option value="Coconut Flour">Coconut Flour</option>
+                    <option value="Flour">Coconut Flour</option>
                   </select>
                 </div>
                 <div>
@@ -3988,7 +3983,7 @@ export default function AdminDashboardPage() {
                   required
                   value={recTitle}
                   onChange={(e) => setRecTitle(e.target.value)}
-                  placeholder="e.g. CORA Choco Chunk Cookies"
+                  placeholder="e.g. CORA Golden Waffles"
                   className="mt-1 w-full rounded-xl bg-[#FAF8F5] px-3.5 py-2 text-xs text-[#2C1E18] ring-1 ring-[#E5DEC9] focus:bg-white focus:ring-2 focus:ring-[#3B5B3D] focus:outline-none"
                 />
               </div>
@@ -4004,10 +3999,10 @@ export default function AdminDashboardPage() {
                   }
                   className="mt-1 w-full rounded-xl bg-[#FAF8F5] px-3 py-2 text-xs text-[#2C1E18] ring-1 ring-[#E5DEC9] focus:bg-white focus:ring-2 focus:ring-[#3B5B3D] focus:outline-none"
                 >
-                  <option value="Cookies and Biscuits">
-                    Cookies and Biscuits
+                  <option value="Pancakes and Waffles">
+                    Pancakes and Waffles
                   </option>
-                  <option value="Cakes and Brownies">Cakes and Brownies</option>
+                  <option value="Breads and Muffins">Breads and Muffins</option>
                   <option value="Healthy Snacks">Healthy Snacks</option>
                   <option value="Creative Recipes">Creative Recipes</option>
                 </select>
@@ -4153,7 +4148,7 @@ export default function AdminDashboardPage() {
                 type="text"
                 value={recImage}
                 onChange={(e) => setRecImage(e.target.value)}
-                placeholder="/images/products/cookies.jpg"
+                placeholder="/images/products/coconut.jpg"
                 className="mt-1 w-full rounded-xl bg-[#FAF8F5] px-3.5 py-2 text-xs ring-1 ring-[#E5DEC9] focus:ring-2 focus:ring-[#3B5B3D] focus:outline-none"
               />
               <div className="mt-2 flex flex-wrap items-center gap-1.5">

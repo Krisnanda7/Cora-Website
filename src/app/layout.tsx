@@ -29,14 +29,14 @@ export const metadata: Metadata = {
     template: "%s | CORA",
   },
   description:
-    "Transforming coconut residues into nutritious food products, artisanal gluten-free coconut flour, cookies, brownies, and an empowered circular ecosystem in Bali.",
+    "Transforming coconut residues into nutritious food products, pure upcycled coconut flour (100g), and an empowered circular ecosystem in Bali.",
   keywords: [
     "CORA",
     "coconut residue",
     "coconut flour",
     "food upcycling",
     "circular economy",
-    "gluten free",
+    "plant based",
     "Bali food tech",
     "zero waste",
     "SDGs",

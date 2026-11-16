@@ -76,7 +76,7 @@ const JOURNEY_STEPS = [
   {
     step: 4,
     title: 'Food Product',
-    description: 'Applied in various recipes such as cookies and brownies',
+    description: 'Applied in versatile home baking and culinary creations',
   },
   {
     step: 5,
@@ -91,7 +91,7 @@ function HeroProductShowcase() {
       <div className="relative aspect-[16/10] w-full overflow-hidden">
         <Image
           src="/images/hero/hero.jpg"
-          alt="CORA Circular Food Product Showcase - Coconut Flour, Brownies, and Cookies"
+          alt="CORA Circular Food Product Showcase - Pure Upcycled Coconut Flour"
           fill
           priority
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 700px"
@@ -119,7 +119,7 @@ function HeroProductShowcase() {
                 CORA Signature Collection
               </p>
               <p className="text-[10px] sm:text-xs font-medium text-[#6E5C52]">
-                Flour • Brownies • Cookies
+                Pure Upcycled Coconut Flour (100g)
               </p>
             </div>
           </div>
@@ -189,8 +189,8 @@ function JourneyCircleVisual({ step }: { step: number }) {
     return (
       <div className="relative h-full w-full overflow-hidden rounded-full bg-[#EDE9DF] p-0.5 ring-2 ring-[#3B5B3D]/25 shadow-inner">
         <Image
-          src="/images/journey/brownies.jpg"
-          alt="Artisanal Brownies Product"
+          src="/images/ingredients/coconut-flour.jpg"
+          alt="Wholesome Home Baking"
           fill
           sizes="96px"
           className="rounded-full object-cover transition-transform duration-500 hover:scale-110"
@@ -331,9 +331,8 @@ export default function HomePage() {
                   className="animate-cora-fade-up max-w-xl text-base leading-relaxed text-[#E2DACF] sm:text-[17px]"
                   style={{ animationDelay: '170ms' }}
                 >
-                  Upcycling coconut milk residue into nutrient-rich coconut flour,
-                  artisanal cookies, and brownies that power a circular economy
-                  for local coconut suppliers.
+                  Upcycling coconut milk residue into pure, nutrient-rich coconut flour (100g)
+                  that powers a circular economy for local coconut suppliers.
                 </p>
 
                 <div
@@ -559,7 +558,7 @@ export default function HomePage() {
                     </li>
                     <li className="flex items-start gap-2">
                       <Check className="h-4 w-4 shrink-0 text-[#3B5B3D] mt-0.5" />
-                      <span>Opening innovative market opportunities for upcycled products (flour, brownies, cookies).</span>
+                      <span>Opening innovative market opportunities for pure, high-fiber upcycled coconut flour.</span>
                     </li>
                     <li className="flex items-start gap-2">
                       <Check className="h-4 w-4 shrink-0 text-[#3B5B3D] mt-0.5" />
@@ -786,7 +785,7 @@ export default function HomePage() {
               </div>
             </Reveal>
 
-            <div className="mt-10 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            <div className={`mt-10 grid gap-6 ${featuredProducts.length === 1 ? 'grid-cols-1 max-w-sm sm:max-w-md mx-auto' : 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-4'}`}>
               {featuredProducts.map((product, idx) => {
                 const isAdded = addedProductId === product.id;
                 const outOfStock = product.stock <= 0;

@@ -321,7 +321,7 @@ export default function UserProfilePage() {
                       AI Recipe Match
                     </span>
                     <h4 className="text-sm font-bold text-[#2C1E18]">
-                      Smart CORA Upcycled Brownies (4 servings)
+                      Smart CORA Upcycled Banana Loaf (4 servings)
                     </h4>
                     <p className="text-xs text-[#6E5C52]">
                       Ingredients: Eggs, Banana, Dark Chocolate • Flavor: Naturally Sweet &amp; Moist

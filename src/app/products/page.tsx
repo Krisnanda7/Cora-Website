@@ -29,9 +29,7 @@ import type { Product, ProductCategory } from '@/types/cora';
 type FilterCategory = 'ALL' | ProductCategory;
 
 const CATEGORY_TABS: { label: string; value: FilterCategory }[] = [
-  { label: 'All', value: 'ALL' },
-  { label: 'Brownies', value: 'Brownies' },
-  { label: 'Cookies', value: 'Cookies' },
+  { label: 'All Products', value: 'ALL' },
   { label: 'Coconut Flour', value: 'Flour' },
 ];
 
@@ -56,6 +54,7 @@ export default function ProductsPage() {
   const [activeVariant, setActiveVariant] = useState<string>('');
   const [modalQty, setModalQty] = useState<number>(1);
   const [modalAddedFeedback, setModalAddedFeedback] = useState(false);
+  const [activePhotoView, setActivePhotoView] = useState<'front' | 'back'>('front');
 
   const filteredProducts = useMemo(() => {
     const query = searchQuery.trim().toLowerCase();
@@ -79,6 +78,7 @@ export default function ProductsPage() {
     setActiveVariant(product.variants?.[0] || 'Original');
     setModalQty(1);
     setModalAddedFeedback(false);
+    setActivePhotoView('front');
   };
 
   const handleAddToCart = (product: Product, variant?: string, qty = 1) => {
@@ -132,8 +132,7 @@ export default function ProductsPage() {
                   CORA Product Catalog
                 </h1>
                 <p className="text-sm leading-relaxed text-[#E2DACF] sm:text-base">
-                  Discover artisanal chocolate treats and nutrient-rich upcycled
-                  coconut flour crafted from rescued coconut residue.
+                  Discover our pure, nutrient-rich upcycled coconut flour (100g) crafted from rescued coconut milk residue.
                 </p>
               </div>
 
@@ -206,7 +205,7 @@ export default function ProductsPage() {
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="Search brownies, cookies, flour..."
+                  placeholder="Search coconut flour..."
                   aria-label="Search CORA products"
                   className="w-full rounded-full border border-white/25 bg-white/15 py-2.5 pr-9 pl-10 text-sm text-[#FAF8F5] placeholder-[#D2C8BC] shadow-xs backdrop-blur-md transition focus:border-white/60 focus:bg-white/25 focus:ring-2 focus:ring-[#86C975] focus:outline-none"
                 />
@@ -248,7 +247,7 @@ export default function ProductsPage() {
               </button>
             </div>
           ) : (
-            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            <div className={`grid gap-6 ${filteredProducts.length === 1 ? 'grid-cols-1 max-w-sm sm:max-w-md mx-auto' : 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3'}`}>
               {filteredProducts.map((product, idx) => {
                 const isAdded = addedId === product.id;
                 const isOutOfStock = product.stock <= 0;
@@ -271,6 +270,10 @@ export default function ProductsPage() {
                         <span className="absolute top-3.5 left-3.5 inline-flex items-center gap-1 rounded-full bg-[#3B5B3D] px-2.5 py-1 text-[10px] font-semibold tracking-wide text-white">
                           <Leaf className="h-3 w-3" />
                           Saves {product.residueSavedGram}g Residue
+                        </span>
+
+                        <span className="absolute bottom-3 left-3 rounded-full bg-white/95 border border-[#E5DEC9] px-2 py-0.5 text-[10px] font-bold text-[#5C4B42] shadow-2xs">
+                          Front &amp; Back View ↗
                         </span>
 
                         <span className="absolute bottom-3 right-3 rounded-full bg-white/90 p-1.5 text-[#3B5B3D] opacity-0 shadow-sm transition-opacity group-hover:opacity-100">
@@ -401,7 +404,7 @@ export default function ProductsPage() {
                   Upcycled Coconut Flour
                 </h3>
                 <p className="mt-1.5 text-xs text-[#6E5C52] leading-relaxed">
-                  Rich in dietary fiber, certified gluten-free, with a low glycemic index suited for health-conscious living.
+                  Rich in natural dietary fiber, low glycemic index, and packed with wholesome plant-based nutrients.
                 </p>
               </div>
 
@@ -452,18 +455,57 @@ export default function ProductsPage() {
             </button>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 items-start">
-              {/* Product Image */}
-              <div className="relative aspect-square overflow-hidden rounded-2xl border border-[#E5DEC9] bg-white p-4">
-                <Image
-                  src={detailProduct.image}
-                  alt={detailProduct.name}
-                  fill
-                  sizes="(max-width: 640px) 100vw, 400px"
-                  className="object-contain p-4"
-                />
-                <span className="absolute top-3 left-3 rounded-full bg-[#3B5B3D] px-2.5 py-1 text-[10px] font-bold text-white">
-                  Saves {detailProduct.residueSavedGram}g Residue
-                </span>
+              {/* Product Image Showcase with Front / Back Switcher */}
+              <div className="space-y-3">
+                <div className="relative aspect-square overflow-hidden rounded-2xl border border-[#E5DEC9] bg-white p-4">
+                  <Image
+                    src={
+                      activePhotoView === 'back' && detailProduct.imageBack
+                        ? detailProduct.imageBack
+                        : detailProduct.image
+                    }
+                    alt={`${detailProduct.name} - ${
+                      activePhotoView === 'front'
+                        ? 'Front Packaging View'
+                        : 'Back Packaging / Nutrition View'
+                    }`}
+                    fill
+                    sizes="(max-width: 640px) 100vw, 400px"
+                    className="object-contain p-4 transition-all duration-300"
+                  />
+                  <span className="absolute top-3 left-3 rounded-full bg-[#3B5B3D] px-2.5 py-1 text-[10px] font-bold text-white shadow-xs">
+                    Saves {detailProduct.residueSavedGram}g Residue
+                  </span>
+                  <span className="absolute top-3 right-3 rounded-full bg-white/95 border border-[#E5DEC9] px-2.5 py-0.5 text-[10px] font-bold text-[#5C4B42] shadow-xs">
+                    {activePhotoView === 'front' ? 'Front Packaging' : 'Back / Nutrition'}
+                  </span>
+                </div>
+
+                {/* Front / Back Toggle Buttons */}
+                <div className="flex items-center justify-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setActivePhotoView('front')}
+                    className={`inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-xs font-semibold transition ${
+                      activePhotoView === 'front'
+                        ? 'bg-[#3B5B3D] text-white shadow-xs'
+                        : 'bg-white border border-[#E5DEC9] text-[#5C4B42] hover:bg-[#FAF8F5]'
+                    }`}
+                  >
+                    <span>Packaging Front</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setActivePhotoView('back')}
+                    className={`inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-xs font-semibold transition ${
+                      activePhotoView === 'back'
+                        ? 'bg-[#3B5B3D] text-white shadow-xs'
+                        : 'bg-white border border-[#E5DEC9] text-[#5C4B42] hover:bg-[#FAF8F5]'
+                    }`}
+                  >
+                    <span>Packaging Back</span>
+                  </button>
+                </div>
               </div>
 
               {/* Product Info */}

@@ -63,10 +63,10 @@ const STATIC_INFO_ITEMS: SearchResultItem[] = [
   {
     id: 'edu-baking',
     title: 'Education: Baking Guide with Coconut Flour',
-    subtitle: 'Liquid ratio tips, substitution formulas, and gluten-free dough optimization.',
+    subtitle: 'Liquid ratio tips, substitution formulas, and coconut flour dough optimization.',
     category: 'Educational Articles',
     href: '/ecosystem',
-    keywords: ['baking', 'flour', 'tepung', 'resep', 'recipe', 'gluten free', 'panduan', 'guide'],
+    keywords: ['baking', 'flour', 'tepung', 'resep', 'recipe', 'panduan', 'guide'],
   },
   {
     id: 'pickup-system',
@@ -201,7 +201,7 @@ export default function GlobalSearchModal({
                 CORA Global Search
               </p>
               <p className="mt-1 text-[11px] text-[#6E5C52]">
-                Try searching &ldquo;brownies&rdquo;, &ldquo;pancake&rdquo;, &ldquo;flour&rdquo;, &ldquo;track order&rdquo;, or &ldquo;pickup&rdquo;.
+                Try searching &ldquo;coconut flour&rdquo;, &ldquo;pancakes&rdquo;, &ldquo;waffles&rdquo;, &ldquo;track order&rdquo;, or &ldquo;pickup&rdquo;.
               </p>
             </div>
           ) : searchResults.length === 0 ? (

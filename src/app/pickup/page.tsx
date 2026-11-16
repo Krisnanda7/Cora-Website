@@ -370,7 +370,7 @@ export default function CoconutPickupPage() {
                 </h3>
                 <p className="text-xs leading-relaxed text-[#6E5C52]">
                   Residue is brought to CORA processing hub for hygienic drying,
-                  milling, and refinement into wholesome gluten-free flour.
+                  milling, and refinement into wholesome, fiber-rich coconut flour.
                 </p>
               </div>
             </div>

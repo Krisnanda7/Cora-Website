@@ -14,7 +14,7 @@
 
 CORA bridges this gap through a closed-loop circular economy:
 1. **Supply Recovery:** Sourcing clean coconut residue directly from traditional vendors, cafes, and processing facilities.
-2. **Value Transformation:** Dehydrating and refining byproducts into high-fiber, gluten-free coconut flour and artisanal baked goods (e.g., brownies, cookies).
+2. **Value Transformation:** Dehydrating and refining byproducts into pure, high-fiber upcycled coconut flour (100g).
 3. **Consumer & Enterprise Ecosystem:** Providing digital marketplaces, transparent order tracking, interactive AI culinary assistants, and administrative workflow governance.
 
 ---
