@@ -6,6 +6,7 @@ import Link from 'next/link';
 import {
   ArrowRight,
   Check,
+  Eye,
   Globe2,
   Handshake,
   Laptop,
@@ -793,36 +794,27 @@ export default function HomePage() {
                 return (
                   <Reveal key={product.id} delayMs={idx * 65}>
                     <article className="group flex h-full flex-col overflow-hidden rounded-2xl border border-[#E5DEC9] bg-white transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-1 hover:border-[#CFC5B1] hover:shadow-md">
-                      <div className="relative aspect-square overflow-hidden border-b border-[#EFEAE0] bg-[#F5F1EA]">
+                      <Link
+                        href="/products"
+                        className="relative block aspect-square overflow-hidden border-b border-[#EFEAE0] bg-[#F5F1EA] cursor-pointer"
+                      >
                         <Image
                           src={product.image}
                           alt={product.name}
                           fill
                           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-                          className={`object-contain p-5 transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
-                            product.imageBack
-                              ? 'group-hover:opacity-0'
-                              : 'group-hover:scale-[1.04]'
-                          }`}
+                          className="object-contain p-5 transition-transform duration-300 ease-out group-hover:scale-[1.02]"
                         />
-                        {product.imageBack && (
-                          <Image
-                            src={product.imageBack}
-                            alt={`${product.name} - Tampak Belakang`}
-                            fill
-                            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-                            className="object-contain p-5 transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] opacity-0 group-hover:opacity-100 group-hover:scale-[1.04]"
-                          />
-                        )}
                         <span className="absolute top-3.5 left-3.5 rounded-full bg-[#3B5B3D] px-2.5 py-1 text-[10px] font-semibold tracking-wide text-white">
                           {product.category}
                         </span>
                         {product.imageBack && (
-                          <span className="absolute bottom-3 left-3 rounded-full bg-white/95 border border-[#E5DEC9] px-2 py-0.5 text-[9px] font-bold text-[#5C4B42] shadow-2xs">
-                            Front &amp; Back View
+                          <span className="absolute bottom-3 left-3 inline-flex items-center gap-1 rounded-full bg-white/95 border border-[#E5DEC9] px-2.5 py-1 text-[10px] font-bold text-[#5C4B42] shadow-2xs">
+                            <Eye className="h-3 w-3 text-[#3B5B3D]" />
+                            Lihat Detail ↗
                           </span>
                         )}
-                      </div>
+                      </Link>
 
                       <div className="flex flex-1 flex-col p-5">
                         <div className="flex-1">
@@ -861,6 +853,13 @@ export default function HomePage() {
                           </div>
 
                           <div className="mt-3.5 flex items-center gap-2">
+                            <Link
+                              href="/products"
+                              className="inline-flex items-center justify-center gap-1.5 rounded-full border border-[#DDD4C1] bg-white px-3.5 py-2.5 text-xs font-semibold text-[#2C1E18] transition hover:border-[#3B5B3D] hover:text-[#3B5B3D]"
+                            >
+                              <Eye className="h-3.5 w-3.5 text-[#3B5B3D]" />
+                              Detail
+                            </Link>
                             <button
                               type="button"
                               disabled={outOfStock}

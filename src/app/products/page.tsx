@@ -11,7 +11,6 @@ import {
   Clock,
   Eye,
   Info,
-  Layers,
   Leaf,
   Minus,
   PackageCheck,
@@ -51,9 +50,6 @@ export default function ProductsPage() {
     useState<FilterCategory>('ALL');
   const [searchQuery, setSearchQuery] = useState('');
   const [addedId, setAddedId] = useState<string | null>(null);
-
-  // Card Multi-Photo state (per product id)
-  const [cardPhotoMap, setCardPhotoMap] = useState<Record<string, number>>({});
 
   // Product Details Modal State
   const [detailProduct, setDetailProduct] = useState<Product | null>(null);
@@ -114,10 +110,62 @@ export default function ProductsPage() {
     ) as string[];
   }, [detailProduct]);
 
-  const activeModalImage =
-    modalImages[activeImageIndex] ||
-    detailProduct?.image ||
-    '/images/products/coconut.jpg';
+  // Gesture Drag & Swipe State for Modal Slider
+  const [dragStartX, setDragStartX] = useState<number | null>(null);
+  const [dragOffset, setDragOffset] = useState<number>(0);
+  const [isDragging, setIsDragging] = useState<boolean>(false);
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    setDragStartX(e.touches[0].clientX);
+    setDragOffset(0);
+    setIsDragging(true);
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (dragStartX === null) return;
+    setDragOffset(e.touches[0].clientX - dragStartX);
+  };
+
+  const handleTouchEnd = () => {
+    if (dragStartX !== null) {
+      if (dragOffset < -40 && modalImages.length > 1) {
+        setActiveImageIndex((prev) => (prev + 1) % modalImages.length);
+      } else if (dragOffset > 40 && modalImages.length > 1) {
+        setActiveImageIndex(
+          (prev) => (prev - 1 + modalImages.length) % modalImages.length
+        );
+      }
+    }
+    setDragStartX(null);
+    setDragOffset(0);
+    setIsDragging(false);
+  };
+
+  const handleMouseDown = (e: React.MouseEvent) => {
+    setDragStartX(e.clientX);
+    setDragOffset(0);
+    setIsDragging(true);
+  };
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (!isDragging || dragStartX === null) return;
+    setDragOffset(e.clientX - dragStartX);
+  };
+
+  const handleMouseUp = () => {
+    if (isDragging && dragStartX !== null) {
+      if (dragOffset < -40 && modalImages.length > 1) {
+        setActiveImageIndex((prev) => (prev + 1) % modalImages.length);
+      } else if (dragOffset > 40 && modalImages.length > 1) {
+        setActiveImageIndex(
+          (prev) => (prev - 1 + modalImages.length) % modalImages.length
+        );
+      }
+    }
+    setDragStartX(null);
+    setDragOffset(0);
+    setIsDragging(false);
+  };
 
   return (
     <div className="flex min-h-screen flex-col bg-[#FAF8F5] text-[#2C1E18]">
@@ -272,137 +320,32 @@ export default function ProductsPage() {
               {filteredProducts.map((product, idx) => {
                 const isAdded = addedId === product.id;
                 const isOutOfStock = product.stock <= 0;
-                const cardImages =
-                  Array.isArray(product.images) && product.images.length > 0
-                    ? product.images
-                    : ([product.image, product.imageBack].filter(
-                        Boolean
-                      ) as string[]);
-                const cardIdx = cardPhotoMap[product.id] || 0;
-                const currentImg = cardImages[cardIdx] || product.image;
 
                 return (
                   <Reveal key={product.id} delayMs={idx * 60}>
                     <article className="group flex h-full flex-col overflow-hidden rounded-2xl border border-[#E5DEC9]/80 bg-white transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-1 hover:border-[#CFC5B1] hover:shadow-md">
-                      {/* Packaging Image with Click to Detail & Interactive Photo Switcher */}
+                      {/* Packaging Image with Click to Open Detail Modal */}
                       <div
                         onClick={() => handleOpenDetailModal(product)}
-                        className="group/img relative aspect-[4/3] overflow-hidden border-b border-[#F0EAE0] bg-[#F5F1EA] p-5 cursor-pointer select-none"
+                        className="relative aspect-[4/3] overflow-hidden border-b border-[#F0EAE0] bg-[#F5F1EA] p-5 cursor-pointer select-none"
                       >
                         <Image
-                          src={currentImg}
-                          alt={`${product.name} - ${
-                            cardIdx === 0
-                              ? 'Tampak Depan'
-                              : cardIdx === 1
-                              ? 'Tampak Belakang'
-                              : `Foto ${cardIdx + 1}`
-                          }`}
+                          src={product.image}
+                          alt={product.name}
                           fill
                           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                          className="object-contain p-5 transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover/img:scale-[1.04]"
+                          className="object-contain p-5 transition-transform duration-300 ease-out group-hover:scale-[1.03]"
                         />
                         <span className="absolute top-3.5 left-3.5 inline-flex items-center gap-1 rounded-full bg-[#3B5B3D] px-2.5 py-1 text-[10px] font-semibold tracking-wide text-white shadow-xs">
                           <Leaf className="h-3 w-3" />
                           Saves {product.residueSavedGram}g Residue
                         </span>
 
-                        {/* Photo Count Indicator */}
-                        {cardImages.length > 1 && (
-                          <span className="absolute top-3.5 right-3.5 inline-flex items-center gap-1 rounded-full bg-black/60 backdrop-blur-xs px-2 py-0.5 text-[10px] font-semibold text-white shadow-xs">
-                            <Layers className="h-3 w-3" />
-                            {cardIdx + 1}/{cardImages.length}
-                          </span>
-                        )}
-
-                        {/* Arrow Next / Prev Buttons on Card */}
-                        {cardImages.length > 1 && (
-                          <div className="absolute inset-y-0 left-2 right-2 flex items-center justify-between pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-                            <button
-                              type="button"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                setCardPhotoMap((prev) => ({
-                                  ...prev,
-                                  [product.id]:
-                                    (cardIdx - 1 + cardImages.length) %
-                                    cardImages.length,
-                                }));
-                              }}
-                              aria-label="Previous packaging view"
-                              className="pointer-events-auto flex h-7 w-7 items-center justify-center rounded-full bg-white/95 text-[#2C1E18] shadow-sm hover:bg-white hover:scale-105 transition"
-                            >
-                              <ChevronLeft className="h-4 w-4" />
-                            </button>
-                            <button
-                              type="button"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                setCardPhotoMap((prev) => ({
-                                  ...prev,
-                                  [product.id]:
-                                    (cardIdx + 1) % cardImages.length,
-                                }));
-                              }}
-                              aria-label="Next packaging view"
-                              className="pointer-events-auto flex h-7 w-7 items-center justify-center rounded-full bg-white/95 text-[#2C1E18] shadow-sm hover:bg-white hover:scale-105 transition"
-                            >
-                              <ChevronRight className="h-4 w-4" />
-                            </button>
-                          </div>
-                        )}
-
-                        {/* Front / Back Switcher Pills on bottom */}
-                        {cardImages.length > 1 ? (
-                          <div
-                            onClick={(e) => e.stopPropagation()}
-                            className="absolute bottom-3 left-3 right-3 flex items-center justify-between pointer-events-auto"
-                          >
-                            <div className="inline-flex rounded-full bg-white/95 p-0.5 border border-[#E5DEC9] shadow-2xs backdrop-blur-xs">
-                              <button
-                                type="button"
-                                onClick={() =>
-                                  setCardPhotoMap((prev) => ({
-                                    ...prev,
-                                    [product.id]: 0,
-                                  }))
-                                }
-                                className={`rounded-full px-2.5 py-0.5 text-[10px] font-bold transition ${
-                                  cardIdx === 0
-                                    ? 'bg-[#3B5B3D] text-white shadow-2xs'
-                                    : 'text-[#5C4B42] hover:text-[#2C1E18]'
-                                }`}
-                              >
-                                Depan
-                              </button>
-                              <button
-                                type="button"
-                                onClick={() =>
-                                  setCardPhotoMap((prev) => ({
-                                    ...prev,
-                                    [product.id]: 1,
-                                  }))
-                                }
-                                className={`rounded-full px-2.5 py-0.5 text-[10px] font-bold transition ${
-                                  cardIdx === 1
-                                    ? 'bg-[#3B5B3D] text-white shadow-2xs'
-                                    : 'text-[#5C4B42] hover:text-[#2C1E18]'
-                                }`}
-                              >
-                                Belakang
-                              </button>
-                            </div>
-
-                            <span className="inline-flex items-center gap-1 rounded-full bg-white/95 border border-[#E5DEC9] px-2 py-0.5 text-[10px] font-bold text-[#3B5B3D] shadow-2xs">
-                              <Eye className="h-3 w-3" />
-                              Detail
-                            </span>
-                          </div>
-                        ) : (
-                          <span className="absolute bottom-3 right-3 rounded-full bg-white/90 p-1.5 text-[#3B5B3D] opacity-0 shadow-sm transition-opacity group-hover:opacity-100">
-                            <Eye className="h-4 w-4" />
-                          </span>
-                        )}
+                        {/* Clean View Details Indicator */}
+                        <span className="absolute bottom-3 left-3 inline-flex items-center gap-1.5 rounded-full bg-white/95 border border-[#E5DEC9] px-2.5 py-1 text-[10px] font-bold text-[#5C4B42] shadow-2xs backdrop-blur-xs">
+                          <Eye className="h-3.5 w-3.5 text-[#3B5B3D]" />
+                          Lihat Detail
+                        </span>
                       </div>
 
                       {/* Product Details */}
@@ -466,9 +409,10 @@ export default function ProductsPage() {
                             <button
                               type="button"
                               onClick={() => handleOpenDetailModal(product)}
-                              className="rounded-full border border-[#D6CCBA] bg-white px-3.5 py-2.5 text-xs font-semibold text-[#5C4B42] hover:bg-[#FAF8F5] transition"
+                              className="inline-flex items-center gap-1.5 rounded-full border border-[#D6CCBA] bg-white px-3.5 py-2.5 text-xs font-semibold text-[#2C1E18] hover:border-[#3B5B3D] hover:text-[#3B5B3D] hover:bg-[#FAF8F5] transition shadow-2xs"
                             >
-                              Detail
+                              <Eye className="h-3.5 w-3.5 text-[#3B5B3D]" />
+                              Lihat Detail
                             </button>
 
                             <button
@@ -579,71 +523,98 @@ export default function ProductsPage() {
             </button>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 items-start">
-              {/* Product Multi-Image Showcase & Gallery */}
+              {/* Product Multi-Image Swipeable Slider Showcase */}
               <div className="space-y-3">
-                {/* Main Image Stage */}
-                <div className="relative aspect-square overflow-hidden rounded-2xl border border-[#E5DEC9] bg-white p-4">
-                  <Image
-                    src={activeModalImage}
-                    alt={`${detailProduct.name} - ${
-                      activeImageIndex === 0
-                        ? 'Tampak Depan'
-                        : activeImageIndex === 1
-                        ? 'Tampak Belakang & Label Nutrisi'
-                        : `Foto ${activeImageIndex + 1}`
-                    }`}
-                    fill
-                    sizes="(max-width: 640px) 100vw, 400px"
-                    className="object-contain p-4 transition-all duration-300"
-                  />
-                  <span className="absolute top-3 left-3 rounded-full bg-[#3B5B3D] px-2.5 py-1 text-[10px] font-bold text-white shadow-xs">
+                {/* Main Swipeable / Sliding Image Stage */}
+                <div
+                  className="relative aspect-square overflow-hidden rounded-2xl border border-[#E5DEC9] bg-white select-none cursor-grab active:cursor-grabbing touch-pan-y"
+                  onTouchStart={handleTouchStart}
+                  onTouchMove={handleTouchMove}
+                  onTouchEnd={handleTouchEnd}
+                  onMouseDown={handleMouseDown}
+                  onMouseMove={handleMouseMove}
+                  onMouseUp={handleMouseUp}
+                  onMouseLeave={handleMouseUp}
+                >
+                  {/* Sliding Track with CSS transform */}
+                  <div
+                    className="flex h-full w-full"
+                    style={{
+                      transform: isDragging
+                        ? `calc(-${activeImageIndex * 100}% + ${dragOffset}px)`
+                        : `translateX(-${activeImageIndex * 100}%)`,
+                      transition: isDragging
+                        ? 'none'
+                        : 'transform 320ms cubic-bezier(0.22, 1, 0.36, 1)',
+                    }}
+                  >
+                    {modalImages.map((imgSrc, imgIdx) => (
+                      <div
+                        key={imgSrc + imgIdx}
+                        className="relative h-full w-full shrink-0 p-4"
+                      >
+                        <Image
+                          src={imgSrc}
+                          alt={`${detailProduct.name} - ${imgIdx + 1}`}
+                          fill
+                          sizes="(max-width: 640px) 100vw, 400px"
+                          className="object-contain p-4 pointer-events-none select-none"
+                          draggable={false}
+                        />
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Top Badges */}
+                  <span className="absolute top-3 left-3 rounded-full bg-[#3B5B3D] px-2.5 py-1 text-[10px] font-bold text-white shadow-xs pointer-events-none">
                     Saves {detailProduct.residueSavedGram}g Residue
                   </span>
-                  <span className="absolute top-3 right-3 rounded-full bg-white/95 border border-[#E5DEC9] px-2.5 py-0.5 text-[10px] font-bold text-[#5C4B42] shadow-xs">
-                    {activeImageIndex === 0
-                      ? 'Tampak Depan (Packaging Front)'
-                      : activeImageIndex === 1
-                      ? 'Tampak Belakang (Nutrisi & Manfaat)'
-                      : `Foto ${activeImageIndex + 1} dari ${modalImages.length}`}
-                  </span>
+                  {modalImages.length > 1 && (
+                    <span className="absolute top-3 right-3 rounded-full bg-white/95 border border-[#E5DEC9] px-2.5 py-0.5 text-[10px] font-bold text-[#5C4B42] shadow-xs pointer-events-none">
+                      {activeImageIndex + 1} / {modalImages.length}
+                    </span>
+                  )}
 
-                  {/* Previous / Next Navigation Arrows */}
+                  {/* Prominent Left and Right Arrow Buttons */}
                   {modalImages.length > 1 && (
                     <>
                       <button
                         type="button"
-                        onClick={() =>
+                        onClick={(e) => {
+                          e.stopPropagation();
                           setActiveImageIndex(
                             (prev) =>
                               (prev - 1 + modalImages.length) %
                               modalImages.length
-                          )
-                        }
+                          );
+                        }}
                         aria-label="Previous image"
-                        className="absolute left-2.5 top-1/2 -translate-y-1/2 flex h-8 w-8 items-center justify-center rounded-full bg-white/90 border border-[#E5DEC9] text-[#2C1E18] shadow-sm hover:bg-white hover:scale-105 transition"
+                        className="absolute left-3 top-1/2 -translate-y-1/2 flex h-11 w-11 items-center justify-center rounded-full bg-white/95 border border-[#E5DEC9] text-[#2C1E18] shadow-lg hover:bg-white hover:scale-110 active:scale-95 transition"
                       >
-                        <ChevronLeft className="h-4 w-4" />
+                        <ChevronLeft className="h-6 w-6 text-[#2C1E18]" />
                       </button>
                       <button
                         type="button"
-                        onClick={() =>
+                        onClick={(e) => {
+                          e.stopPropagation();
                           setActiveImageIndex(
                             (prev) => (prev + 1) % modalImages.length
-                          )
-                        }
+                          );
+                        }}
                         aria-label="Next image"
-                        className="absolute right-2.5 top-1/2 -translate-y-1/2 flex h-8 w-8 items-center justify-center rounded-full bg-white/90 border border-[#E5DEC9] text-[#2C1E18] shadow-sm hover:bg-white hover:scale-105 transition"
+                        className="absolute right-3 top-1/2 -translate-y-1/2 flex h-11 w-11 items-center justify-center rounded-full bg-white/95 border border-[#E5DEC9] text-[#2C1E18] shadow-lg hover:bg-white hover:scale-110 active:scale-95 transition"
                       >
-                        <ChevronRight className="h-4 w-4" />
+                        <ChevronRight className="h-6 w-6 text-[#2C1E18]" />
                       </button>
                     </>
                   )}
                 </div>
 
-                {/* Interactive Thumbnail Gallery Strip */}
+                {/* Clean Thumbnail Preview Row & Pagination Dots */}
                 {modalImages.length > 1 && (
-                  <div className="space-y-2">
-                    <div className="flex items-center justify-center gap-2.5 overflow-x-auto pb-1">
+                  <div className="space-y-2.5">
+                    {/* Thumbnail Row */}
+                    <div className="flex items-center justify-center gap-2.5">
                       {modalImages.map((imgSrc, imgIdx) => {
                         const isSelected = activeImageIndex === imgIdx;
                         return (
@@ -654,7 +625,7 @@ export default function ProductsPage() {
                             className={`group relative h-16 w-16 sm:h-18 sm:w-18 shrink-0 overflow-hidden rounded-xl border-2 bg-white p-1 transition-all duration-200 ${
                               isSelected
                                 ? 'border-[#3B5B3D] ring-2 ring-[#3B5B3D]/30 shadow-xs scale-105'
-                                : 'border-[#E5DEC9] opacity-70 hover:opacity-100 hover:border-[#8C7A6B]'
+                                : 'border-[#E5DEC9] opacity-60 hover:opacity-100 hover:border-[#8C7A6B]'
                             }`}
                           >
                             <div className="relative h-full w-full">
@@ -666,53 +637,26 @@ export default function ProductsPage() {
                                 className="object-contain"
                               />
                             </div>
-                            <span
-                              className={`absolute bottom-0 inset-x-0 text-center text-[9px] font-bold py-0.5 ${
-                                isSelected
-                                  ? 'bg-[#3B5B3D] text-white'
-                                  : 'bg-black/60 text-white'
-                              }`}
-                            >
-                              {imgIdx === 0
-                                ? 'Depan'
-                                : imgIdx === 1
-                                ? 'Belakang'
-                                : `#${imgIdx + 1}`}
-                            </span>
                           </button>
                         );
                       })}
                     </div>
 
-                    {/* Quick Pill Buttons */}
-                    <div className="flex items-center justify-center gap-2">
-                      <button
-                        type="button"
-                        onClick={() => setActiveImageIndex(0)}
-                        className={`inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-xs font-semibold transition ${
-                          activeImageIndex === 0
-                            ? 'bg-[#3B5B3D] text-white shadow-xs'
-                            : 'bg-white border border-[#E5DEC9] text-[#5C4B42] hover:bg-[#FAF8F5]'
-                        }`}
-                      >
-                        <span>Tampak Depan</span>
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => setActiveImageIndex(1)}
-                        className={`inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-xs font-semibold transition ${
-                          activeImageIndex === 1
-                            ? 'bg-[#3B5B3D] text-white shadow-xs'
-                            : 'bg-white border border-[#E5DEC9] text-[#5C4B42] hover:bg-[#FAF8F5]'
-                        }`}
-                      >
-                        <span>Tampak Belakang</span>
-                      </button>
-                      {modalImages.length > 2 && (
-                        <span className="text-[11px] font-medium text-[#6E5C52]">
-                          +{modalImages.length - 2} foto lain
-                        </span>
-                      )}
+                    {/* Pagination Dots */}
+                    <div className="flex items-center justify-center gap-1.5 pt-0.5">
+                      {modalImages.map((_, dotIdx) => (
+                        <button
+                          key={dotIdx}
+                          type="button"
+                          onClick={() => setActiveImageIndex(dotIdx)}
+                          aria-label={`Slide to photo ${dotIdx + 1}`}
+                          className={`h-2 rounded-full transition-all duration-300 ${
+                            activeImageIndex === dotIdx
+                              ? 'w-6 bg-[#3B5B3D]'
+                              : 'w-2 bg-[#D4CBB8] hover:bg-[#A89D88]'
+                          }`}
+                        />
+                      ))}
                     </div>
                   </div>
                 )}
