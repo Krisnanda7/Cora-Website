@@ -149,7 +149,7 @@ export default function EcosystemPage() {
   const coconutFlourProduct = useMemo(
     () =>
       products.find((p) => p.category === 'Flour') ??
-      products.find((p) => p.id === 'prod-flour-500') ??
+      products.find((p) => p.id === 'prod-flour-100') ??
       products[0],
     [products]
   );
