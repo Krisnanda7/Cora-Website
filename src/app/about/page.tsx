@@ -29,14 +29,14 @@ const TEAM_MEMBERS: TeamMember[] = [
     role: 'Foodtech & R&D Specialist',
     responsibility:
       'Formulating hygienic coconut pulp flour, proximate nutrient testing, drying parameters, and functional food quality assurance.',
-    image: '/images/ingredients/coconut-flour.jpg',
+    image: '/images/team/member1.png',
   },
   {
     name: 'I Komang Diandra Jaya Kusuma',
     role: 'Financial Management & Business Development Specialist',
     responsibility:
       'Directing financial strategy, circular economic modeling, supplier partnership feasibility, and enterprise business development.',
-    image: '/images/hero/hero.png',
+    image: '/images/team/member2.png',
   },
 ];
 
@@ -323,13 +323,13 @@ export default function AboutPage() {
                 className="group rounded-3xl border border-[#E5DEC9] bg-white overflow-hidden p-6 shadow-xs transition hover:-translate-y-1 hover:shadow-md flex flex-col justify-between"
               >
                 <div>
-                  <div className="relative aspect-[4/3] w-full rounded-2xl overflow-hidden bg-[#FAF8F5] border border-[#E5DEC9]">
+                  <div className="relative aspect-[4/5] w-full rounded-2xl overflow-hidden bg-[#FAF8F5] border border-[#E5DEC9]">
                     <Image
                       src={member.image}
                       alt={member.name}
                       fill
                       sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 360px"
-                      className="object-cover object-center transition duration-500 group-hover:scale-105"
+                      className="object-cover object-top transition duration-500 group-hover:scale-105"
                     />
                   </div>
                   <div className="mt-5">
