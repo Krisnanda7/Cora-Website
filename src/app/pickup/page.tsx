@@ -307,7 +307,7 @@ export default function CoconutPickupPage() {
         {/* =========================================================================
             2. 4-STEP LOGISTICS WORKFLOW (HOW IT WORKS)
            ========================================================================= */}
-        <section className="border-b border-[#E5DEC9] bg-[#F2EFE8]/70 py-12">
+        <section className="border-b border-[#E5DEC9] bg-[#FAF8F5] py-12">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div className="text-center max-w-2xl mx-auto space-y-1">
               <span className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#3B5B3D]">
@@ -911,7 +911,7 @@ export default function CoconutPickupPage() {
         {/* =========================================================================
             4. BOTTOM WHATSAPP SUPPORT BANNER
            ========================================================================= */}
-        <section className="border-t border-[#E5DEC9] bg-white py-12">
+        <section className="border-t border-[#E5DEC9] bg-[#FAF8F5] py-12">
           <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 text-center space-y-4">
             <span className="inline-flex items-center gap-1.5 rounded-full bg-[#3B5B3D]/10 px-3 py-1 text-xs font-semibold text-[#3B5B3D]">
               <Phone className="h-3.5 w-3.5" />

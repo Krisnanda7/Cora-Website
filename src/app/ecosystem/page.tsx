@@ -756,7 +756,7 @@ Ada yang bisa saya bantu seputar resep sehat atau panduan tepung kelapa CORA har
         {/* =========================================================================
             SECTION 2: RECIPEHUB (Collection, Categories, Search, Favorites)
            ========================================================================= */}
-        <section className="border-t border-[#E5DEC9] bg-[#EFECE3]/50 py-14 sm:py-16">
+        <section className="border-t border-[#E5DEC9] bg-[#FAF8F5] py-14 sm:py-16">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
               <div>
@@ -889,34 +889,36 @@ Ada yang bisa saya bantu seputar resep sehat atau panduan tepung kelapa CORA har
         {/* =========================================================================
             SECTION 3: COCONUT PICKUP CALLOUT
            ========================================================================= */}
-        <section id="pickup" className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
-          <div className="relative overflow-hidden rounded-3xl border border-[#E5DEC9] bg-[#121B13] p-8 sm:p-12 text-[#FAF8F5] shadow-md">
-            <div className="pointer-events-none absolute -right-16 -top-16 h-72 w-72 rounded-full bg-[#3B5B3D]/30 blur-3xl" />
-            <div className="relative z-10 max-w-2xl space-y-4">
-              <span className="inline-flex items-center gap-1.5 rounded-full bg-[#86C975]/20 px-3.5 py-1 text-xs font-semibold text-[#86C975]">
-                <Truck className="h-3.5 w-3.5" />
-                Coconut Residue Collection Service
-              </span>
-              <h2 className="font-serif text-2xl sm:text-3xl lg:text-4xl font-bold">
-                Coconut Pickup &amp; Supplier Ecosystem is Now on a Dedicated Page
-              </h2>
-              <p className="text-xs sm:text-sm text-[#E2DACF] leading-relaxed">
-                Dedicated for coconut milk producers and local food makers: schedule free hygienic pickups, track logistics routes in real-time, or register as an official CORA Supplier Partner to earn valuable economic incentives.
-              </p>
-              <div className="pt-2 flex flex-wrap gap-3">
-                <Link
-                  href="/pickup"
-                  className="inline-flex items-center gap-2 rounded-full bg-[#3B5B3D] px-6 py-3 text-xs font-bold text-white transition hover:bg-[#2F4A31]"
-                >
-                  <span>Explore Coconut Pickup</span>
-                  <ArrowRight className="h-4 w-4" />
-                </Link>
-                <Link
-                  href="/pickup#tracking"
-                  className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-5 py-3 text-xs font-bold text-white transition hover:bg-white/20"
-                >
-                  <span>Track Pickup Status</span>
-                </Link>
+        <section id="pickup" className="border-t border-[#E5DEC9] bg-[#FAF8F5] py-16">
+          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            <div className="relative overflow-hidden rounded-3xl border border-[#E5DEC9] bg-[#121B13] p-8 sm:p-12 text-[#FAF8F5] shadow-md">
+              <div className="pointer-events-none absolute -right-16 -top-16 h-72 w-72 rounded-full bg-[#3B5B3D]/30 blur-3xl" />
+              <div className="relative z-10 max-w-2xl space-y-4">
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-[#86C975]/20 px-3.5 py-1 text-xs font-semibold text-[#86C975]">
+                  <Truck className="h-3.5 w-3.5" />
+                  Coconut Residue Collection Service
+                </span>
+                <h2 className="font-serif text-2xl sm:text-3xl lg:text-4xl font-bold">
+                  Coconut Pickup &amp; Supplier Ecosystem is Now on a Dedicated Page
+                </h2>
+                <p className="text-xs sm:text-sm text-[#E2DACF] leading-relaxed">
+                  Dedicated for coconut milk producers and local food makers: schedule free hygienic pickups, track logistics routes in real-time, or register as an official CORA Supplier Partner to earn valuable economic incentives.
+                </p>
+                <div className="pt-2 flex flex-wrap gap-3">
+                  <Link
+                    href="/pickup"
+                    className="inline-flex items-center gap-2 rounded-full bg-[#3B5B3D] px-6 py-3 text-xs font-bold text-white transition hover:bg-[#2F4A31]"
+                  >
+                    <span>Explore Coconut Pickup</span>
+                    <ArrowRight className="h-4 w-4" />
+                  </Link>
+                  <Link
+                    href="/pickup#tracking"
+                    className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-5 py-3 text-xs font-bold text-white transition hover:bg-white/20"
+                  >
+                    <span>Track Pickup Status</span>
+                  </Link>
+                </div>
               </div>
             </div>
           </div>

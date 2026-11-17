@@ -449,7 +449,7 @@ export default function ProductsPage() {
         </section>
 
         {/* PRODUCT BENEFITS CALLOUT SECTION */}
-        <section className="border-t border-[#E5DEC9] bg-[#EFECE3]/60 py-14">
+        <section className="border-t border-[#E5DEC9] bg-[#FAF8F5] py-14">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div className="text-center max-w-2xl mx-auto space-y-2">
               <span className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#3B5B3D]">

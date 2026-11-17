@@ -226,7 +226,7 @@ export default function AboutPage() {
         </section>
 
         {/* 2. VISION AND MISSION */}
-        <section className="border-t border-[#E5DEC9] bg-[#EFECE3]/50 py-16">
+        <section className="border-t border-[#E5DEC9] bg-[#FAF8F5] py-16">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div className="text-center max-w-2xl mx-auto space-y-2">
               <span className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#3B5B3D]">
@@ -303,49 +303,51 @@ export default function AboutPage() {
         </section>
 
         {/* 3. OUR TEAM */}
-        <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
-          <div className="text-center max-w-2xl mx-auto space-y-2">
-            <span className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#3B5B3D]">
-              The People Behind CORA
-            </span>
-            <h2 className="font-serif text-3xl font-bold text-[#2C1E18] sm:text-4xl">
-              Meet Our Team
-            </h2>
-            <p className="text-xs sm:text-sm text-[#6E5C52]">
-              Passionate innovators committed to driving positive impact for food systems and our environment.
-            </p>
-          </div>
+        <section className="border-t border-[#E5DEC9] bg-[#FAF8F5] py-16">
+          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            <div className="text-center max-w-2xl mx-auto space-y-2">
+              <span className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#3B5B3D]">
+                The People Behind CORA
+              </span>
+              <h2 className="font-serif text-3xl font-bold text-[#2C1E18] sm:text-4xl">
+                Meet Our Team
+              </h2>
+              <p className="text-xs sm:text-sm text-[#6E5C52]">
+                Passionate innovators committed to driving positive impact for food systems and our environment.
+              </p>
+            </div>
 
-          <div className="mt-10 grid grid-cols-1 sm:grid-cols-2 max-w-3xl mx-auto gap-8">
-            {TEAM_MEMBERS.map((member) => (
-              <div
-                key={member.name}
-                className="group rounded-3xl border border-[#E5DEC9] bg-white overflow-hidden p-6 shadow-xs transition hover:-translate-y-1 hover:shadow-md flex flex-col justify-between"
-              >
-                <div>
-                  <div className="relative aspect-[4/5] w-full rounded-2xl overflow-hidden bg-[#FAF8F5] border border-[#E5DEC9]">
-                    <Image
-                      src={member.image}
-                      alt={member.name}
-                      fill
-                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 360px"
-                      className="object-cover object-top transition duration-500 group-hover:scale-105"
-                    />
-                  </div>
-                  <div className="mt-5">
-                    <h3 className="font-bold text-[#2C1E18] text-lg">
-                      {member.name}
-                    </h3>
-                    <p className="mt-1 text-xs font-semibold text-[#3B5B3D]">
-                      {member.role}
-                    </p>
-                    <p className="mt-2.5 text-xs text-[#6E5C52] leading-relaxed">
-                      {member.responsibility}
-                    </p>
+            <div className="mt-10 grid grid-cols-1 sm:grid-cols-2 max-w-3xl mx-auto gap-8">
+              {TEAM_MEMBERS.map((member) => (
+                <div
+                  key={member.name}
+                  className="group rounded-3xl border border-[#E5DEC9] bg-white overflow-hidden p-6 shadow-xs transition hover:-translate-y-1 hover:shadow-md flex flex-col justify-between"
+                >
+                  <div>
+                    <div className="relative aspect-[4/5] w-full rounded-2xl overflow-hidden bg-[#FAF8F5] border border-[#E5DEC9]">
+                      <Image
+                        src={member.image}
+                        alt={member.name}
+                        fill
+                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 360px"
+                        className="object-cover object-top transition duration-500 group-hover:scale-105"
+                      />
+                    </div>
+                    <div className="mt-5">
+                      <h3 className="font-bold text-[#2C1E18] text-lg">
+                        {member.name}
+                      </h3>
+                      <p className="mt-1 text-xs font-semibold text-[#3B5B3D]">
+                        {member.role}
+                      </p>
+                      <p className="mt-2.5 text-xs text-[#6E5C52] leading-relaxed">
+                        {member.responsibility}
+                      </p>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
         </section>
 
@@ -423,7 +425,7 @@ export default function AboutPage() {
         </section>
 
         {/* 5. CONTACT US & COLLABORATION FORM */}
-        <section id="contact" className="border-t border-[#E5DEC9] bg-white py-16">
+        <section id="contact" className="border-t border-[#E5DEC9] bg-[#FAF8F5] py-16">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
               {/* Contact Info */}
@@ -489,7 +491,7 @@ export default function AboutPage() {
 
               {/* Form */}
               <div className="lg:col-span-7">
-                <div className="rounded-3xl border border-[#E5DEC9] bg-[#FAF8F5] p-6 sm:p-8 shadow-xs">
+                <div className="rounded-3xl border border-[#E5DEC9] bg-white p-6 sm:p-8 shadow-xs">
                   <h3 className="font-serif text-xl font-bold text-[#2C1E18]">
                     Inquiry &amp; Collaboration Form
                   </h3>
