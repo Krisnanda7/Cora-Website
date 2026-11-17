@@ -128,10 +128,15 @@ Ada resep atau pertanyaan seputar produk yang ingin Anda tanyakan hari ini?`,
   ]);
   const [inputChat, setInputChat] = useState('');
   const [isAiTyping, setIsAiTyping] = useState(false);
-  const chatMessagesEndRef = useRef<HTMLDivElement>(null);
+  const chatScrollContainerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    chatMessagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    if (chatScrollContainerRef.current) {
+      chatScrollContainerRef.current.scrollTo({
+        top: chatScrollContainerRef.current.scrollHeight,
+        behavior: 'smooth',
+      });
+    }
   }, [chatMessages, isAiTyping]);
 
   // RecipeHub State
@@ -664,7 +669,10 @@ Ada yang bisa saya bantu seputar resep sehat atau panduan tepung kelapa CORA har
 
             {/* Chat Box */}
             <div className="mt-5 rounded-2xl border border-[#E5DEC9] bg-[#FAF8F5] p-4 flex flex-col h-[420px]">
-              <div className="flex-1 overflow-y-auto space-y-3.5 pr-2">
+              <div
+                ref={chatScrollContainerRef}
+                className="flex-1 overflow-y-auto space-y-3.5 pr-2"
+              >
                 {chatMessages.map((msg, idx) => (
                   <div
                     key={idx}
@@ -715,7 +723,6 @@ Ada yang bisa saya bantu seputar resep sehat atau panduan tepung kelapa CORA har
                     </div>
                   </div>
                 )}
-                <div ref={chatMessagesEndRef} />
               </div>
 
               <div className="mt-3 pt-3 border-t border-[#E5DEC9] flex items-center gap-2">
@@ -724,7 +731,12 @@ Ada yang bisa saya bantu seputar resep sehat atau panduan tepung kelapa CORA har
                   value={inputChat}
                   disabled={isAiTyping}
                   onChange={(e) => setInputChat(e.target.value)}
-                  onKeyDown={(e) => e.key === 'Enter' && handleSendChat()}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                      e.preventDefault();
+                      handleSendChat();
+                    }
+                  }}
                   placeholder="Ketik pertanyaan seputar tepung kelapa, resep, atau ketik sapaan..."
                   className="flex-1 rounded-full border border-[#D6CCBA] bg-white px-4 py-2.5 text-xs text-[#2C1E18] focus:border-[#3B5B3D] focus:outline-none disabled:bg-[#F2ECE1]"
                 />
