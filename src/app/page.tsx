@@ -65,27 +65,27 @@ const JOURNEY_STEPS = [
   {
     step: 1,
     title: 'Coconut Residue',
-    description: 'By-product from coconut milk production',
+    description: 'Fresh byproduct rescued from coconut milk production',
   },
   {
     step: 2,
     title: 'Drying Process',
-    description: 'Hygienic and controlled drying to reduce moisture',
+    description: 'Hygienic and controlled dehydration to reduce moisture',
   },
   {
     step: 3,
     title: 'Coconut Flour',
-    description: 'Milled into fine, nutrient-rich flour',
+    description: 'Finely milled into nutrient-dense, high-fiber flour',
   },
   {
     step: 4,
-    title: 'Food Product',
-    description: 'Applied in versatile home baking and culinary creations',
+    title: 'Packaged Product',
+    description: 'Hygienically sealed in eco-friendly 100g retail pouches',
   },
   {
     step: 5,
     title: 'Digital Platform',
-    description: 'AI recipes, marketplace, and coconut pickup system',
+    description: 'AI recipes, direct marketplace, and coconut pickup system',
   },
 ] as const;
 
@@ -193,11 +193,11 @@ function JourneyCircleVisual({ step }: { step: number }) {
     return (
       <div className="relative h-full w-full overflow-hidden rounded-full bg-[#EDE9DF] p-0.5 ring-2 ring-[#3B5B3D]/25 shadow-inner">
         <Image
-          src="/images/ingredients/coconut-flour.jpg"
-          alt="Wholesome Home Baking"
+          src="/images/products/halaman1.jpg"
+          alt="CORA Pure Coconut Flour 100g Packaged Product"
           fill
           sizes="96px"
-          className="rounded-full object-cover transition-transform duration-500 hover:scale-110"
+          className="rounded-full object-cover object-center transition-transform duration-500 hover:scale-110"
         />
       </div>
     );
@@ -432,9 +432,9 @@ export default function HomePage() {
 
               <p className="text-sm leading-relaxed text-[#5C4B42] sm:text-[15px]">
                 Coconut milk production generates large amounts of coconut
-                residue that often goes to waste. CORA hygienically dries,
-                mills, and crafts it into high-fiber flour and delicious snacks
-                supported by a digital platform.
+                residue that often goes to waste. CORA hygienically dehydrates,
+                mills, and crafts it into pure high-fiber coconut flour
+                supported by a circular digital platform.
               </p>
 
               <div className="rounded-2xl border border-[#E5DEC9] bg-white p-5 shadow-2xs">

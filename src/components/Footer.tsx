@@ -24,8 +24,8 @@ export default function Footer() {
             </div>
             <p className="max-w-md text-sm leading-relaxed text-[#5C4B42]">
               Transforming coconut residue from coconut milk production into
-              nutrient-rich coconut flour, wholesome snacks, and a sustainable
-              digital ecosystem for local suppliers.
+              pure nutrient-dense coconut flour and a sustainable digital
+              ecosystem for local suppliers.
             </p>
             <p className="text-xs font-semibold uppercase tracking-[0.12em] text-[#3B5B3D]">
               Zero Coconut Residue Wasted
