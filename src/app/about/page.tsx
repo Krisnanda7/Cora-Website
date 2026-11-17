@@ -115,11 +115,30 @@ export default function AboutPage() {
   const handleContactSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!contactName.trim() || !contactMessage.trim()) return;
+
+    // Build structured message for WhatsApp
+    const waLines = [
+      `Halo Tim CORA, saya ingin menghubungi Anda melalui formulir website:`,
+      ``,
+      `*Nama Lengkap / Organisasi:* ${contactName.trim()}`,
+      `*Email / No. WhatsApp:* ${contactEmail.trim() || '-'}`,
+      `*Topik / Kategori:* ${contactSubject}`,
+      ``,
+      `*Pesan / Detail Rencana:*`,
+      `${contactMessage.trim()}`,
+    ];
+
+    const waText = encodeURIComponent(waLines.join('\n'));
+    const waUrl = `https://wa.me/6285858687329?text=${waText}`;
+
+    // Open WhatsApp directly in new tab/app
+    window.open(waUrl, '_blank', 'noopener,noreferrer');
+
     setContactSuccess(true);
     setContactName('');
     setContactEmail('');
     setContactMessage('');
-    window.setTimeout(() => setContactSuccess(false), 3000);
+    window.setTimeout(() => setContactSuccess(false), 5000);
   };
 
   return (
@@ -469,7 +488,14 @@ export default function AboutPage() {
                     </span>
                     <div>
                       <strong className="block text-[#2C1E18]">WhatsApp:</strong>
-                      <span>+62 858-5868-7329</span>
+                      <a
+                        href="https://wa.me/6285858687329"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="hover:text-[#3B5B3D] hover:underline"
+                      >
+                        +62 858-5868-7329
+                      </a>
                     </div>
                   </div>
 
@@ -502,7 +528,7 @@ export default function AboutPage() {
                   {contactSuccess && (
                     <div className="mt-4 rounded-2xl bg-[#4E9A34]/15 border border-[#4E9A34]/30 p-4 text-xs font-medium text-[#2F611F] flex items-center gap-2">
                       <CheckCircle2 className="h-4 w-4 shrink-0" />
-                      <span>Thank you! Your message and collaboration inquiry have been successfully sent to the CORA team.</span>
+                      <span>Terima kasih! Pesan dan data kolaborasi Anda telah disiapkan dan langsung diarahkan ke WhatsApp resmi CORA (+62 858-5868-7329).</span>
                     </div>
                   )}
 
@@ -569,10 +595,10 @@ export default function AboutPage() {
 
                     <button
                       type="submit"
-                      className="inline-flex items-center justify-center gap-2 rounded-full bg-[#3B5B3D] px-6 py-3 text-xs font-bold text-white shadow-xs hover:bg-[#2F4A31] transition"
+                      className="inline-flex items-center justify-center gap-2 rounded-full bg-[#3B5B3D] px-7 py-3.5 text-xs font-bold text-white shadow-xs hover:bg-[#2F4A31] transition cursor-pointer"
                     >
                       <Send className="h-3.5 w-3.5" />
-                      <span>Send Message</span>
+                      <span>Send Message via WhatsApp</span>
                     </button>
                   </form>
                 </div>
