@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import {
@@ -26,6 +26,11 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import Reveal from '@/components/Reveal';
 import { useCora } from '@/context/CoraContext';
+import {
+  PRESET_CHAT_QUESTIONS,
+  generateCoraAiResponse,
+  type ChatMessage,
+} from '@/lib/coraAiBot';
 import type {
   Recipe,
   RecipeCategory,
@@ -79,26 +84,6 @@ const RECIPE_CATEGORIES: { label: string; value: 'ALL' | RecipeCategory }[] = [
   { label: 'Creative Recipes', value: 'Creative Recipes' },
 ];
 
-const PRESET_CHAT_QUESTIONS = [
-  'What is the conversion ratio of coconut flour compared to all-purpose flour?',
-  'How many eggs and liquids are needed when baking with coconut flour?',
-  'What are the key nutritional benefits of CORA coconut flour?',
-  'How can I prevent coconut flour baked goods from turning out too dry?',
-];
-
-const FAQ_KNOWLEDGE_BASE: Record<string, string> = {
-  rasio:
-    'The substitution ratio for CORA coconut flour is 1:3 to 1:4 of all-purpose wheat flour (e.g., 100g wheat flour can be replaced with only 25g - 35g of CORA coconut flour). This is because coconut flour contains exceptionally high dietary fiber that absorbs 3-4 times more moisture than wheat flour.',
-  telur:
-    'Because coconut flour has unique high-fiber density, eggs serve as the primary structural binder. A practical rule: for every 30g of CORA coconut flour, add 1 egg and let the batter rest for 3–5 minutes so the fiber fully hydrates.',
-  nutrisi:
-    'CORA coconut flour is milled purely from fresh upcycled coconut residue without grains or chemical additives. It is rich in dietary fiber, low glycemic index, and packed with plant-based nutrition for mindful cooking and baking.',
-  kering:
-    'To avoid dryness: (1) Do not over-measure coconut flour, (2) Incorporate healthy fats like coconut oil or butter, (3) Add natural moisturisers such as mashed banana, applesauce, or yogurt, and (4) Do not overbake (typically bakes 5 minutes faster than conventional flour).',
-  produk:
-    'CORA transforms coconut milk production residue into pure, hygienic, fiber-rich coconut flour (100g). Every pack directly rescues organic waste and empowers local coconut suppliers in Bali.',
-};
-
 export default function EcosystemPage() {
   const {
     products,
@@ -126,16 +111,28 @@ export default function EcosystemPage() {
   const [addedFlourFeedback, setAddedFlourFeedback] = useState(false);
 
   // Chatbot State
-  const [chatMessages, setChatMessages] = useState<
-    { sender: 'user' | 'bot'; text: string; time: string }[]
-  >([
+  const [chatMessages, setChatMessages] = useState<ChatMessage[]>([
     {
       sender: 'bot',
-      text: 'Hello! I am your CORA Baking Assistant 🥥. Feel free to ask about coconut flour baking, wheat conversion ratios, or high-fiber recipe ideas!',
-      time: 'Just now',
+      text: `Halo! 👋 Saya CORA Culinary & Upcycle AI Assistant 🥥.
+
+Saya siap memandu petualangan kuliner sehat dan sirkular Anda bersama tepung kelapa murni CORA:
+• 📏 Rasio substitusi tepung kelapa terhadap tepung terigu
+• 🥚 Formulasi telur & hidrasi cairan agar adonan lembut
+• 📊 Nutrisi serat pangan tinggi & ramah gula darah
+• 🚛 Alur penjemputan limbah ampas kelapa (Coconut Pickup) di Bali
+
+Ada resep atau pertanyaan seputar produk yang ingin Anda tanyakan hari ini?`,
+      time: 'Baru saja',
     },
   ]);
   const [inputChat, setInputChat] = useState('');
+  const [isAiTyping, setIsAiTyping] = useState(false);
+  const chatMessagesEndRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    chatMessagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [chatMessages, isAiTyping]);
 
   // RecipeHub State
   const [recipeCategory, setRecipeCategory] = useState<'ALL' | RecipeCategory>(
@@ -241,10 +238,10 @@ export default function EcosystemPage() {
 
   const handleSendChat = (textToSend?: string) => {
     const query = (textToSend || inputChat).trim();
-    if (!query) return;
+    if (!query || isAiTyping) return;
 
-    const userMsg = {
-      sender: 'user' as const,
+    const userMsg: ChatMessage = {
+      sender: 'user',
       text: query,
       time: new Date().toLocaleTimeString('id-ID', {
         hour: '2-digit',
@@ -253,28 +250,14 @@ export default function EcosystemPage() {
     };
     setChatMessages((prev) => [...prev, userMsg]);
     setInputChat('');
+    setIsAiTyping(true);
 
     window.setTimeout(() => {
-      const lower = query.toLowerCase();
-      let reply =
-        'CORA coconut flour is exceptionally high in natural fiber and pure plant-based goodness! Use 1/4 to 1/3 the amount of regular wheat flour and add 1 extra egg for optimal tenderness.';
-
-      if (lower.includes('rasio') || lower.includes('ratio') || lower.includes('banding') || lower.includes('takaran') || lower.includes('conversion')) {
-        reply = FAQ_KNOWLEDGE_BASE.rasio;
-      } else if (lower.includes('telur') || lower.includes('egg') || lower.includes('cairan') || lower.includes('liquid') || lower.includes('air')) {
-        reply = FAQ_KNOWLEDGE_BASE.telur;
-      } else if (lower.includes('nutrisi') || lower.includes('nutrition') || lower.includes('sehat') || lower.includes('diet') || lower.includes('fiber') || lower.includes('manfaat')) {
-        reply = FAQ_KNOWLEDGE_BASE.nutrisi;
-      } else if (lower.includes('kering') || lower.includes('dry') || lower.includes('keras') || lower.includes('tips')) {
-        reply = FAQ_KNOWLEDGE_BASE.kering;
-      } else if (lower.includes('cora') || lower.includes('produk') || lower.includes('product') || lower.includes('ampas') || lower.includes('flour')) {
-        reply = FAQ_KNOWLEDGE_BASE.produk;
-      }
-
+      const reply = generateCoraAiResponse(query);
       setChatMessages((prev) => [
         ...prev,
         {
-          sender: 'bot' as const,
+          sender: 'bot',
           text: reply,
           time: new Date().toLocaleTimeString('id-ID', {
             hour: '2-digit',
@@ -282,7 +265,8 @@ export default function EcosystemPage() {
           }),
         },
       ]);
-    }, 600);
+      setIsAiTyping(false);
+    }, 700);
   };
 
   return (
@@ -625,34 +609,62 @@ export default function EcosystemPage() {
               <div>
                 <span className="inline-flex items-center gap-1.5 rounded-full bg-[#3B5B3D]/10 px-3 py-1 text-xs font-semibold text-[#3B5B3D]">
                   <MessageSquare className="h-3.5 w-3.5" />
-                  24/7 Baking AI Chatbot
+                  24/7 Smart Culinary AI Agent
                 </span>
                 <h3 className="mt-2 font-serif text-2xl font-bold text-[#2C1E18]">
-                  Coconut Flour Assistant
+                  CORA Culinary &amp; Upcycle Assistant
                 </h3>
                 <p className="text-xs text-[#6E5C52]">
-                  Ask anything about coconut flour baking, hydration balances, or wheat flour comparisons.
+                  Tanyakan apa saja seputar rasio baking, hidrasi cairan, nutrisi serat ampas kelapa, atau kemitraan penjemputan di Bali.
                 </p>
               </div>
+
+              {/* Reset Chat button */}
+              <button
+                type="button"
+                onClick={() => {
+                  setChatMessages([
+                    {
+                      sender: 'bot',
+                      text: `Halo! 👋 Saya CORA Culinary & Upcycle AI Assistant 🥥.
+
+Ada yang bisa saya bantu seputar resep sehat atau panduan tepung kelapa CORA hari ini?`,
+                      time: new Date().toLocaleTimeString('id-ID', {
+                        hour: '2-digit',
+                        minute: '2-digit',
+                      }),
+                    },
+                  ]);
+                }}
+                className="text-[11px] font-medium text-[#8C7A6B] hover:text-[#3B5B3D] transition underline self-start sm:self-auto cursor-pointer"
+              >
+                Reset Percakapan
+              </button>
             </div>
 
             {/* Quick Question Chips */}
-            <div className="mt-4 flex flex-wrap gap-2">
-              {PRESET_CHAT_QUESTIONS.map((q) => (
-                <button
-                  key={q}
-                  type="button"
-                  onClick={() => handleSendChat(q)}
-                  className="rounded-full bg-[#FAF8F5] border border-[#E5DEC9] px-3 py-1.5 text-xs text-[#5C4B42] hover:bg-[#EAE4D6] transition"
-                >
-                  💬 {q}
-                </button>
-              ))}
+            <div className="mt-4">
+              <span className="text-[11px] font-semibold text-[#8C7A6B] uppercase tracking-wider block mb-2">
+                Rekomendasi Pertanyaan Uji Coba:
+              </span>
+              <div className="flex flex-wrap gap-2">
+                {PRESET_CHAT_QUESTIONS.map((q) => (
+                  <button
+                    key={q}
+                    type="button"
+                    disabled={isAiTyping}
+                    onClick={() => handleSendChat(q)}
+                    className="rounded-full bg-[#FAF8F5] border border-[#E5DEC9] px-3.5 py-1.5 text-xs text-[#5C4B42] hover:bg-[#EAE4D6] hover:border-[#3B5B3D]/30 transition text-left disabled:opacity-50 cursor-pointer"
+                  >
+                    {q}
+                  </button>
+                ))}
+              </div>
             </div>
 
             {/* Chat Box */}
-            <div className="mt-4 rounded-2xl border border-[#E5DEC9] bg-[#FAF8F5] p-4 flex flex-col h-[320px]">
-              <div className="flex-1 overflow-y-auto space-y-3 pr-2">
+            <div className="mt-5 rounded-2xl border border-[#E5DEC9] bg-[#FAF8F5] p-4 flex flex-col h-[420px]">
+              <div className="flex-1 overflow-y-auto space-y-3.5 pr-2">
                 {chatMessages.map((msg, idx) => (
                   <div
                     key={idx}
@@ -661,15 +673,21 @@ export default function EcosystemPage() {
                     }`}
                   >
                     <div
-                      className={`max-w-[85%] rounded-2xl px-4 py-2.5 text-xs ${
+                      className={`max-w-[85%] rounded-2xl px-4 py-3 text-xs ${
                         msg.sender === 'user'
                           ? 'bg-[#3B5B3D] text-white rounded-tr-none'
                           : 'bg-white text-[#2C1E18] border border-[#E5DEC9] rounded-tl-none shadow-2xs'
                       }`}
                     >
-                      <p className="leading-relaxed">{msg.text}</p>
+                      {msg.sender === 'bot' && (
+                        <div className="mb-1.5 flex items-center gap-1.5 text-[10px] font-bold text-[#3B5B3D]">
+                          <Bot className="h-3 w-3" />
+                          <span>CORA AI Agent</span>
+                        </div>
+                      )}
+                      <p className="leading-relaxed whitespace-pre-line">{msg.text}</p>
                       <span
-                        className={`block text-[9px] mt-1 text-right ${
+                        className={`block text-[9px] mt-2 text-right ${
                           msg.sender === 'user'
                             ? 'text-white/70'
                             : 'text-[#8C7A6B]'
@@ -680,21 +698,41 @@ export default function EcosystemPage() {
                     </div>
                   </div>
                 ))}
+
+                {/* AI Typing Indicator */}
+                {isAiTyping && (
+                  <div className="flex justify-start">
+                    <div className="max-w-[85%] rounded-2xl rounded-tl-none border border-[#E5DEC9] bg-white px-4 py-3 text-xs text-[#2C1E18] shadow-2xs flex items-center gap-2.5">
+                      <div className="flex items-center gap-1.5 text-[10px] font-bold text-[#3B5B3D]">
+                        <Bot className="h-3.5 w-3.5" />
+                        <span>CORA AI sedang mengetik...</span>
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <span className="h-1.5 w-1.5 rounded-full bg-[#3B5B3D] animate-bounce [animation-delay:-0.3s]"></span>
+                        <span className="h-1.5 w-1.5 rounded-full bg-[#3B5B3D] animate-bounce [animation-delay:-0.15s]"></span>
+                        <span className="h-1.5 w-1.5 rounded-full bg-[#3B5B3D] animate-bounce"></span>
+                      </div>
+                    </div>
+                  </div>
+                )}
+                <div ref={chatMessagesEndRef} />
               </div>
 
               <div className="mt-3 pt-3 border-t border-[#E5DEC9] flex items-center gap-2">
                 <input
                   type="text"
                   value={inputChat}
+                  disabled={isAiTyping}
                   onChange={(e) => setInputChat(e.target.value)}
                   onKeyDown={(e) => e.key === 'Enter' && handleSendChat()}
-                  placeholder="Ask a question about coconut flour baking..."
-                  className="flex-1 rounded-full border border-[#D6CCBA] bg-white px-4 py-2 text-xs text-[#2C1E18] focus:border-[#3B5B3D] focus:outline-none"
+                  placeholder="Ketik pertanyaan seputar tepung kelapa, resep, atau ketik sapaan..."
+                  className="flex-1 rounded-full border border-[#D6CCBA] bg-white px-4 py-2.5 text-xs text-[#2C1E18] focus:border-[#3B5B3D] focus:outline-none disabled:bg-[#F2ECE1]"
                 />
                 <button
                   type="button"
+                  disabled={isAiTyping || !inputChat.trim()}
                   onClick={() => handleSendChat()}
-                  className="flex h-9 w-9 items-center justify-center rounded-full bg-[#3B5B3D] text-white hover:bg-[#2F4A31]"
+                  className="flex h-9 w-9 items-center justify-center rounded-full bg-[#3B5B3D] text-white hover:bg-[#2F4A31] disabled:opacity-50 transition cursor-pointer"
                 >
                   <Send className="h-4 w-4" />
                 </button>
