@@ -1083,13 +1083,11 @@ export default function AdminDashboardPage() {
       id: 'cms',
       label: 'Product Catalog (List View)',
       icon: Package,
-      badge: products.length,
     },
     {
       id: 'suppliers',
       label: 'Supplier Network',
       icon: Building2,
-      badge: suppliers.length > 0 ? suppliers.length : undefined,
     },
     {
       id: 'pickup',
@@ -1101,7 +1099,6 @@ export default function AdminDashboardPage() {
       id: 'recipes',
       label: 'RecipeHub CMS',
       icon: ChefHat,
-      badge: recipes.length > 0 ? recipes.length : undefined,
     },
     {
       id: 'impact',
