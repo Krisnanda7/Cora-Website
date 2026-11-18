@@ -47,7 +47,7 @@ export default function Reveal({
     <div
       ref={ref}
       style={{ transitionDelay: `${safeDelay}ms` }}
-      className={`transition-[opacity,transform] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none motion-reduce:opacity-100 motion-reduce:translate-y-0 ${
+      className={`transform-gpu transition-[opacity,transform] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none motion-reduce:opacity-100 motion-reduce:translate-y-0 ${
         visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2'
       } ${className}`}
     >

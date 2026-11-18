@@ -1145,24 +1145,24 @@ export default function HomePage() {
         </section>
 
         {/* 5. RECIPE & AI ASSISTANT HOOK SECTION */}
-        <section className="border-t border-[#E5DEC9] bg-[#FAF8F5] py-16 sm:py-24">
+        <section className="border-t border-[#E5DEC9] bg-[#FAF8F5] py-16 sm:py-24 isolate">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <Reveal>
-              <div className="relative overflow-hidden rounded-3xl border border-[#D5CCB6] bg-gradient-to-br from-[#1E3422] via-[#16291B] to-[#0E1A11] p-8 sm:p-12 lg:p-14 text-white shadow-xl transition-all duration-300 hover:border-[#86C975]/40 hover:shadow-2xl">
-                {/* Subtle Decorative Ambient Glow */}
+              <div className="relative overflow-hidden rounded-3xl border border-[#D5CCB6] bg-gradient-to-br from-[#1E3422] via-[#16291B] to-[#0E1A11] p-8 sm:p-12 lg:p-14 text-white shadow-xl transform-gpu will-change-transform transition-[border-color,box-shadow] duration-300 hover:border-[#86C975]/40 hover:shadow-2xl">
+                {/* Subtle Decorative Ambient Glow - High Performance Radial Gradients (Zero Gaussian Blur Filter Lag) */}
                 <div
-                  className="pointer-events-none absolute -right-20 -top-20 h-80 w-80 rounded-full bg-[#4E9A34]/20 blur-3xl"
+                  className="pointer-events-none absolute -right-16 -top-16 h-80 w-80 rounded-full bg-[radial-gradient(circle_at_center,rgba(78,154,52,0.22)_0%,transparent_70%)]"
                   aria-hidden="true"
                 />
                 <div
-                  className="pointer-events-none absolute -bottom-24 -left-20 h-72 w-72 rounded-full bg-[#86C975]/15 blur-3xl"
+                  className="pointer-events-none absolute -bottom-20 -left-16 h-72 w-72 rounded-full bg-[radial-gradient(circle_at_center,rgba(134,201,117,0.18)_0%,transparent_70%)]"
                   aria-hidden="true"
                 />
 
                 <div className="relative z-10 grid items-center gap-10 lg:grid-cols-12 lg:gap-12">
                   {/* Left Column: Hook Copy & Call-to-Action */}
                   <div className="lg:col-span-7 space-y-5">
-                    <div className="inline-flex items-center gap-2 rounded-full bg-white/10 px-3.5 py-1 text-xs font-semibold text-[#86C975] backdrop-blur-xs border border-white/15">
+                    <div className="inline-flex items-center gap-2 rounded-full bg-white/10 px-3.5 py-1 text-xs font-semibold text-[#86C975] border border-white/15">
                       <Sparkles className="h-3.5 w-3.5" />
                       <span>Smart Foodtech Assistant</span>
                     </div>
@@ -1177,7 +1177,7 @@ export default function HomePage() {
 
                     {/* 3 Quick Value Highlights */}
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2">
-                      <div className="rounded-2xl border border-white/10 bg-white/5 p-3.5 backdrop-blur-xs">
+                      <div className="rounded-2xl border border-white/10 bg-white/[0.06] p-3.5">
                         <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-[#86C975]/20 text-[#86C975] mb-2">
                           <Bot className="h-4 w-4" />
                         </span>
@@ -1187,7 +1187,7 @@ export default function HomePage() {
                         </p>
                       </div>
 
-                      <div className="rounded-2xl border border-white/10 bg-white/5 p-3.5 backdrop-blur-xs">
+                      <div className="rounded-2xl border border-white/10 bg-white/[0.06] p-3.5">
                         <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-[#86C975]/20 text-[#86C975] mb-2">
                           <ChefHat className="h-4 w-4" />
                         </span>
@@ -1197,7 +1197,7 @@ export default function HomePage() {
                         </p>
                       </div>
 
-                      <div className="rounded-2xl border border-white/10 bg-white/5 p-3.5 backdrop-blur-xs">
+                      <div className="rounded-2xl border border-white/10 bg-white/[0.06] p-3.5">
                         <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-[#86C975]/20 text-[#86C975] mb-2">
                           <Clock className="h-4 w-4" />
                         </span>
@@ -1223,12 +1223,12 @@ export default function HomePage() {
                     </div>
                   </div>
 
-                  {/* Right Column: Interactive Hook Preview Card */}
+                  {/* Right Column: Interactive Hook Preview Card (GPU-accelerated, zero-jank) */}
                   <div className="lg:col-span-5">
                     <Link
                       href="/ecosystem"
                       aria-label="Try Chef AI Baking Assistant on RecipeHub"
-                      className="group block rounded-2xl border border-white/15 bg-white/10 p-5 sm:p-6 backdrop-blur-md transition-all duration-300 hover:border-[#86C975]/60 hover:bg-white/[0.14] hover:shadow-2xl"
+                      className="group block rounded-2xl border border-white/15 bg-[#1B3220]/90 p-5 sm:p-6 shadow-lg transform-gpu transition-[border-color,background-color,box-shadow] duration-300 hover:border-[#86C975]/60 hover:bg-[#203B26]/95 hover:shadow-2xl"
                     >
                       {/* Card Header */}
                       <div className="flex items-center justify-between border-b border-white/10 pb-3.5 mb-4">
@@ -1241,7 +1241,7 @@ export default function HomePage() {
                               Chef AI Baking Assistant
                             </p>
                             <p className="text-[10px] text-[#86C975] font-semibold flex items-center gap-1.5">
-                              <span className="h-1.5 w-1.5 rounded-full bg-[#86C975] animate-pulse" />
+                              <span className="h-1.5 w-1.5 rounded-full bg-[#86C975] animate-pulse will-change-[opacity]" />
                               Online &amp; Ready to Formulate Recipes
                             </p>
                           </div>
