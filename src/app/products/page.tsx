@@ -344,7 +344,7 @@ export default function ProductsPage() {
                         {/* Clean View Details Indicator */}
                         <span className="absolute bottom-3 left-3 inline-flex items-center gap-1.5 rounded-full bg-white/95 border border-[#E5DEC9] px-2.5 py-1 text-[10px] font-bold text-[#5C4B42] shadow-2xs backdrop-blur-xs">
                           <Eye className="h-3.5 w-3.5 text-[#3B5B3D]" />
-                          Lihat Detail
+                          View Details
                         </span>
                       </div>
 
@@ -412,7 +412,7 @@ export default function ProductsPage() {
                               className="inline-flex items-center gap-1.5 rounded-full border border-[#D6CCBA] bg-white px-3.5 py-2.5 text-xs font-semibold text-[#2C1E18] hover:border-[#3B5B3D] hover:text-[#3B5B3D] hover:bg-[#FAF8F5] transition shadow-2xs"
                             >
                               <Eye className="h-3.5 w-3.5 text-[#3B5B3D]" />
-                              Lihat Detail
+                              View Details
                             </button>
 
                             <button
@@ -572,10 +572,10 @@ export default function ProductsPage() {
                   {modalImages.length > 1 && (
                     <span className="absolute top-3 right-3 rounded-full bg-white/95 border border-[#E5DEC9] px-2.5 py-0.5 text-[10px] font-bold text-[#5C4B42] shadow-xs pointer-events-none">
                       {activeImageIndex === 0
-                        ? 'Halaman Depan'
+                        ? 'Front Packaging'
                         : activeImageIndex === 1
-                        ? 'Halaman Belakang'
-                        : `Foto ${activeImageIndex + 1}`}{' '}
+                        ? 'Back Nutrition Label'
+                        : `Photo ${activeImageIndex + 1}`}{' '}
                       ({activeImageIndex + 1}/{modalImages.length})
                     </span>
                   )}
@@ -624,10 +624,10 @@ export default function ProductsPage() {
                         const isSelected = activeImageIndex === imgIdx;
                         const label =
                           imgIdx === 0
-                            ? 'Halaman Depan'
+                            ? 'Front Packaging'
                             : imgIdx === 1
-                            ? 'Halaman Belakang'
-                            : `Foto ${imgIdx + 1}`;
+                            ? 'Back Nutrition Label'
+                            : `Photo ${imgIdx + 1}`;
                         return (
                           <button
                             key={imgSrc + imgIdx}

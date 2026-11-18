@@ -181,8 +181,8 @@ function getPickupBadge(status: PickupRequestStatus): {
 }
 
 const IMAGE_PRESETS: { label: string; value: string }[] = [
-  { label: 'CORA Coconut Flour 100g (Halaman Depan)', value: '/images/products/halaman1.jpg' },
-  { label: 'CORA Coconut Flour 100g (Halaman Belakang)', value: '/images/products/halamanBelakang.jpg' },
+  { label: 'CORA Coconut Flour 100g (Front Packaging)', value: '/images/products/halaman1.jpg' },
+  { label: 'CORA Coconut Flour 100g (Back Packaging)', value: '/images/products/halamanBelakang.jpg' },
   { label: 'CORA Natural Flour', value: '/images/ingredients/coconut-flour.jpg' },
   { label: 'CORA Upcycled Coconut', value: '/images/ingredients/coconut.jpg' },
   { label: 'CORA Hero Overview', value: '/images/hero/hero.png' },
@@ -305,7 +305,7 @@ export default function AdminDashboardPage() {
   const [supName, setSupName] = useState('');
   const [supPhone, setSupPhone] = useState('');
   const [supLocation, setSupLocation] = useState('');
-  const [supType, setSupType] = useState('Pabrik Pengolahan Santan');
+  const [supType, setSupType] = useState('Coconut Milk Facility');
   const [supKg, setSupKg] = useState('25');
   const [supFreq, setSupFreq] = useState('Setiap Hari');
   const [supStatus, setSupStatus] = useState<SupplierStatus>('ACTIVE');
@@ -3464,7 +3464,7 @@ export default function AdminDashboardPage() {
                     : 'Add New Product'}
                 </h3>
                 <p className="text-xs text-[#6E5C52]">
-                  Kelola nama produk, harga, stok, berat, dan foto kemasan (Depan &amp; Belakang).
+                  Manage product name, price, stock, weight, and packaging photos (Front &amp; Back).
                 </p>
               </div>
               <button
@@ -3480,11 +3480,11 @@ export default function AdminDashboardPage() {
             <div className="space-y-4 p-5 sm:p-6">
               {/* Clean Packaging Photos (Front & Back) */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-                {/* 1. Foto Tampak Depan */}
+                {/* 1. Front Packaging Photo */}
                 <div className="rounded-xl border border-[#E5DEC9] bg-[#FAF8F5] p-3 flex flex-col justify-between">
                   <div className="flex items-center justify-between mb-2">
                     <span className="text-xs font-bold text-[#2C1E18]">
-                      Foto Depan (Utama)
+                      Front Photo (Primary)
                     </span>
                     <button
                       type="button"
@@ -3499,7 +3499,7 @@ export default function AdminDashboardPage() {
                     <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-xl border border-[#E5DEC9] bg-white">
                       <Image
                         src={prodImage || '/images/products/halaman1.jpg'}
-                        alt="Tampak Depan"
+                        alt="Front Packaging"
                         fill
                         sizes="80px"
                         unoptimized
@@ -3509,7 +3509,7 @@ export default function AdminDashboardPage() {
                     <div className="flex-1 space-y-1.5 min-w-0">
                       <label className="inline-flex cursor-pointer items-center gap-1.5 rounded-lg bg-[#3B5B3D] px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-[#2F4A31]">
                         <UploadCloud className="h-3.5 w-3.5" />
-                        Upload Foto
+                        Upload Photo
                         <input
                           type="file"
                           accept="image/*"
@@ -3528,11 +3528,11 @@ export default function AdminDashboardPage() {
                   </div>
                 </div>
 
-                {/* 2. Foto Tampak Belakang */}
+                {/* 2. Back Packaging Photo */}
                 <div className="rounded-xl border border-[#E5DEC9] bg-[#FAF8F5] p-3 flex flex-col justify-between">
                   <div className="flex items-center justify-between mb-2">
                     <span className="text-xs font-bold text-[#2C1E18]">
-                      Foto Belakang
+                      Back Photo
                     </span>
                     <button
                       type="button"
@@ -3552,7 +3552,7 @@ export default function AdminDashboardPage() {
                           prodImageBack ||
                           '/images/products/halamanBelakang.jpg'
                         }
-                        alt="Tampak Belakang"
+                        alt="Back Packaging"
                         fill
                         sizes="80px"
                         unoptimized
@@ -3562,7 +3562,7 @@ export default function AdminDashboardPage() {
                     <div className="flex-1 space-y-1.5 min-w-0">
                       <label className="inline-flex cursor-pointer items-center gap-1.5 rounded-lg border border-[#DDD4C1] bg-white px-3 py-1.5 text-xs font-semibold text-[#2C1E18] transition hover:border-[#3B5B3D] hover:text-[#3B5B3D]">
                         <UploadCloud className="h-3.5 w-3.5 text-[#3B5B3D]" />
-                        Upload Foto
+                        Upload Photo
                         <input
                           type="file"
                           accept="image/*"
@@ -3910,12 +3910,10 @@ export default function AdminDashboardPage() {
                   onChange={(e) => setSupType(e.target.value)}
                   className="mt-1 w-full rounded-xl bg-[#FAF8F5] px-3 py-2 text-xs text-[#2C1E18] ring-1 ring-[#E5DEC9] focus:bg-white focus:ring-2 focus:ring-[#3B5B3D] focus:outline-none"
                 >
-                  <option value="Pabrik Pengolahan Santan">Coconut Milk Facility</option>
-                  <option value="Kedai Kopi / Kafe">Coffee Shop / Cafe</option>
-                  <option value="Kios Kelapa Muda Tradisional">
-                    Traditional Coconut Stall
-                  </option>
-                  <option value="Katering & Bakery">Catering &amp; Bakery</option>
+                  <option value="Coconut Milk Facility">Coconut Milk Facility</option>
+                  <option value="Coffee Shop / Cafe">Coffee Shop / Cafe</option>
+                  <option value="Traditional Coconut Stall">Traditional Coconut Stall</option>
+                  <option value="Catering & Bakery">Catering &amp; Bakery</option>
                 </select>
               </div>
 

@@ -114,16 +114,16 @@ export default function EcosystemPage() {
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>([
     {
       sender: 'bot',
-      text: `Halo! 👋 Saya CORA Culinary & Upcycle AI Assistant 🥥.
+      text: `Hello! 👋 I am your CORA Culinary & Upcycle AI Assistant 🥥.
 
-Saya siap memandu petualangan kuliner sehat dan sirkular Anda bersama tepung kelapa murni CORA:
-• 📏 Rasio substitusi tepung kelapa terhadap tepung terigu
-• 🥚 Formulasi telur & hidrasi cairan agar adonan lembut
-• 📊 Nutrisi serat pangan tinggi & ramah gula darah
-• 🚛 Alur penjemputan limbah ampas kelapa (Coconut Pickup) di Bali
+I am ready to guide your wholesome, circular baking journey with pure CORA coconut flour:
+• 📏 Substitution ratios compared to wheat flour
+• 🥚 Egg & liquid hydration balance for soft, moist crumb
+• 📊 High prebiotic dietary fiber & low-glycemic nutrition
+• 🚛 Coconut residue pickup ecosystem in Bali
 
-Ada resep atau pertanyaan seputar produk yang ingin Anda tanyakan hari ini?`,
-      time: 'Baru saja',
+How may I assist your baking or circular inquiries today?`,
+      time: 'Just now',
     },
   ]);
   const [inputChat, setInputChat] = useState('');
@@ -620,7 +620,7 @@ Ada resep atau pertanyaan seputar produk yang ingin Anda tanyakan hari ini?`,
                   CORA Culinary &amp; Upcycle Assistant
                 </h3>
                 <p className="text-xs text-[#6E5C52]">
-                  Tanyakan apa saja seputar rasio baking, hidrasi cairan, nutrisi serat ampas kelapa, atau kemitraan penjemputan di Bali.
+                  Ask anything about baking ratios, liquid hydration, dietary fiber nutrition, or pickup partnerships in Bali.
                 </p>
               </div>
 
@@ -631,10 +631,10 @@ Ada resep atau pertanyaan seputar produk yang ingin Anda tanyakan hari ini?`,
                   setChatMessages([
                     {
                       sender: 'bot',
-                      text: `Halo! 👋 Saya CORA Culinary & Upcycle AI Assistant 🥥.
+                      text: `Hello! 👋 I am your CORA Culinary & Upcycle AI Assistant 🥥.
 
-Ada yang bisa saya bantu seputar resep sehat atau panduan tepung kelapa CORA hari ini?`,
-                      time: new Date().toLocaleTimeString('id-ID', {
+How can I help you with wholesome recipes or CORA coconut flour guidance today?`,
+                      time: new Date().toLocaleTimeString('en-US', {
                         hour: '2-digit',
                         minute: '2-digit',
                       }),
@@ -643,14 +643,14 @@ Ada yang bisa saya bantu seputar resep sehat atau panduan tepung kelapa CORA har
                 }}
                 className="text-[11px] font-medium text-[#8C7A6B] hover:text-[#3B5B3D] transition underline self-start sm:self-auto cursor-pointer"
               >
-                Reset Percakapan
+                Reset Conversation
               </button>
             </div>
 
             {/* Quick Question Chips */}
             <div className="mt-4">
               <span className="text-[11px] font-semibold text-[#8C7A6B] uppercase tracking-wider block mb-2">
-                Rekomendasi Pertanyaan Uji Coba:
+                Sample Recommended Inquiries:
               </span>
               <div className="flex flex-wrap gap-2">
                 {PRESET_CHAT_QUESTIONS.map((q) => (
@@ -713,7 +713,7 @@ Ada yang bisa saya bantu seputar resep sehat atau panduan tepung kelapa CORA har
                     <div className="max-w-[85%] rounded-2xl rounded-tl-none border border-[#E5DEC9] bg-white px-4 py-3 text-xs text-[#2C1E18] shadow-2xs flex items-center gap-2.5">
                       <div className="flex items-center gap-1.5 text-[10px] font-bold text-[#3B5B3D]">
                         <Bot className="h-3.5 w-3.5" />
-                        <span>CORA AI sedang mengetik...</span>
+                        <span>CORA AI is typing...</span>
                       </div>
                       <div className="flex items-center gap-1">
                         <span className="h-1.5 w-1.5 rounded-full bg-[#3B5B3D] animate-bounce [animation-delay:-0.3s]"></span>
@@ -737,7 +737,7 @@ Ada yang bisa saya bantu seputar resep sehat atau panduan tepung kelapa CORA har
                       handleSendChat();
                     }
                   }}
-                  placeholder="Ketik pertanyaan seputar tepung kelapa, resep, atau ketik sapaan..."
+                  placeholder="Ask a question about coconut flour baking, ratios, or say hello..."
                   className="flex-1 rounded-full border border-[#D6CCBA] bg-white px-4 py-2.5 text-xs text-[#2C1E18] focus:border-[#3B5B3D] focus:outline-none disabled:bg-[#F2ECE1]"
                 />
                 <button

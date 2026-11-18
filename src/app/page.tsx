@@ -786,7 +786,7 @@ export default function HomePage() {
                   href="/products"
                   className="group inline-flex items-center gap-2 self-start rounded-full border border-[#DDD4C1] bg-white px-5 py-2.5 text-xs font-semibold text-[#2C1E18] transition hover:border-[#3B5B3D] hover:text-[#3B5B3D] sm:self-auto"
                 >
-                  Detail & Katalog Lengkap
+                  View Full Catalog & Details
                   <ArrowRight className="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-0.5" />
                 </Link>
               </div>
@@ -846,7 +846,7 @@ export default function HomePage() {
                                       : 'bg-white/80 text-[#5C4B42] border border-[#DDD4C1] hover:bg-white'
                                   }`}
                                 >
-                                  Tampak Depan
+                                  Front View
                                 </button>
                                 <button
                                   type="button"
@@ -857,7 +857,7 @@ export default function HomePage() {
                                       : 'bg-white/80 text-[#5C4B42] border border-[#DDD4C1] hover:bg-white'
                                   }`}
                                 >
-                                  Tampak Belakang
+                                  Back View
                                 </button>
                               </div>
 
@@ -865,7 +865,7 @@ export default function HomePage() {
                                 href="/products"
                                 className="inline-flex items-center gap-1 text-[11px] font-bold text-[#3B5B3D] hover:underline"
                               >
-                                Detail
+                                Details
                                 <Eye className="h-3 w-3" />
                               </Link>
                             </div>
@@ -888,7 +888,7 @@ export default function HomePage() {
                                 }`}
                               >
                                 {outOfStock
-                                  ? 'Stok Habis'
+                                  ? 'Out of Stock'
                                   : `Ready Stock (${product.stock} pcs)`}
                               </span>
                             </div>
@@ -914,7 +914,7 @@ export default function HomePage() {
                                 </span>
                                 <div className="min-w-0">
                                   <p className="text-[11px] font-bold text-[#2C1E18] truncate">100% Upcycled</p>
-                                  <p className="text-[10px] text-[#7A675D] truncate">Ampas Kelapa Segar</p>
+                                  <p className="text-[10px] text-[#7A675D] truncate">Fresh Coconut Residue</p>
                                 </div>
                               </div>
 
@@ -923,8 +923,8 @@ export default function HomePage() {
                                   <Sparkles className="h-3.5 w-3.5" />
                                 </span>
                                 <div className="min-w-0">
-                                  <p className="text-[11px] font-bold text-[#2C1E18] truncate">Tinggi Serat</p>
-                                  <p className="text-[10px] text-[#7A675D] truncate">Indeks Glikemik Rendah</p>
+                                  <p className="text-[11px] font-bold text-[#2C1E18] truncate">High Fiber</p>
+                                  <p className="text-[10px] text-[#7A675D] truncate">Low Glycemic Index</p>
                                 </div>
                               </div>
 
@@ -933,8 +933,8 @@ export default function HomePage() {
                                   <Scale className="h-3.5 w-3.5" />
                                 </span>
                                 <div className="min-w-0">
-                                  <p className="text-[11px] font-bold text-[#2C1E18] truncate">Kemasan Pouch 100g</p>
-                                  <p className="text-[10px] text-[#7A675D] truncate">Praktis & Higienis</p>
+                                  <p className="text-[11px] font-bold text-[#2C1E18] truncate">100g Stand-up Pouch</p>
+                                  <p className="text-[10px] text-[#7A675D] truncate">Convenient &amp; Hygienic</p>
                                 </div>
                               </div>
 
@@ -943,8 +943,8 @@ export default function HomePage() {
                                   <Recycle className="h-3.5 w-3.5" />
                                 </span>
                                 <div className="min-w-0">
-                                  <p className="text-[11px] font-bold text-[#2C1E18] truncate">Dampak Sirkular</p>
-                                  <p className="text-[10px] text-[#7A675D] truncate">150g Residu Tereduksi</p>
+                                  <p className="text-[11px] font-bold text-[#2C1E18] truncate">Circular Impact</p>
+                                  <p className="text-[10px] text-[#7A675D] truncate">150g Residue Upcycled</p>
                                 </div>
                               </div>
                             </div>
@@ -954,13 +954,13 @@ export default function HomePage() {
                           <div className="mt-6 pt-5 border-t border-[#F0EAE0]">
                             <div className="flex items-baseline justify-between mb-4">
                               <div>
-                                <span className="text-xs text-[#8A776C]">Harga:</span>
+                                <span className="text-xs text-[#8A776C]">Price:</span>
                                 <div className="text-2xl sm:text-3xl font-bold tabular-nums text-[#2C1E18]">
                                   {formatRupiah(product.price)}
                                 </div>
                               </div>
                               <span className="text-xs font-medium text-[#6E5C52]">
-                                Isi bersih: <strong className="text-[#2C1E18]">{product.netWeight || '100g'}</strong>
+                                Net weight: <strong className="text-[#2C1E18]">{product.netWeight || '100g'}</strong>
                               </span>
                             </div>
 
@@ -978,12 +978,12 @@ export default function HomePage() {
                                 {isAdded ? (
                                   <>
                                     <Check className="h-4 w-4" />
-                                    Berhasil Ditambahkan!
+                                    Added to Cart!
                                   </>
                                 ) : (
                                   <>
                                     <ShoppingBag className="h-4 w-4" />
-                                    + Tambah ke Keranjang
+                                    + Add to Cart
                                   </>
                                 )}
                               </button>
@@ -998,7 +998,7 @@ export default function HomePage() {
                                   }
                                   className="inline-flex items-center justify-center gap-1.5 rounded-full border border-[#3B5B3D]/30 bg-[#3B5B3D]/10 py-3 px-5 text-xs sm:text-sm font-semibold text-[#3B5B3D] transition hover:bg-[#3B5B3D] hover:text-white"
                                 >
-                                  Buka Keranjang
+                                  View Cart
                                   <ArrowRight className="h-3.5 w-3.5" />
                                 </button>
                               )}
@@ -1008,12 +1008,12 @@ export default function HomePage() {
                                 className="inline-flex items-center justify-center gap-1.5 rounded-full border border-[#DDD4C1] bg-white py-3 px-5 text-xs sm:text-sm font-semibold text-[#2C1E18] transition hover:border-[#3B5B3D] hover:text-[#3B5B3D]"
                               >
                                 <Eye className="h-3.5 w-3.5 text-[#3B5B3D]" />
-                                Lihat Detail
+                                View Details
                               </Link>
                             </div>
 
                             <p className="mt-3 text-center sm:text-left text-[11px] text-[#8A776C]">
-                              ✓ Pengiriman ke seluruh Indonesia &bull; 100% Produk Alami Tanpa Pengawet
+                              ✓ Nationwide delivery across Indonesia &bull; 100% Natural, Zero Preservatives
                             </p>
                           </div>
                         </div>
@@ -1048,7 +1048,7 @@ export default function HomePage() {
                           {product.imageBack && (
                             <span className="absolute bottom-3 left-3 inline-flex items-center gap-1 rounded-full bg-white/95 border border-[#E5DEC9] px-2.5 py-1 text-[10px] font-bold text-[#5C4B42] shadow-2xs">
                               <Eye className="h-3 w-3 text-[#3B5B3D]" />
-                              Lihat Detail ↗
+                              View Details ↗
                             </span>
                           )}
                         </Link>
@@ -1168,11 +1168,11 @@ export default function HomePage() {
                     </div>
 
                     <h2 className="font-serif text-3xl sm:text-4xl lg:text-[40px] font-bold leading-[1.15] tracking-tight text-[#FAF8F5]">
-                      Bingung Mau Masak Apa? Biarkan Chef AI Kami yang Meraciknya.
+                      Wondering What to Bake? Let Our AI Chef Formulate It.
                     </h2>
 
                     <p className="text-sm sm:text-base leading-relaxed text-[#D0C7B7] max-w-xl">
-                      Tepung kelapa sirkular CORA memiliki daya serap cairan tinggi dan sifat khusus. Gunakan kalkulator resep pintar berbasis AI kami untuk mengubah bahan dapur apa pun menjadi kreasi kue, roti, dan camilan sehat yang pasti jadi.
+                      CORA upcycled coconut flour features high moisture absorption and distinctive culinary properties. Use our smart AI recipe generator to transform any kitchen pantry ingredients into wholesome, reliable bakes.
                     </p>
 
                     {/* 3 Quick Value Highlights */}
@@ -1181,9 +1181,9 @@ export default function HomePage() {
                         <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-[#86C975]/20 text-[#86C975] mb-2">
                           <Bot className="h-4 w-4" />
                         </span>
-                        <h3 className="text-xs font-bold text-white">Rasio Hidrasi Pas</h3>
+                        <h3 className="text-xs font-bold text-white">Optimal Hydration Ratio</h3>
                         <p className="mt-1 text-[11px] text-[#B8AF9F] leading-snug">
-                          Kalkulasi cairan &amp; telur otomatis agar adonan tidak bantat.
+                          Automated liquid &amp; egg balancing so dough never turns dry or dense.
                         </p>
                       </div>
 
@@ -1191,9 +1191,9 @@ export default function HomePage() {
                         <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-[#86C975]/20 text-[#86C975] mb-2">
                           <ChefHat className="h-4 w-4" />
                         </span>
-                        <h3 className="text-xs font-bold text-white">Bahan yang Ada</h3>
+                        <h3 className="text-xs font-bold text-white">Pantry Ingredients</h3>
                         <p className="mt-1 text-[11px] text-[#B8AF9F] leading-snug">
-                          Cukup pilih bahan di kulkas, AI buatkan resep instan.
+                          Select ingredients in your pantry, AI generates an instant recipe.
                         </p>
                       </div>
 
@@ -1201,9 +1201,9 @@ export default function HomePage() {
                         <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-[#86C975]/20 text-[#86C975] mb-2">
                           <Clock className="h-4 w-4" />
                         </span>
-                        <h3 className="text-xs font-bold text-white">Katalog Resep</h3>
+                        <h3 className="text-xs font-bold text-white">Tested Recipe Hub</h3>
                         <p className="mt-1 text-[11px] text-[#B8AF9F] leading-snug">
-                          Tersedia panduan langkah-demi-langkah siap panggang.
+                          Step-by-step verified culinary guides ready to bake.
                         </p>
                       </div>
                     </div>
@@ -1213,12 +1213,12 @@ export default function HomePage() {
                         href="/ecosystem"
                         className="group inline-flex items-center gap-2.5 rounded-full bg-[#4E9A34] px-7 py-3.5 text-sm font-bold text-white shadow-md transition-all duration-300 hover:bg-[#43882C] hover:shadow-xl hover:-translate-y-0.5 active:translate-y-0"
                       >
-                        Buka RecipeHub &amp; Coba AI
+                        Explore RecipeHub &amp; Try AI
                         <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
                       </Link>
 
                       <span className="text-xs text-[#A89F90]">
-                        Gratis &bull; Tanpa perlu registrasi
+                        Free &bull; No registration required
                       </span>
                     </div>
                   </div>
@@ -1227,7 +1227,7 @@ export default function HomePage() {
                   <div className="lg:col-span-5">
                     <Link
                       href="/ecosystem"
-                      aria-label="Coba Chef AI Baking Assistant di RecipeHub"
+                      aria-label="Try Chef AI Baking Assistant on RecipeHub"
                       className="group block rounded-2xl border border-white/15 bg-white/10 p-5 sm:p-6 backdrop-blur-md transition-all duration-300 hover:border-[#86C975]/60 hover:bg-white/[0.14] hover:shadow-2xl"
                     >
                       {/* Card Header */}
@@ -1242,7 +1242,7 @@ export default function HomePage() {
                             </p>
                             <p className="text-[10px] text-[#86C975] font-semibold flex items-center gap-1.5">
                               <span className="h-1.5 w-1.5 rounded-full bg-[#86C975] animate-pulse" />
-                              Online &amp; Siap Meracik Resep
+                              Online &amp; Ready to Formulate Recipes
                             </p>
                           </div>
                         </div>
@@ -1256,17 +1256,17 @@ export default function HomePage() {
                       <div className="space-y-3">
                         <div className="rounded-xl bg-white/5 border border-white/10 p-3 text-xs">
                           <p className="text-[10px] font-bold uppercase tracking-wider text-[#B8AF9F] mb-1">
-                            Input Bahan Anda di Dapur:
+                            Your Kitchen Ingredients:
                           </p>
                           <div className="flex flex-wrap gap-1.5">
                             <span className="rounded-md bg-white/15 px-2 py-0.5 text-[11px] font-medium text-white">
                               CORA Coconut Flour 70g
                             </span>
                             <span className="rounded-md bg-white/15 px-2 py-0.5 text-[11px] font-medium text-white">
-                              3 Pisang Matang
+                              3 Ripe Bananas
                             </span>
                             <span className="rounded-md bg-white/15 px-2 py-0.5 text-[11px] font-medium text-white">
-                              4 Telur
+                              4 Eggs
                             </span>
                           </div>
                         </div>
@@ -1275,25 +1275,25 @@ export default function HomePage() {
                         <div className="rounded-xl bg-[#2A4830]/80 border border-[#86C975]/30 p-3.5 space-y-2">
                           <div className="flex items-center justify-between">
                             <span className="text-[10px] font-bold uppercase tracking-wide text-[#86C975]">
-                              Resep Rekomendasi AI
+                              AI Recommended Recipe
                             </span>
                             <span className="text-[10px] text-[#D0C7B7] font-medium">
-                              ⏱ 20m prep &bull; 8 porsi
+                              ⏱ 20m prep &bull; 8 servings
                             </span>
                           </div>
                           <p className="text-sm font-bold text-white">
                             Coconut Flour Banana Loaf
                           </p>
                           <p className="text-xs leading-relaxed text-[#D0C7B7] line-clamp-2">
-                            Bolu pisang lembut beraroma tropis alami, kaya serat pangan, tanpa minyak berlebih.
+                            Moist banana loaf with natural tropical aroma, rich in prebiotic dietary fiber, zero excess oil.
                           </p>
                           <div className="pt-1.5 border-t border-white/10 flex items-center justify-between text-[11px]">
                             <span className="text-[#86C975] font-semibold flex items-center gap-1">
                               <Sparkles className="h-3 w-3" />
-                              Hidrasi 100% Pas
+                              Optimal 100% Hydration
                             </span>
                             <span className="text-white font-bold group-hover:underline flex items-center gap-1">
-                              Coba Sekarang &rarr;
+                              Try Now &rarr;
                             </span>
                           </div>
                         </div>
@@ -1301,9 +1301,9 @@ export default function HomePage() {
 
                       {/* Teaser Footer Bar */}
                       <div className="mt-4 pt-3 border-t border-white/10 flex items-center justify-between text-xs text-[#D0C7B7]">
-                        <span>Punya bahan lain di kulkas?</span>
+                        <span>Have other ingredients in your kitchen?</span>
                         <span className="font-bold text-[#86C975] flex items-center gap-1 group-hover:translate-x-0.5 transition-transform">
-                          Mulai Racik Resep
+                          Formulate Recipe Now
                           <ArrowRight className="h-3.5 w-3.5" />
                         </span>
                       </div>

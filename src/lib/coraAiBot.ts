@@ -12,14 +12,14 @@ export interface ChatMessage {
 }
 
 export const PRESET_CHAT_QUESTIONS: string[] = [
-  '📏 Berapa rasio takaran tepung ampas kelapa dibanding tepung terigu?',
-  '🥚 Mengapa harus menggunakan banyak telur saat baking tepung kelapa?',
-  '💡 Tips praktis agar hasil kue tidak terlalu kering atau mudah rapuh',
-  '🥥 Apa saja kandungan gizi & keunggulan serat tepung kelapa CORA?',
-  '🥑 Ada alternatif pengganti telur untuk resep vegan?',
-  '🚛 Bagaimana alur penjemputan ampas kelapa bagi pedagang santan di Bali?',
-  '📦 Berapa lama masa simpan (shelf life) dan bagaimana cara menyimpannya?',
-  '🍗 Bisakah tepung kelapa CORA dipakai sebagai baluran gorengan crispy?',
+  '📏 What is the conversion ratio of coconut flour compared to wheat flour?',
+  '🥚 Why are extra eggs and liquids needed when baking with coconut flour?',
+  '💡 Practical tips to prevent coconut flour bakes from turning dry or crumbly',
+  '🥥 What are the key nutritional & fiber benefits of CORA coconut flour?',
+  '🥑 Are there vegan egg substitutes for coconut flour recipes?',
+  '🚛 How does the coconut pickup workflow work for market vendors in Bali?',
+  '📦 What is the shelf life and optimal storage method for coconut flour?',
+  '🍗 Can coconut flour be used for crispy savory coatings in an air fryer?',
 ];
 
 interface KnowledgeIntent {
@@ -618,16 +618,16 @@ Whenever you need fresh recipe inspiration, ratio checks, or circular pickup upd
 ];
 
 /**
- * Checks if query is likely English
+ * Checks if query is likely Indonesian
  */
-function isEnglishQuery(query: string): boolean {
-  const enMarkers = [
-    'what', 'how', 'why', 'can', 'should', 'is', 'are', 'the', 'ratio',
-    'recipe', 'flour', 'coconut', 'eggs', 'bake', 'baking', 'dry', 'substitute',
-    'hello', 'hi', 'where', 'when', 'does', 'order', 'price'
+function isIndonesianQuery(query: string): boolean {
+  const idMarkers = [
+    'apa', 'bagaimana', 'kenapa', 'mengapa', 'berapa', 'apakah', 'bisa', 'tolong',
+    'halo', 'hai', 'selamat', 'pagi', 'siang', 'malam', 'saya', 'kamu', 'anda',
+    'resep', 'tepung', 'kelapa', 'telur', 'kue', 'roti', 'takaran', 'rasio', 'terima', 'kasih'
   ];
   const words = query.toLowerCase().split(/\s+/);
-  const matchCount = words.filter((w) => enMarkers.includes(w)).length;
+  const matchCount = words.filter((w) => idMarkers.includes(w)).length;
   return matchCount >= 2;
 }
 
@@ -648,10 +648,10 @@ function tokenize(text: string): string[] {
 export function generateCoraAiResponse(userQuery: string): string {
   const trimmed = userQuery.trim();
   if (!trimmed) {
-    return 'Halo! Ada yang bisa saya bantu seputar resep atau tepung kelapa CORA hari ini? 🥥';
+    return 'Hello! How may I assist your baking or circular journey with CORA coconut flour today? 🥥';
   }
 
-  const isEn = isEnglishQuery(trimmed);
+  const isIndo = isIndonesianQuery(trimmed);
   const queryTokens = tokenize(trimmed);
   const lowerQuery = trimmed.toLowerCase();
 
@@ -687,25 +687,12 @@ export function generateCoraAiResponse(userQuery: string): string {
 
   // Threshold check: If score is sufficient, return intent reply
   if (bestIntent && maxScore >= 2) {
-    return isEn ? bestIntent.replyEn : bestIntent.replyId;
+    return isIndo ? bestIntent.replyId : bestIntent.replyEn;
   }
 
   // Guardrail fallback for random / unrecognized queries
-  if (isEn) {
-    return `Thank you for your question! As the **CORA Culinary & Upcycle AI Assistant**, my knowledge is specialized in circular coconut innovations, high-fiber baking with CORA coconut flour, hydration techniques, and our residue collection network in Bali 🥥.
-
-To explore this prototype, here are some sample topics you can ask me:
-1. 📏 *"What is the substitution ratio of coconut flour compared to wheat flour?"*
-2. 🥚 *"Why do recipes require extra eggs and liquids when using coconut flour?"*
-3. 💡 *"How can I prevent my coconut flour bakes from turning out dry or crumbly?"*
-4. 🌿 *"What are the nutritional and fiber benefits of CORA upcycled flour?"*
-5. 🚛 *"How can local coconut milk vendors partner with the Bali pickup program?"*
-6. 📦 *"What is the shelf life and proper storage method for coconut flour?"*
-
-Feel free to type any of the questions above or click the quick prompt buttons!`;
-  }
-
-  return `Pertanyaan yang menarik! Namun sebagai **CORA Culinary & Upcycle AI Assistant**, pengetahuan saya difokuskan khusus pada ekosistem pangan sirkular kelapa, panduan baking tepung kelapa CORA, tips rasio hidrasi resep, serta program penjemputan ampas kelapa di Bali 🥥.
+  if (isIndo) {
+    return `Pertanyaan yang menarik! Namun sebagai **CORA Culinary & Upcycle AI Assistant**, pengetahuan saya difokuskan khusus pada ekosistem pangan sirkular kelapa, panduan baking tepung kelapa CORA, tips rasio hidrasi resep, serta program penjemputan ampas kelapa di Bali 🥥.
 
 Untuk menguji kemampuan prototype ini, silakan coba tanyakan topik-topik berikut:
 1. 📏 *"Berapa rasio takaran tepung ampas kelapa dibanding tepung terigu?"*
@@ -717,4 +704,17 @@ Untuk menguji kemampuan prototype ini, silakan coba tanyakan topik-topik berikut
 7. 🍗 *"Bisakah tepung kelapa dipakai untuk baluran gorengan crispy?"*
 
 Ketik salah satu pertanyaan di atas atau klik salah satu tombol pertanyaan cepat di bawah untuk mencobanya!`;
+  }
+
+  return `Thank you for your question! As the **CORA Culinary & Upcycle AI Assistant**, my knowledge is specialized in circular coconut innovations, high-fiber baking with CORA coconut flour, hydration techniques, and our residue collection network in Bali 🥥.
+
+To explore this prototype, here are some sample topics you can ask me:
+1. 📏 *"What is the substitution ratio of coconut flour compared to wheat flour?"*
+2. 🥚 *"Why do recipes require extra eggs and liquids when using coconut flour?"*
+3. 💡 *"How can I prevent my coconut flour bakes from turning out dry or crumbly?"*
+4. 🌿 *"What are the nutritional and fiber benefits of CORA upcycled flour?"*
+5. 🚛 *"How can local coconut milk vendors partner with the Bali pickup program?"*
+6. 📦 *"What is the shelf life and proper storage method for coconut flour?"*
+
+Feel free to type any of the questions above or click the quick prompt buttons!`;
 }

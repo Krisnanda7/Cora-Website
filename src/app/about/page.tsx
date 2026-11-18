@@ -118,13 +118,13 @@ export default function AboutPage() {
 
     // Build structured message for WhatsApp
     const waLines = [
-      `Halo Tim CORA, saya ingin menghubungi Anda melalui formulir website:`,
+      `Hello CORA Team, I would like to get in touch via the website inquiry form:`,
       ``,
-      `*Nama Lengkap / Organisasi:* ${contactName.trim()}`,
-      `*Email / No. WhatsApp:* ${contactEmail.trim() || '-'}`,
-      `*Topik / Kategori:* ${contactSubject}`,
+      `*Full Name / Organization:* ${contactName.trim()}`,
+      `*Email / WhatsApp:* ${contactEmail.trim() || '-'}`,
+      `*Subject / Topic:* ${contactSubject}`,
       ``,
-      `*Pesan / Detail Rencana:*`,
+      `*Message / Proposal Details:*`,
       `${contactMessage.trim()}`,
     ];
 
@@ -528,7 +528,7 @@ export default function AboutPage() {
                   {contactSuccess && (
                     <div className="mt-4 rounded-2xl bg-[#4E9A34]/15 border border-[#4E9A34]/30 p-4 text-xs font-medium text-[#2F611F] flex items-center gap-2">
                       <CheckCircle2 className="h-4 w-4 shrink-0" />
-                      <span>Terima kasih! Pesan dan data kolaborasi Anda telah disiapkan dan langsung diarahkan ke WhatsApp resmi CORA (+62 858-5868-7329).</span>
+                      <span>Thank you! Your message and collaboration inquiry have been prepared and directed to official CORA WhatsApp (+62 858-5868-7329).</span>
                     </div>
                   )}
 
