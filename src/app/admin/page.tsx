@@ -307,7 +307,7 @@ export default function AdminDashboardPage() {
   const [supLocation, setSupLocation] = useState('');
   const [supType, setSupType] = useState('Coconut Milk Facility');
   const [supKg, setSupKg] = useState('25');
-  const [supFreq, setSupFreq] = useState('Setiap Hari');
+  const [supFreq, setSupFreq] = useState('Daily');
   const [supStatus, setSupStatus] = useState<SupplierStatus>('ACTIVE');
 
   // Tab 4: Pickup State
@@ -783,9 +783,9 @@ export default function AdminDashboardPage() {
     setSupName('');
     setSupPhone('');
     setSupLocation('');
-    setSupType('Pabrik Pengolahan Santan');
+    setSupType('Coconut Milk Facility');
     setSupKg('25');
-    setSupFreq('Setiap Hari');
+    setSupFreq('Daily');
     setSupStatus('ACTIVE');
     setShowSupplierModal(true);
   };
@@ -1398,7 +1398,7 @@ export default function AdminDashboardPage() {
                                   </select>
                                   {order.trackingNumber && (
                                     <p className="font-mono text-[11px] font-semibold text-[#3B5B3D]">
-                                      Resi: {order.trackingNumber}
+                                      Tracking No: {order.trackingNumber}
                                     </p>
                                   )}
                                 </div>
@@ -3943,10 +3943,10 @@ export default function AdminDashboardPage() {
                   onChange={(e) => setSupFreq(e.target.value)}
                   className="mt-1 w-full rounded-xl bg-[#FAF8F5] px-3 py-2 text-xs text-[#2C1E18] ring-1 ring-[#E5DEC9] focus:bg-white focus:ring-2 focus:ring-[#3B5B3D] focus:outline-none"
                 >
-                  <option value="Setiap Hari">Daily</option>
-                  <option value="3-4 Kali Seminggu">3-4 Times a Week</option>
-                  <option value="1-2 Kali Seminggu">1-2 Times a Week</option>
-                  <option value="Berdasarkan Pesanan">On-Demand / Per Order</option>
+                  <option value="Daily">Daily</option>
+                  <option value="3-4 Times a Week">3-4 Times a Week</option>
+                  <option value="1-2 Times a Week">1-2 Times a Week</option>
+                  <option value="On-Demand / Per Order">On-Demand / Per Order</option>
                 </select>
               </div>
 
@@ -4037,7 +4037,7 @@ export default function AdminDashboardPage() {
 
               <div>
                 <label className="block text-xs font-semibold text-[#2C1E18]">
-                  Kategori
+                  Category
                 </label>
                 <select
                   value={recCategory}
