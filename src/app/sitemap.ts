@@ -1,7 +1,7 @@
 import type { MetadataRoute } from 'next';
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = 'https://corasite-five.vercel.app';
+  const baseUrl = 'https://cora-prototype.vercel.app';
   const now = new Date();
 
   return [

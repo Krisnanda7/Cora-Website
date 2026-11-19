@@ -7,7 +7,7 @@ export default function robots(): MetadataRoute.Robots {
       allow: '/',
       disallow: ['/admin/'],
     },
-    sitemap: 'https://corasite-five.vercel.app/sitemap.xml',
+    sitemap: 'https://cora-prototype.vercel.app/sitemap.xml',
   };
 }
 

@@ -23,7 +23,7 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://corasite-five.vercel.app"),
+  metadataBase: new URL("https://cora-prototype.vercel.app"),
   title: {
     default: "CORA — Circular Food Innovation",
     template: "%s | CORA",
@@ -52,17 +52,27 @@ export const metadata: Metadata = {
   openGraph: {
     title: "CORA — Circular Food Innovation",
     description:
-      "Turning coconut milk residues into nutritious food products, AI-assisted recipes, and a circular community marketplace in Bali.",
-    url: "https://corasite-five.vercel.app",
+      "Transforming coconut residue into 100% pure upcycled coconut flour (100g), AI-assisted recipes, and a circular supplier ecosystem in Bali.",
+    url: "https://cora-prototype.vercel.app",
     siteName: "CORA",
     locale: "en_US",
     type: "website",
+    images: [
+      {
+        url: "/images/og-preview.jpg",
+        width: 1200,
+        height: 630,
+        type: "image/jpeg",
+        alt: "CORA — Circular Food Innovation | 100% Upcycled Coconut Flour",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
     title: "CORA — Circular Food Innovation",
     description:
-      "Turning coconut milk residues into nutritious food products, AI-assisted recipes, and a circular community marketplace.",
+      "Transforming coconut residue into 100% pure upcycled coconut flour (100g), AI-assisted recipes, and a circular supplier ecosystem in Bali.",
+    images: ["/images/og-preview.jpg"],
   },
   robots: {
     index: true,
